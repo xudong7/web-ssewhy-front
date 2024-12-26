@@ -28,13 +28,17 @@
     <el-aside>
       <div class="right-column">
         <div class="recommended-follows">
-          <h3>推荐关注</h3>
-          <div class="user" v-for="user in recommendedUsers" :key="user.id">
-            <img :src="user.avatar" alt="用户头像"/>
-            <div class="user-info">
-              <span class="username">{{ user.username }}</span>
-              <span class="user-description">{{ user.description }}</span>
-              <button>关注</button>
+          <h3 class="recommended-title">推荐关注</h3>
+          <div class="user-list">
+            <div class="user-card" v-for="user in recommendedUsers" :key="user.id">
+              <div class="user-avatar">
+                <img :src="user.avatar" alt="用户头像"/>
+              </div>
+              <div class="user-info">
+                <div class="username">{{ user.username }}</div>
+                <div class="description">{{ user.description }}</div>
+                <el-button type="primary" size="small" class="follow-btn">关注</el-button>
+              </div>
             </div>
           </div>
         </div>
@@ -169,19 +173,23 @@ body {
   padding: 20px;
   background-color: #f9f9f9;
   justify-content: center;
-  align-items: stretch; /* 添加这行让子元素等高 */
-  width: 80%; /* 添加宽度，可根据实际需求调整 */
-  margin: 0 auto; /* 使其在水平方向上居中 */
+  align-items: stretch;
+  width: 80%;
+  margin: 0 auto;
 }
 
 .left-column {
   flex: 3;
   margin-right: 20px;
-  align-items: center; /* 让左列内部元素水平居中 */
+  align-items: center;
 }
 
 .right-column {
   flex: 1;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  padding: 16px;
 }
 
 .topic {
@@ -193,8 +201,8 @@ body {
   transition: background-color 0.2s;
   display: flex;
   flex-direction: column;
-  width: 70%; /* 添加这行让话题元素占满左列宽度 */
-  box-sizing: border-box; /* 确保内边距等不撑大元素宽度 */
+  width: 70%;
+  box-sizing: border-box;
 }
 
 .topic:hover {
@@ -218,33 +226,83 @@ body {
   color: #999;
 }
 
-/* Sidebar */
-.card {
-  background: #f9f9f9;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* Recommended Follows Section */
+.recommended-follows {
+  background: #fff;
+  border-radius: 8px;
 }
 
-.recommended-follows.user {
+.recommended-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #121212;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.user-list {
   display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.recommended-follows img {
-  width: 40px;
-  height: 40px;
+.user-card {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.user-card:hover {
+  background-color: #f6f6f6;
+}
+
+.user-avatar {
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.user-avatar img {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  margin-right: 10px;
+  object-fit: cover;
 }
 
-.user-info button {
-  background-color: #007aff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.username {
+  font-size: 15px;
+  font-weight: 500;
+  color: #121212;
+}
+
+.description {
+  font-size: 13px;
+  color: #8590a6;
+  margin-bottom: 8px;
+}
+
+.follow-btn {
+  width: fit-content;
+  font-size: 14px;
+  padding: 4px 16px;
   border-radius: 3px;
+  background-color: #056de8;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.follow-btn:hover {
+  background-color: #0461cf;
 }
 </style>

@@ -1,16 +1,41 @@
 <template>
   <header class="header">
-    <div class="logo">XXX</div>
-    <div class="search-bar">
-      <input type="text" placeholder="提问" />
-      <button>搜索</button>
+    <div class="header-left">
+      <div class="logo">sse-why</div>
+      <el-menu
+        :default-active="activeMenu"
+        mode="horizontal"
+        class="menu"
+        @select="handleSelect"
+      >
+        <el-menu-item index="hall" @click="goHall">主页</el-menu-item>
+        <el-menu-item index="download" @click="goDownload">下载</el-menu-item>
+        <el-menu-item index="knowledge" @click="goKnowledge">知识</el-menu-item>
+        <el-menu-item index="pins">想法</el-menu-item>
+      </el-menu>
+    </div>
+    <div class="header-search">
+      <div class="search-bar">
+        <el-input
+          placeholder="搜索你感兴趣的内容..."
+          prefix-icon="el-icon-search"
+        >
+          <template #append>
+            <el-button type="primary">搜索</el-button>
+          </template>
+        </el-input>
+      </div>
     </div>
     <div class="user-actions">
       <span>消息</span>
       <span>私信</span>
       <span>创作中心</span>
       <span>草稿箱</span>
-      <img src="https://img.icons8.com/ios/452/user" alt="用户头像" />
+      <el-avatar
+        @click="goHome"
+        :size="36"
+        src="https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg?source=32738c0c&needBackground=1"
+      ></el-avatar>
     </div>
   </header>
   <el-main class="main-content">
@@ -30,9 +55,22 @@ export default {
     goHome() {
       this.$router.push("/home");
     },
+    goHall() {
+      this.$router.push("/hall");
+    },
+    goDownload() {
+      this.$router.push("/download");
+    },
+    goKnowledge() {
+      this.$router.push("/knowledge");
+    },
     getActiveMenu() {
       const path = this.$route.path;
-      return "hall";
+      if (path.startsWith("/home")) return "home";
+      if (path.startsWith("/hall")) return "hall";
+      if (path.startsWith("/download")) return "download";
+      if (path.startsWith("/knowledge")) return "knowledge";
+      if (path.startsWith("/pins")) return "pins";
     },
   },
   watch: {
@@ -49,53 +87,63 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
+  padding: 0 40px;
+  height: 52px;
   background-color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #f0f0f0;
-  font-family: Arial, sans-serif;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  flex: 0 0 30%;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 0 0 20%;
 }
 
 .logo {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: bold;
-  color: #333;
+  color: #056de8;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.menu {
+  border-bottom: none;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .search-bar {
-  display: flex;
-  align-items: center;
-  position: relative;
+  width: 400px;
+  flex-shrink: 0;
 }
 
-.search-bar input {
-  padding: 8px 15px;
-  border: 1px solid #ccc;
-  border-radius: 25px;
-  width: 250px;
+.search-bar :deep(.el-input__inner) {
+  border-radius: 999px;
+  height: 34px;
   font-size: 14px;
-  outline: none;
-  transition: border-color 0.3s;
+  background: #f6f6f6;
 }
 
-.search-bar input:focus {
-  border-color: #007aff;
-}
-
-.search-bar button {
-  padding: 8px 15px;
-  background-color: #007aff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 25px;
-  position: absolute;
-  right: -10px;
-  transition: background-color 0.3s;
-}
-
-.search-bar button:hover {
-  background-color: #0056b3;
+.search-bar :deep(.el-input-group__append) {
+  background-color: #056de8;
+  border-color: #056de8;
+  color: #fff;
+  border-top-right-radius: 999px;
+  border-bottom-right-radius: 999px;
 }
 
 .user-actions {
@@ -111,20 +159,24 @@ export default {
 }
 
 .user-actions span:hover {
-  color: #007aff;
+  color: #056de8;
 }
 
-.user-actions img {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid #007aff;
+.el-avatar {
   cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.el-avatar:hover {
+  border-color: #056de8;
 }
 
 /* Main Content Styles */
 .main-content {
-  padding: 20px;
-  background-color: #f9f9f9;
+  margin-top: 52px;
+  min-height: calc(100vh - 52px);
+  background-color: #f6f6f6;
+  padding: 0;
 }
 </style>
