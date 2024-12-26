@@ -11,7 +11,7 @@
         <el-menu-item index="hall" @click="goHall">主页</el-menu-item>
         <el-menu-item index="download" @click="goDownload">下载</el-menu-item>
         <el-menu-item index="knowledge" @click="goKnowledge">知识</el-menu-item>
-        <el-menu-item index="pins">想法</el-menu-item>
+        <el-menu-item index="pins" @click="goPins">想法</el-menu-item>
       </el-menu>
     </div>
     <div class="header-search">
@@ -19,9 +19,12 @@
         <el-input
           placeholder="搜索你感兴趣的内容..."
           prefix-icon="el-icon-search"
+          class="search-input"
         >
           <template #append>
-            <el-button type="primary">搜索</el-button>
+            <el-button type="primary" class="search-button">
+              搜索
+            </el-button>
           </template>
         </el-input>
       </div>
@@ -63,6 +66,9 @@ export default {
     },
     goKnowledge() {
       this.$router.push("/knowledge");
+    },
+    goPins() {
+      this.$router.push("/pins");
     },
     getActiveMenu() {
       const path = this.$route.path;
@@ -129,19 +135,44 @@ export default {
 .search-bar {
   width: 400px;
   flex-shrink: 0;
+  position: relative;
 }
 
 .search-bar :deep(.el-input__inner) {
-  border-radius: 999px;
-  height: 34px;
   font-size: 14px;
   background: #f6f6f6;
+  border: 2px solid transparent;
+  padding-left: 20px;
+  transition: all 0.3s ease;
+}
+
+.search-bar :deep(.el-input__inner):hover,
+.search-bar :deep(.el-input__inner):focus {
+  background: #ffffff;
+  border-color: #056de8;
+  box-shadow: 0 0 8px rgba(5, 109, 232, 0.2);
 }
 
 .search-bar :deep(.el-input-group__append) {
   background-color: #056de8;
-  border-color: #056de8;
+  border: none;
+  padding: 0 20px;
+  transition: all 0.3s ease;
+}
+
+.search-bar :deep(.el-input-group__append button) {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  padding: 8px 15px;
   color: #fff;
+}
+
+.search-bar :deep(.el-input-group__append):hover {
+  background-color: #0461cf;
+}
+
+.search-button {
   border-top-right-radius: 999px;
   border-bottom-right-radius: 999px;
 }
