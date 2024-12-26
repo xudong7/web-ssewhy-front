@@ -1,12 +1,16 @@
 <template>
   <header class="header">
     <div class="header-left">
-      <div class="logo">sse-why</div>
+      <div class="logo">
+        <span @click="goHall">
+          sse-why
+        </span>
+      </div>
       <el-menu
-        :default-active="activeMenu"
-        mode="horizontal"
-        class="menu"
-        @select="handleSelect"
+          :default-active="activeMenu"
+          mode="horizontal"
+          class="menu"
+          @select="handleSelect"
       >
         <el-menu-item index="hall" @click="goHall">主页</el-menu-item>
         <el-menu-item index="download" @click="goDownload">下载</el-menu-item>
@@ -17,9 +21,9 @@
     <div class="header-search">
       <div class="search-bar">
         <el-input
-          placeholder="搜索你感兴趣的内容..."
-          prefix-icon="el-icon-search"
-          class="search-input"
+            placeholder="搜索你感兴趣的内容..."
+            prefix-icon="el-icon-search"
+            class="search-input"
         >
           <template #append>
             <el-button type="primary" class="search-button">
@@ -35,9 +39,9 @@
       <span>创作中心</span>
       <span>草稿箱</span>
       <el-avatar
-        @click="goHome"
-        :size="36"
-        src="https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg?source=32738c0c&needBackground=1"
+          @click="goHome"
+          :size="36"
+          src="https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg?source=32738c0c&needBackground=1"
       ></el-avatar>
     </div>
   </header>
@@ -122,7 +126,7 @@ export default {
   font-weight: bold;
   color: #056de8;
   margin-right: 20px;
-  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .menu {
