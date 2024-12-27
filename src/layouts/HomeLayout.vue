@@ -76,11 +76,7 @@ export default {
     },
     getActiveMenu() {
       const path = this.$route.path;
-      if (path.startsWith("/home")) return "home";
-      if (path.startsWith("/hall")) return "hall";
-      if (path.startsWith("/download")) return "download";
-      if (path.startsWith("/knowledge")) return "knowledge";
-      if (path.startsWith("/pins")) return "pins";
+      return path.split("/").pop();
     },
   },
   watch: {

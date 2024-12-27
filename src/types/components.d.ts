@@ -7,6 +7,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Article: typeof import('./../components/article.vue')['default']
+    ArticleComponent: typeof import('./../components/ArticleComponent.vue')['default']
+    CommentComponent: typeof import('./../components/CommentComponent.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElAvatarGroup: typeof import('element-plus/es')['ElAvatarGroup']

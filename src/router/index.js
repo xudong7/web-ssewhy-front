@@ -6,18 +6,43 @@ const router = new createRouter({
     routes: [
         {
             path: "/",
-            component: () => import("../views/hall/index.vue"),
+            component: () => import("../layouts/HomeLayout.vue"),
             children: [
                 {
+                    path: "",
+                    redirect: "/hall"
+                },
+                {
                     path: "hall",
+                    name: "Hall",
                     component: () => import("../views/hall/index.vue")
+                },
+                {
+                    path: "home",
+                    name: "Home",
+                    component: () => import("../views/home/index.vue")
+                },
+                {
+                    path: "detail/:articleId",
+                    name: "Detail",
+                    component: () => import("../views/detail/index.vue")
+                },
+                {
+                    path: "download",
+                    name: "Download",
+                    component: () => import("../views/download/index.vue")
+                },
+                {
+                    path: "knowledge",
+                    name: "Knowledge",
+                    component: () => import("../views/knowledge/index.vue")
+                },
+                {
+                    path: "pins",
+                    name: "Pins",
+                    component: () => import("../views/pins/index.vue")
                 }
             ]
-        },
-        {
-            path: "/home",
-            name: "Home",
-            component: () => import("../views/home/index.vue"),
         },
         {
             path: "/login",

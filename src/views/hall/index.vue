@@ -5,10 +5,10 @@
     <el-main class="main-content">
       <div class="left-column">
         <div
-            class="topic"
-            v-for="topic in topics"
-            :key="topic.id"
-            @click="handleClick(topic.id)"
+          class="topic"
+          v-for="topic in topics"
+          :key="topic.id"
+          @click="goDetail(topic.id)"
         >
           <div class="topic-header">
             <div v-if="topic.cover" class="topic-cover">
@@ -20,10 +20,17 @@
             </div>
           </div>
           <div class="topic-footer">
-            <span class="action-item"><i class="el-icon-thumb"></i> {{ topic.likes }} 赞同</span>
-            <span class="action-item"><i class="el-icon-chat-dot-round"></i> {{ topic.comments }} 评论</span>
+            <span class="action-item"
+              ><i class="el-icon-thumb"></i> {{ topic.likes }} 赞同</span
+            >
+            <span class="action-item"
+              ><i class="el-icon-chat-dot-round"></i>
+              {{ topic.comments }} 评论</span
+            >
             <span class="action-item"><i class="el-icon-share"></i> 分享</span>
-            <span class="action-item"><i class="el-icon-star-off"></i> 收藏</span>
+            <span class="action-item"
+              ><i class="el-icon-star-off"></i> 收藏</span
+            >
             <span class="action-item"><i class="el-icon-heart"></i> 喜欢</span>
           </div>
         </div>
@@ -35,21 +42,26 @@
         <div class="recommended-follows">
           <h3 class="recommended-title">推荐关注</h3>
           <div class="user-list">
-            <div class="user-card" v-for="user in recommendedUsers" :key="user.id">
+            <div
+              class="user-card"
+              v-for="user in recommendedUsers"
+              :key="user.id"
+            >
               <div class="user-avatar">
-                <img :src="user.avatar" alt="用户头像"/>
+                <img :src="user.avatar" alt="用户头像" />
               </div>
               <div class="user-info">
                 <div class="username">{{ user.username }}</div>
                 <div class="description">{{ user.description }}</div>
-                <el-button type="primary" size="small" class="follow-btn">关注</el-button>
+                <el-button type="primary" size="small" class="follow-btn"
+                  >关注</el-button
+                >
               </div>
             </div>
           </div>
         </div>
       </div>
     </el-aside>
-
   </el-container>
 </template>
 
@@ -89,18 +101,19 @@ export default {
     };
   },
   methods: {
-    handleClick(topicId) {
-      // Navigate to the topic details page
-      this.$router.push(`/topics/${topicId}`);
-    },
     async getArticleList() {
       const res = await getArticleList();
       this.topics = res.data.data;
-    }
+    },
+    goDetail(topicId) {
+      this.$router.push({
+        path: `/detail/${topicId}`,
+      });
+    },
   },
   mounted() {
     this.getArticleList();
-  }
+  },
 };
 </script>
 
