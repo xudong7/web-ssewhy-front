@@ -23,9 +23,5 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Sidebar: typeof import('./../components/home/Sidebar.vue')['default']
-    UserAchievements: typeof import('./../components/home/UserAchievements.vue')['default']
-    UserActivity: typeof import('./../components/home/UserActivity.vue')['default']
-    UserInfo: typeof import('./../components/home/UserInfo.vue')['default']
   }
 }

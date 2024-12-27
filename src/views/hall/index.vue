@@ -11,21 +11,26 @@
             @click="handleClick(topic.id)"
         >
           <div class="topic-header">
-            <h2 class="topic-title">{{ topic.title }}</h2>
-            <p class="topic-description">{{ topic.description }}</p>
+            <div v-if="topic.cover" class="topic-cover">
+              <img :src="topic.cover" alt="封面" />
+            </div>
+            <div class="topic-content">
+              <h2 class="topic-title">{{ topic.title }}</h2>
+              <p class="topic-description">{{ topic.content }}</p>
+            </div>
           </div>
           <div class="topic-footer">
-            <span>{{ topic.likes }} 赞同</span>
-            <span>{{ topic.comments }} 评论</span>
-            <span>分享</span>
-            <span>收藏</span>
-            <span>喜欢</span>
+            <span class="action-item"><i class="el-icon-thumb"></i> {{ topic.likes }} 赞同</span>
+            <span class="action-item"><i class="el-icon-chat-dot-round"></i> {{ topic.comments }} 评论</span>
+            <span class="action-item"><i class="el-icon-share"></i> 分享</span>
+            <span class="action-item"><i class="el-icon-star-off"></i> 收藏</span>
+            <span class="action-item"><i class="el-icon-heart"></i> 喜欢</span>
           </div>
         </div>
       </div>
     </el-main>
     <!-- Right Column -->
-    <el-aside>
+    <el-aside class="right-aside">
       <div class="right-column">
         <div class="recommended-follows">
           <h3 class="recommended-title">推荐关注</h3>
@@ -49,40 +54,12 @@
 </template>
 
 <script>
+import { getArticleList } from "@/api/article.js";
+
 export default {
   data() {
     return {
-      topics: [
-        {
-          id: 1,
-          title: "如何评价vue作者尤雨溪？",
-          description:
-              "南方以南：有一次看他的直播片段，他去面试，被问到原型链，不会，面试挂了。",
-          likes: 2367,
-          comments: 233,
-        },
-        {
-          id: 2,
-          title: "数学系和计算机系学生编写代码的风格是否有差异？",
-          description: "豫西：正好现身说法。我是计算机背景，组里另外一位是数学背景。",
-          likes: 144,
-          comments: 28,
-        },
-        {
-          id: 3,
-          title: "既然有些人喜欢开挂，为啥不开发一款网游？",
-          description: "路：真有这种游戏啊，《Screeps》，允许玩家用各种软件。",
-          likes: 14000,
-          comments: 378,
-        },
-        {
-          id: 4,
-          title: "演员知道自己正在拍一部烂片吗？",
-          description: "向导：你不知道自己写的毕业论文是垃圾吗？",
-          likes: 0,
-          comments: 0,
-        },
-      ],
+      topics: [],
       recommendedUsers: [
         {
           id: 1,
@@ -116,7 +93,14 @@ export default {
       // Navigate to the topic details page
       this.$router.push(`/topics/${topicId}`);
     },
+    async getArticleList() {
+      const res = await getArticleList();
+      this.topics = res.data.data;
+    }
   },
+  mounted() {
+    this.getArticleList();
+  }
 };
 </script>
 
@@ -184,6 +168,15 @@ body {
   align-items: center;
 }
 
+.right-aside {
+  position: fixed;
+  right: 15%;
+  top: 7%;
+  width: 300px !important;
+  height: 100vh;
+  overflow-y: auto;
+}
+
 .right-column {
   flex: 1;
   background: #fff;
@@ -194,36 +187,96 @@ body {
 
 .topic {
   margin-bottom: 20px;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 15px;
-  margin-left: 30%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-left: 10%;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 75%;
   box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
 }
 
 .topic:hover {
-  background-color: #f0f8ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.topic-header h2 {
-  margin: 0;
-  font-size: 24px;
-  color: #333;
+.topic-header {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.topic-cover {
+  width: 200px;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.topic-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.topic-cover img:hover {
+  transform: scale(1.05);
+}
+
+.topic-content {
+  flex: 1;
+}
+
+.topic-title {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  color: #121212;
+  line-height: 1.4;
 }
 
 .topic-description {
-  font-size: 16px;
-  color: #555;
+  font-size: 15px;
+  color: #646464;
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.topic-footer span {
-  margin-right: 15px;
+.topic-footer {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  color: #8590a6;
   font-size: 14px;
-  color: #999;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.action-item:hover {
+  color: #056de8;
+}
+
+.action-item i {
+  margin-right: 4px;
+  font-size: 16px;
 }
 
 /* Recommended Follows Section */

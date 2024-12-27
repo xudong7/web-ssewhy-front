@@ -1,7 +1,7 @@
 <!--src/views/login/index.vue-->
 <script setup>
-import useUserStore from "../../store/modules/user";
-import { getCodeInfo } from "../../api/user";
+import useUserStore from "@/store/modules/user";
+import { getCodeInfo } from "@/api/user.js";
 import { onMounted, ref } from "vue";
 
 const userStore = useUserStore();

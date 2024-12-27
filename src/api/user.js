@@ -1,4 +1,4 @@
-import request from "../utils/request";
+import request from "@/utils/request";
 
 /**
  * 获取验证码
@@ -10,3 +10,13 @@ export function getCodeInfo(checkKey) {
     url: '',
   });
 }
+
+/**
+ * 获取id对应的用户信息
+ * @param id
+ * @returns {*}
+ */
+export function getUserInfoById(userId) {
+  return request.get(`/user/${userId}`);
+}
+

@@ -3,7 +3,7 @@
     <!-- 封面和个人信息区域 -->
     <div class="cover-section">
       <div class="cover-image">
-        <img :src="userInfo.coverImage" :alt="userInfo.username" class="cover-image-ratio">
+        <img :src="userInfo.cover" :alt="userInfo.username" class="cover-image-ratio">
       </div>
       <div class="user-info">
         <div class="avatar">
@@ -11,10 +11,10 @@
         </div>
         <div class="user-info-content">
           <h1 class="username">{{ userInfo.username }}</h1>
-          <p class="headline">{{ userInfo.headline }}</p>
+          <p class="headline">个人简介</p>
           <div class="user-stats">
-            <span>{{ userInfo.followingCount }} 关注</span>
-            <span>{{ userInfo.followerCount }} 粉丝</span>
+            <span>{{ userInfo.followCart }} 关注</span>
+            <span>{{ userInfo.fansCart }} 粉丝</span>
           </div>
         </div>
       </div>
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import {getUserInfoById} from "@/api/user.js";
+
 export default {
   name: 'Home',
   data() {
@@ -50,14 +52,7 @@ export default {
         { key: 'articles', name: '文章' },
         { key: 'pins', name: '想法' }
       ],
-      userInfo: {
-        username: '用户名',
-        headline: '个人简介',
-        coverImage: 'https://pic1.zhimg.com/v2-f232653f46209bc5d6310f83034381c7_1440w.jpg?source=32738c0c',
-        avatar: 'https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg?source=32738c0c&needBackground=1',
-        followingCount: 0,
-        followerCount: 0
-      }
+      userInfo: {},
     }
   },
   computed: {
@@ -70,6 +65,16 @@ export default {
       }
       return components[this.currentTab]
     }
+  },
+  methods: {
+    async getUserInfo() {
+      const userId = 1;
+      const res = await getUserInfoById(userId);
+      this.userInfo = res.data.data;
+    }
+  },
+  mounted() {
+    this.getUserInfo();
   }
 }
 </script>
