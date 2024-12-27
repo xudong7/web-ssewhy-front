@@ -41,6 +41,11 @@ const router = new createRouter({
                     path: "pins",
                     name: "Pins",
                     component: () => import("../views/pins/index.vue")
+                },
+                {
+                    path: "write",
+                    name: "Write",
+                    component: () => import("../views/write/index.vue")
                 }
             ]
         },

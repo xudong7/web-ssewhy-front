@@ -16,3 +16,12 @@ export function getArticleList() {
 export function getArticleById(id) {
   return request.get(`/article/${id}`);
 }
+
+/**
+ * ·¢²¼ÎÄÕÂ
+ * @param data
+ * @returns {*}
+ */
+export function publishArticle(data) {
+  return request.post('/article', data);
+}

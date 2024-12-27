@@ -1,6 +1,6 @@
 <template>
   <div class="download-page">
-    <h1>download</h1>
+    <h1>下载</h1>
   </div>
 </template>
 

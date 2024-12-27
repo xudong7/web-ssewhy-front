@@ -1,6 +1,6 @@
 <template>
   <div class="pins-page">
-    <h1>pins</h1>
+    <h1>想法</h1>
   </div>
 </template>
 

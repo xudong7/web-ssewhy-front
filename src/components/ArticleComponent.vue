@@ -4,8 +4,9 @@
       <img v-if="article.cover" :src="article.cover" alt="cover" class="article-cover"/>
       <h1 class="article-title">{{ article.title }}</h1>
       <div class="article-info">
-        <span class="author">作者：{{ article.author }}</span>
-        <span class="create-time">发布时间：{{ article.createTime }}</span>
+        <span class="author">浣滆�咃細{{ article.author }}</span>
+        <span class="create-time">鍒涘缓鏃堕棿锛歿{ article.createTime }}</span>
+        <span class="update-time">鏇存柊鏃堕棿锛歿{ article.updateTime }}</span>
       </div>
       <div class="article-body">{{ article.content }}</div>
     </div>

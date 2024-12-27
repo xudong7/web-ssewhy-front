@@ -36,7 +36,7 @@
     <div class="user-actions">
       <span>消息</span>
       <span>私信</span>
-      <span>创作中心</span>
+      <span @click="goWrite">创作</span>
       <span>草稿箱</span>
       <el-avatar
           @click="goHome"
@@ -73,6 +73,9 @@ export default {
     },
     goPins() {
       this.$router.push("/pins");
+    },
+    goWrite() {
+      this.$router.push("/write");
     },
     getActiveMenu() {
       const path = this.$route.path;

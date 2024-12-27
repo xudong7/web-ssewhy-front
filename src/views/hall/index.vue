@@ -184,7 +184,7 @@ body {
 .right-aside {
   position: fixed;
   right: 15%;
-  top: 7%;
+  top: 10%;
   width: 300px !important;
   height: 100vh;
   overflow-y: auto;
@@ -203,7 +203,8 @@ body {
   background: #fff;
   border-radius: 8px;
   padding: 20px;
-  margin-left: 10%;
+  margin-left: 5%;
+  margin-top: 1%;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;

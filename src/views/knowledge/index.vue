@@ -1,6 +1,6 @@
 <template>
   <div class="knowledge-page">
-    <h1>knowledge</h1>
+    <h1>知识</h1>
   </div>
 </template>
 
