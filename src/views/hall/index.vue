@@ -103,7 +103,9 @@ export default {
   methods: {
     async getArticleList() {
       const res = await getArticleList();
+      // 筛选status为1的文章
       this.topics = res.data.data;
+      this.topics = this.topics.filter(item => item.status === 1);
     },
     goDetail(topicId) {
       this.$router.push({

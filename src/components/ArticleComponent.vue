@@ -30,7 +30,8 @@ export default {
       const articleId = this.$route.params.articleId;
       const res = await getArticleById(articleId);
       // 筛选status为1的文章
-      this.article = res.data.data.filter(item => item.status === 1);
+      this.article = res.data.data;
+      this.article = this.article.filter(item => item.status === 1);
     },
     processDate(date) {
       return new Date(date).toLocaleString('zh-CN', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'});
