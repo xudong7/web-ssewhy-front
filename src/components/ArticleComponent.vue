@@ -1,14 +1,16 @@
 <template>
   <div class="article-container">
     <div class="article-content">
-      <img v-if="article.cover" :src="article.cover" alt="cover" class="article-cover"/>
+      <div v-if="article.cover" class="cover-container">
+        <img :src="article.cover" alt="cover" class="article-cover"/>
+      </div>
       <h1 class="article-title">{{ article.title }}</h1>
       <div class="article-info">
         <span class="author">作者：{{ article.author }}</span>
-        <span class="create-time">创建时间：{{ article.createTime }}</span>
-        <span class="update-time">更新时间：{{ article.updateTime }}</span>
+        <span class="create-time">创建时间：{{ processDate(article.createTime) }}</span>
+        <span class="update-time">更新时间：{{ processDate(article.updateTime) }}</span>
       </div>
-      <div class="article-body">{{ article.content }}</div>
+      <div class="article-body" v-html="processContent(article.content)"></div>
     </div>
   </div>
 </template>
@@ -27,7 +29,16 @@ export default {
     async getArticle() {
       const articleId = this.$route.params.articleId;
       const res = await getArticleById(articleId);
-      this.article = res.data.data;
+      // 筛选status为1的文章
+      this.article = res.data.data.filter(item => item.status === 1);
+    },
+    processDate(date) {
+      return new Date(date).toLocaleString('zh-CN', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'});
+    },
+    processContent(content) {
+      if (!content) return '';
+      // 将图片标签替换为带有div包裹的形式
+      return content.replace(/<img(.*?)>/g, '<div class="image-wrapper"><img$1></div>');
     }
   },
   mounted() {
@@ -50,12 +61,17 @@ export default {
   padding: 20px;
 }
 
+.cover-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
 .article-cover {
   width: 100%;
   max-height: 400px;
   object-fit: cover;
   border-radius: 8px;
-  margin-bottom: 20px;
+  display: block;
 }
 
 .article-title {
@@ -77,5 +93,22 @@ export default {
   font-size: 16px;
   line-height: 1.8;
   color: #121212;
+}
+
+.article-body :deep(.image-wrapper) {
+  margin: 20px 0;
+  text-align: center;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.article-body :deep(.image-wrapper img) {
+  max-width: 100%;
+  height: auto;
+  width: 100%;
+  border-radius: 8px;
+  display: block;
 }
 </style>

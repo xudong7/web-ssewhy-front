@@ -7,7 +7,7 @@
           class="title-input"
       />
       <div class="header-actions">
-        <el-button type="info" plain>保存草稿</el-button>
+        <el-button type="info" @click="saveDraft" plain>保存草稿</el-button>
         <el-button type="primary" @click="publishArticle">发布文章</el-button>
       </div>
     </div>
@@ -77,10 +77,22 @@ export default {
       // 调用发布API
       publishArticle({
         title: this.title,
-        content: this.content
+        content: this.content,
+        status: 1 // 1表示已发布
       }).then(res => {
         ElMessage.success('publish success')
         this.$router.push('/hall')
+      })
+    },
+    saveDraft() {
+      // 调用保存草稿API
+      publishArticle({
+        title: this.title,
+        content: this.content,
+        status: 0 // 0表示草稿
+      }).then(res => {
+        ElMessage.success('save draft success')
+        this.$router.push('/draft')
       })
     }
   }
