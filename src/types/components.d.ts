@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AdComponent: typeof import('./../components/AdComponent.vue')['default']
     Article: typeof import('./../components/article.vue')['default']
     ArticleComponent: typeof import('./../components/ArticleComponent.vue')['default']
     CommentComponent: typeof import('./../components/CommentComponent.vue')['default']
@@ -31,5 +32,6 @@ declare module 'vue' {
     ElUpload: typeof import('element-plus/es')['ElUpload']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    WriteComponet: typeof import('./../components/WriteComponet.vue')['default']
   }
 }

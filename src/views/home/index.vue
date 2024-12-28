@@ -3,11 +3,15 @@
     <!-- 封面和个人信息区域 -->
     <div class="cover-section">
       <div class="cover-image">
-        <img :src="userInfo.cover" :alt="userInfo.username" class="cover-image-ratio">
+        <img
+          :src="userInfo.cover"
+          :alt="userInfo.username"
+          class="cover-image-ratio"
+        />
       </div>
       <div class="user-info">
         <div class="avatar">
-          <img :src="userInfo.avatar" :alt="userInfo.username">
+          <img :src="userInfo.avatar" :alt="userInfo.username" />
         </div>
         <div class="user-info-content">
           <h1 class="username">{{ userInfo.username }}</h1>
@@ -24,13 +28,14 @@
     <div class="main-content">
       <div class="nav-tabs">
         <span
-          v-for="(tab, index) in tabs" 
+          v-for="(tab, index) in tabs"
           :key="index"
           :class="{ active: currentTab === tab.key }"
           @click="currentTab = tab.key"
-        >{{ tab.name }}</span>
+          >{{ tab.name }}</span
+        >
       </div>
-      
+
       <div class="content-list">
         <component :is="currentComponent"></component>
       </div>
@@ -39,44 +44,44 @@
 </template>
 
 <script>
-import {getUserInfoById} from "@/api/user.js";
+import { getUserInfoById } from "@/api/user.js";
 
 export default {
-  name: 'Home',
+  name: "Home",
   data() {
     return {
-      currentTab: 'dynamic',
+      currentTab: "dynamic",
       tabs: [
-        { key: 'dynamic', name: '动态' },
-        { key: 'answers', name: '回答' },
-        { key: 'articles', name: '文章' },
-        { key: 'pins', name: '想法' }
+        { key: "dynamic", name: "动态" },
+        { key: "answers", name: "回答" },
+        { key: "articles", name: "文章" },
+        { key: "pins", name: "想法" },
       ],
       userInfo: {},
-    }
+    };
   },
   computed: {
     currentComponent() {
       const components = {
-        dynamic: 'UserDynamic',
-        answers: 'UserAnswers',
-        articles: 'UserArticles',
-        pins: 'UserPins'
-      }
-      return components[this.currentTab]
-    }
+        dynamic: "UserDynamic",
+        answers: "UserAnswers",
+        articles: "UserArticles",
+        pins: "UserPins",
+      };
+      return components[this.currentTab];
+    },
   },
   methods: {
     async getUserInfo() {
       const userId = 1;
       const res = await getUserInfoById(userId);
       this.userInfo = res.data.data;
-    }
+    },
   },
   mounted() {
     this.getUserInfo();
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -172,7 +177,7 @@ export default {
   margin: 10px auto;
   background: #fff;
   border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(18,18,18,0.1);
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
 }
 
 .nav-tabs {
@@ -194,8 +199,8 @@ export default {
 }
 
 .nav-tabs span.active {
-  color: #056DE8;
-  border-bottom: 3px solid #056DE8;
+  color: #056de8;
+  border-bottom: 3px solid #056de8;
   font-weight: 500;
 }
 

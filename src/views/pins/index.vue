@@ -16,8 +16,8 @@
         </div>
         <div class="pin-text">{{ pin.content }}</div>
         <div class="pin-images" v-if="pin.images && pin.images.length">
-          <el-image 
-            v-for="(img, index) in pin.images" 
+          <el-image
+            v-for="(img, index) in pin.images"
             :key="index"
             :src="img"
             :preview-src-list="pin.images"
@@ -51,34 +51,36 @@ export default {
       pins: [
         {
           id: 1,
-          author: '张三',
-          avatar: 'https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg',
-          content: '今天学习了Vue.js的组件通信,收获很多!',
-          createTime: '2023-07-20 10:30',
+          author: "张三",
+          avatar:
+            "https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg",
+          content: "今天学习了Vue.js的组件通信,收获很多!",
+          createTime: "2023-07-20 10:30",
           likes: 12,
           comments: 3,
           images: [
-            'https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg',
-          ]
+            "https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg",
+          ],
         },
         {
-          id: 2, 
-          author: '李四',
-          avatar: 'https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg',
-          content: '分享一个好用的前端开发工具',
-          createTime: '2023-07-19 15:20',
+          id: 2,
+          author: "李四",
+          avatar:
+            "https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg",
+          content: "分享一个好用的前端开发工具",
+          createTime: "2023-07-19 15:20",
           likes: 8,
           comments: 5,
-          images: []
-        }
-      ]
-    }
+          images: [],
+        },
+      ],
+    };
   },
   methods: {
     createPin() {
-      this.$router.push('/write')
-    }
-  }
+      this.$router.push("/write");
+    },
+  },
 };
 </script>
 
@@ -152,6 +154,6 @@ export default {
 }
 
 .action-item:hover {
-  color: #409EFF;
+  color: #409eff;
 }
 </style>

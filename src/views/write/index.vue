@@ -2,9 +2,9 @@
   <div class="write-container">
     <div class="write-header">
       <el-input
-          v-model="title"
-          placeholder="请输入文章标题..."
-          class="title-input"
+        v-model="title"
+        placeholder="请输入文章标题..."
+        class="title-input"
       />
       <div class="header-actions">
         <el-button type="info" @click="saveDraft" plain>保存草稿</el-button>
@@ -15,23 +15,23 @@
     <div class="editor-container">
       <div class="editor-toolbar">
         <el-upload
-            class="image-upload"
-            action="/api/upload"
-            :show-file-list="false"
-            :on-success="handleImageSuccess"
+          class="image-upload"
+          action="/api/upload"
+          :show-file-list="false"
+          :on-success="handleImageSuccess"
         >
           <el-button type="primary" icon="el-icon-picture">插入图片</el-button>
         </el-upload>
       </div>
-      
+
       <div class="editor-main">
         <div class="markdown-editor">
           <el-input
-              type="textarea"
-              v-model="content"
-              :rows="20"
-              placeholder="开始创作..."
-              @input="updatePreview"
+            type="textarea"
+            v-model="content"
+            :rows="20"
+            placeholder="开始创作..."
+            @input="updatePreview"
           />
         </div>
         <div class="markdown-preview" v-html="previewContent"></div>
@@ -41,62 +41,62 @@
 </template>
 
 <script>
-import { marked } from 'marked';
-import { publishArticle } from '@/api/article';
+import { marked } from "marked";
+import { publishArticle } from "@/api/article";
 
 export default {
   name: "Write",
   data() {
     return {
-      title: '',
-      content: '',
-      previewContent: ''
-    }
+      title: "",
+      content: "",
+      previewContent: "",
+    };
   },
   methods: {
     updatePreview() {
-      this.previewContent = marked(this.content)
+      this.previewContent = marked(this.content);
     },
     handleImageSuccess(res) {
       // 在光标位置插入图片markdown语法
-      const imageUrl = res.data.url
-      const imageMarkdown = `![image](${imageUrl})\n`
-      this.content += imageMarkdown
-      this.updatePreview()
+      const imageUrl = res.data.url;
+      const imageMarkdown = `![image](${imageUrl})\n`;
+      this.content += imageMarkdown;
+      this.updatePreview();
     },
     publishArticle() {
       // TODO: 实现文章发布逻辑
       if (!this.title.trim()) {
-        ElMessage.error('please input title')
-        return
+        ElMessage.error("please input title");
+        return;
       }
       if (!this.content.trim()) {
-        ElMessage.error('please input content') 
-        return
+        ElMessage.error("please input content");
+        return;
       }
       // 调用发布API
       publishArticle({
         title: this.title,
         content: this.content,
-        status: 1 // 1表示已发布
-      }).then(res => {
-        ElMessage.success('publish success')
-        this.$router.push('/hall')
-      })
+        status: 1, // 1表示已发布
+      }).then((res) => {
+        ElMessage.success("publish success");
+        this.$router.push("/hall");
+      });
     },
     saveDraft() {
       // 调用保存草稿API
       publishArticle({
         title: this.title,
         content: this.content,
-        status: 0 // 0表示草稿
-      }).then(res => {
-        ElMessage.success('save draft success')
-        this.$router.push('/draft')
-      })
-    }
-  }
-}
+        status: 0, // 0表示草稿
+      }).then((res) => {
+        ElMessage.success("save draft success");
+        this.$router.push("/draft");
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -171,7 +171,13 @@ export default {
 }
 
 .markdown-body {
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Helvetica,
+    Arial,
+    sans-serif;
   font-size: 16px;
   line-height: 1.6;
   color: #24292e;

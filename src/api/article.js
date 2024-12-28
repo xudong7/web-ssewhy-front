@@ -1,15 +1,15 @@
 import request from "@/utils/request";
 
 /**
- * ╩Ях║ндубап╠М
+ * О©╫О©╫х║О©╫О©╫О©╫О©╫О©╫п╠О©╫
  * @returns {*}
  */
 export function getArticleList() {
-  return request.get('/article');
+  return request.get("/article");
 }
 
 /**
- * ╩Ях║id╤тс╕ндуб
+ * О©╫О©╫х║idО©╫О©╫с╕О©╫О©╫О©╫О©╫
  * @param id
  * @returns {*}
  */
@@ -18,10 +18,10 @@ export function getArticleById(id) {
 }
 
 /**
- * ╥╒╡╪ндуб
+ * О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫
  * @param data
  * @returns {*}
  */
 export function publishArticle(data) {
-  return request.post('/article', data);
+  return request.post("/article", data);
 }

@@ -16,7 +16,8 @@ const useUserStore = defineStore("user", () => {
         token.value = String(new Date().getTime());
         userInfo.value = {
           name: "admin",
-          avatar: "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80",
+          avatar:
+            "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80",
         };
         resolve("登录成功");
       } else {

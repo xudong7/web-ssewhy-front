@@ -6,9 +6,11 @@
     </div>
 
     <div class="download-content">
-      <el-card v-for="(item, index) in downloadList" 
-               :key="index" 
-               class="download-item">
+      <el-card
+        v-for="(item, index) in downloadList"
+        :key="index"
+        class="download-item"
+      >
         <div class="item-info">
           <div class="item-title">{{ item.title }}</div>
           <div class="item-desc">{{ item.description }}</div>
@@ -40,32 +42,32 @@ export default {
           size: "120MB",
           downloads: 1234,
           updateTime: "2023-05-20",
-          url: "https://example.com/frontend.zip"
+          url: "https://example.com/frontend.zip",
         },
         {
           title: "Vue.js 实战教程",
           description: "Vue.js框架的完整实战教程，包含实例代码",
-          size: "85MB", 
+          size: "85MB",
           downloads: 986,
           updateTime: "2023-06-15",
-          url: "https://example.com/vue-tutorial.zip"
+          url: "https://example.com/vue-tutorial.zip",
         },
         {
           title: "开发工具合集",
           description: "常用开发工具打包下载，包含VSCode、Git等",
           size: "500MB",
           downloads: 756,
-          updateTime: "2023-07-01", 
-          url: "https://example.com/dev-tools.zip"
-        }
-      ]
-    }
+          updateTime: "2023-07-01",
+          url: "https://example.com/dev-tools.zip",
+        },
+      ],
+    };
   },
   methods: {
     handleDownload(item) {
-      window.open(item.url)
-    }
-  }
+      window.open(item.url);
+    },
+  },
 };
 </script>
 

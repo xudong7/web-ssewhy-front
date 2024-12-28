@@ -7,7 +7,7 @@ import request from "@/utils/request";
 export function getCodeInfo(checkKey) {
   return request({
     method: "get",
-    url: '',
+    url: "",
   });
 }
 
@@ -19,4 +19,3 @@ export function getCodeInfo(checkKey) {
 export function getUserInfoById(userId) {
   return request.get(`/user/${userId}`);
 }
-
