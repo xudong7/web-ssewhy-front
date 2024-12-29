@@ -19,3 +19,12 @@ export function getCodeInfo(checkKey) {
 export function getUserInfoById(userId) {
   return request.get(`/user/${userId}`);
 }
+
+/**
+ * 登录
+ * @param data
+ * @returns {*}
+ */
+export function login(data) {
+  return request.post(`/login`, data);
+}

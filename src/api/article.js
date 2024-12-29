@@ -5,7 +5,7 @@ import request from "@/utils/request";
  * @returns {*}
  */
 export function getArticleList() {
-  return request.get("/article");
+  return request.get(`/article`);
 }
 
 /**
@@ -23,7 +23,7 @@ export function getArticleById(id) {
  * @returns {*}
  */
 export function publishArticle(data) {
-  return request.post("/article", data);
+  return request.post(`/article`, data);
 }
 
 /**
@@ -32,5 +32,5 @@ export function publishArticle(data) {
  * @returns {*}
  */
 export function uploadImage(data) {
-  return request.post("/upload", data);
+  return request.post(`/upload`, data);
 }

@@ -2,49 +2,30 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-const useUserStore = defineStore("user", () => {
+export const useUserStore = defineStore("user", () => {
   const userInfo = ref({});
-  const loginStatus = ref(false);
+  const role = ref("");
   const token = ref("");
+  
   /**
    * 登录
    */
-  function handleLogin() {
-    return new Promise((resolve, reject) => {
-      if (Math.random() > 0.8) {
-        loginStatus.value = true;
-        token.value = String(new Date().getTime());
-        userInfo.value = {
-          name: "admin",
-          avatar:
-            "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80",
-        };
-        resolve("登录成功");
-      } else {
-        reject("登录失败");
-      }
-    });
+  function handleLogin(_token) {
+    token.value = _token;
   }
 
   /**
    * 退出登录
    */
   function handleLogout() {
-    return new Promise((resolve) => {
-      loginStatus.value = false;
-      token.value = "";
-      userInfo.value = {};
-      resolve();
-    });
+    token.value = "";
   }
 
   return {
     userInfo,
-    loginStatus,
+    role,
     token,
     handleLogin,
     handleLogout,
   };
 });
-
-export default useUserStore;
