@@ -12,11 +12,11 @@
         >
           <div class="topic-header">
             <div v-if="topic.cover" class="topic-cover">
-              <img :src="topic.cover" alt="封面" />
+              <img :src="topic.cover" alt="封面" class="topic-cover-img" />
             </div>
             <div class="topic-content">
               <h2 class="topic-title">{{ topic.title }}</h2>
-              <p class="topic-description">{{ topic.content }}</p>
+              <p class="topic-description">{{ formatContent(topic.content) }}</p>
             </div>
           </div>
           <div class="topic-footer">
@@ -64,6 +64,16 @@ export default {
         path: `/detail/${topicId}`,
       });
     },
+    formatContent(content) {
+      if (!content) return '';
+      // 每30个字符添加一个换行符
+      const maxLength = 250;
+      const chunkSize = 60;
+      if (content.length > maxLength) {
+        content = content.substring(0, maxLength) + '...';
+      }
+      return content.match(new RegExp(`.{1,${chunkSize}}`, 'g')).join('\n');
+    }
   },
   mounted() {
     this.getArticleList();
@@ -137,8 +147,8 @@ body {
 
 .right-aside {
   position: fixed;
-  right: 15%;
-  top: 10%;
+  right: 12%;
+  top: 6%;
   width: 300px !important;
   height: 100vh;
   overflow-y: auto;
@@ -157,7 +167,7 @@ body {
   background: #fff;
   border-radius: 8px;
   padding: 20px;
-  margin-left: 5%;
+  margin-left: 10%;
   margin-top: 1%;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -180,8 +190,8 @@ body {
 }
 
 .topic-cover {
-  width: 200px;
-  height: 150px;
+  width: 320px;
+  height: 200px;
   overflow: hidden;
   border-radius: 8px;
   flex-shrink: 0;
@@ -196,6 +206,13 @@ body {
 
 .topic-cover img:hover {
   transform: scale(1.05);
+}
+
+.topic-cover-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
 .topic-content {
@@ -218,6 +235,7 @@ body {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  white-space: pre-line;
 }
 
 .topic-footer {
