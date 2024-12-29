@@ -44,6 +44,10 @@ request.interceptors.response.use(
           break;
         case 401:
           console.error('未授权，请登录');
+          ElMessage.error('未授权，请登录');
+          setTimeout(() => {
+            window.location.href = "http://localhost:5173/login";
+          }, 1000);
           break;
         case 403:
           console.error('拒绝访问');

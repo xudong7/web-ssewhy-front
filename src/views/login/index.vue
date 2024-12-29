@@ -72,7 +72,11 @@ export default {
             const userStore = useUserStore();
             userStore.handleLogin(res.data.data);
             // localStorage.setItem('token', res.data.data);
+            ElMessage.success('登录成功');
             this.$router.push('/hall');
+          }
+          else {
+            ElMessage.error('登录失败');
           }
         }
       });
