@@ -16,7 +16,9 @@
             </div>
             <div class="topic-content">
               <h2 class="topic-title">{{ topic.title }}</h2>
-              <p class="topic-description">{{ formatContent(topic.content) }}</p>
+              <p class="topic-description">
+                {{ formatContent(topic.content) }}
+              </p>
             </div>
           </div>
           <div class="topic-footer">
@@ -65,15 +67,15 @@ export default {
       });
     },
     formatContent(content) {
-      if (!content) return '';
+      if (!content) return "";
       // 每30个字符添加一个换行符
       const maxLength = 250;
       const chunkSize = 60;
       if (content.length > maxLength) {
-        content = content.substring(0, maxLength) + '...';
+        content = content.substring(0, maxLength) + "...";
       }
-      return content.match(new RegExp(`.{1,${chunkSize}}`, 'g')).join('\n');
-    }
+      return content.match(new RegExp(`.{1,${chunkSize}}`, "g")).join("\n");
+    },
   },
   mounted() {
     this.getArticleList();

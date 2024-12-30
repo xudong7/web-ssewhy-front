@@ -17,8 +17,13 @@
           <h1 class="username">{{ userInfo.username }}</h1>
           <p class="headline">个人简介</p>
           <div class="user-stats">
-            <span>{{ userInfo.followCart }} 关注</span>
-            <span>{{ userInfo.fansCart }} 粉丝</span>
+            <span> 0 关注</span>
+            <span> 0 粉丝</span>
+          </div>
+          <div class="edit-profile">
+            <el-button type="primary" size="medium" @click="handleEditProfile"
+              >编辑个人资料</el-button
+            >
           </div>
         </div>
       </div>
@@ -40,14 +45,69 @@
         <component :is="currentComponent"></component>
       </div>
     </div>
+
+    <!-- 编辑个人资料对话框 -->
+    <el-dialog title="编辑个人资料" v-model="dialogVisible" width="500px">
+      <el-form :model="editForm" label-width="80px">
+        <!-- <el-form-item label="用户名">
+          <el-input v-model="editForm.username"></el-input>
+        </el-form-item> -->
+        <el-form-item label="头像">
+          <el-upload
+            class="avatar-uploader"
+            action="/api/upload"
+            :show-file-list="false"
+            :on-change="handleAvatarChange"
+            accept="image/*"
+            name="file"
+          >
+            <img
+              v-if="editForm.avatar"
+              :src="editForm.avatar"
+              class="avatar-preview"
+            />
+            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="封面">
+          <el-upload
+            class="cover-uploader"
+            action="/api/upload"
+            :show-file-list="false"
+            :on-change="handleCoverChange"
+            accept="image/*"
+            name="file"
+          >
+            <img
+              v-if="editForm.cover"
+              :src="editForm.cover"
+              class="cover-preview"
+            />
+            <el-icon v-else class="cover-uploader-icon"><Plus /></el-icon>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSaveProfile">保存</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserInfoById } from "@/api/user.js";
+import { useUserStore } from "@/store/modules/user";
+import { Plus } from "@element-plus/icons-vue";
+import { uploadImage } from "@/api/article";
+import { updateUserInfo } from "@/api/user";
 
 export default {
   name: "Home",
+  components: {
+    Plus,
+  },
   data() {
     return {
       currentTab: "dynamic",
@@ -58,6 +118,13 @@ export default {
         { key: "pins", name: "想法" },
       ],
       userInfo: {},
+      dialogVisible: false,
+      editForm: {
+        username: "",
+        avatar: "",
+        cover: "",
+      },
+      userStore: useUserStore(),
     };
   },
   computed: {
@@ -73,9 +140,76 @@ export default {
   },
   methods: {
     async getUserInfo() {
-      const userId = 1;
-      const res = await getUserInfoById(userId);
-      this.userInfo = res.data.data;
+      this.userInfo = this.userStore.userInfo;
+    },
+    handleEditProfile() {
+      this.editForm = {
+        username: this.userInfo.username,
+        avatar: this.userInfo.avatar || "",
+        cover: this.userInfo.cover || "",
+      };
+      this.dialogVisible = true;
+    },
+    async handleAvatarChange(file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file.raw);
+        const res = await uploadImage(formData);
+        if (res.data.code === 1) {
+          this.editForm.avatar = res.data.data;
+          ElMessage.success("头像上传成功");
+        } else {
+          ElMessage.error(res.data.msg || "头像上传失败");
+        }
+      } catch (error) {
+        console.error("头像上传失败:", error);
+        ElMessage.error("头像上传失败");
+      }
+    },
+    async handleCoverChange(file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file.raw);
+        const res = await uploadImage(formData);
+        if (res.data.code === 1) {
+          this.editForm.cover = res.data.data;
+          ElMessage.success("封面上传成功");
+        } else {
+          ElMessage.error(res.data.msg || "封面上传失败");
+        }
+      } catch (error) {
+        console.error("封面上传失败:", error);
+        ElMessage.error("封面上传失败");
+      }
+    },
+    async handleSaveProfile() {
+      try {
+        const updateData = {
+          id: this.userStore.userId,
+          username: this.editForm.username,
+          avatar: this.editForm.avatar,
+          cover: this.editForm.cover,
+        };
+
+        const res = await updateUserInfo(updateData);
+        if (res.data.code === 1) {
+          // 更新 store 中的用户信息
+          this.userStore.updateUserInfo(updateData);
+
+          // 更新本地显示
+          this.userInfo.username = updateData.username;
+          this.userInfo.avatar = updateData.avatar;
+          this.userInfo.cover = updateData.cover;
+
+          ElMessage.success("个人资料更新成功");
+          this.dialogVisible = false;
+        } else {
+          ElMessage.error(res.data.msg || "更新失败");
+        }
+      } catch (error) {
+        console.error("更新个人资料失败:", error);
+        ElMessage.error("更新失败，请稍后重试");
+      }
     },
   },
   mounted() {
@@ -162,6 +296,7 @@ export default {
 .user-stats {
   color: #646464;
   font-size: 15px;
+  margin-bottom: 16px;
 }
 
 .user-stats span {
@@ -171,6 +306,10 @@ export default {
 
 .user-stats span:hover {
   color: #175199;
+}
+
+.edit-profile {
+  margin-top: 16px;
 }
 
 .main-content {
@@ -207,5 +346,44 @@ export default {
 .content-list {
   min-height: 200px;
   padding: 0 20px;
+}
+
+/* 添加上传组件的样式 */
+.avatar-uploader,
+.cover-uploader {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader:hover,
+.cover-uploader:hover {
+  border-color: #409eff;
+}
+
+.avatar-uploader-icon,
+.cover-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+}
+
+.avatar-preview {
+  width: 100px;
+  height: 100px;
+  display: block;
+  object-fit: cover;
+}
+
+.cover-preview {
+  width: 200px;
+  height: 100px;
+  display: block;
+  object-fit: cover;
 }
 </style>

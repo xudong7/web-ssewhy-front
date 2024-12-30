@@ -8,7 +8,7 @@
       <div class="login-form">
         <el-form :model="loginForm" :rules="rules" ref="loginFormRef">
           <el-form-item prop="username">
-            <el-input 
+            <el-input
               v-model="loginForm.username"
               placeholder="请输入用户名"
               prefix-icon="el-icon-user"
@@ -24,12 +24,16 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="handleLogin" class="login-button">登录</el-button>
+            <el-button type="primary" @click="handleLogin" class="login-button"
+              >登录</el-button
+            >
           </el-form-item>
         </el-form>
         <div class="login-options">
           <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-          <router-link to="/register" class="register-link">注册账号</router-link>
+          <router-link to="/register" class="register-link"
+            >注册账号</router-link
+          >
         </div>
       </div>
     </div>
@@ -41,48 +45,65 @@ import { login } from "@/api/user";
 import { useUserStore } from "@/store/modules/user";
 
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: "",
+        password: "",
       },
       rememberMe: false,
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur",
+          },
         ],
         password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
-        ]
-      }
-    }
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 3,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
+            trigger: "blur",
+          },
+        ],
+      },
+    };
   },
   methods: {
     handleLogin() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (valid) {
-          const res = await login(this.loginForm);
-          console.log('登录响应：', res);
-          if (res.data.code === 1) {
-            // 使用pinia
-            const userStore = useUserStore();
-            userStore.handleLogin(res.data.data);
-            // localStorage.setItem('token', res.data.data);
-            ElMessage.success('登录成功');
-            this.$router.push('/hall');
-          }
-          else {
-            ElMessage.error('登录失败');
+          try {
+            const res = await login(this.loginForm);
+            console.log("登录响应：", res);
+            if (res.data.code === 1) {
+              const userStore = useUserStore();
+              // 后端返回的token和id
+              await userStore.handleLogin({
+                token: res.data.data.token,
+                userId: res.data.data.id,
+              });
+
+              ElMessage.success("登录成功");
+              this.$router.push("/hall");
+            } else {
+              ElMessage.error(res.data.msg || "登录失败");
+            }
+          } catch (error) {
+            console.error("登录失败:", error);
+            ElMessage.error("登录失败，请稍后重试");
           }
         }
       });
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

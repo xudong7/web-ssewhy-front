@@ -23,7 +23,12 @@
           accept="image/*"
           name="file"
         >
-          <el-button type="primary" icon="el-icon-picture" class="image-upload-button">插入图片</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-picture"
+            class="image-upload-button"
+            >插入图片</el-button
+          >
         </el-upload>
 
         <el-upload
@@ -35,7 +40,12 @@
           accept="image/*"
           name="file"
         >
-          <el-button type="success" icon="el-icon-picture-outline" class="cover-upload-button">设置封面</el-button>
+          <el-button
+            type="success"
+            icon="el-icon-picture-outline"
+            class="cover-upload-button"
+            >设置封面</el-button
+          >
         </el-upload>
       </div>
 
@@ -43,7 +53,13 @@
         <div class="markdown-editor">
           <div v-if="cover" class="cover-preview">
             <img :src="cover" alt="封面预览" />
-            <el-button type="danger" size="small" icon="el-icon-delete" circle @click="removeCover"></el-button>
+            <el-button
+              type="danger"
+              size="small"
+              icon="el-icon-delete"
+              circle
+              @click="removeCover"
+            ></el-button>
           </div>
           <el-input
             type="textarea"
@@ -80,45 +96,47 @@ export default {
     },
     async handleImageChange(file) {
       if (!file) return;
-      
+
       // 上传图片
       const formData = new FormData();
-      formData.append('file', file.raw);
-      
+      formData.append("file", file.raw);
+
       try {
         const res = await uploadImage(formData);
         const imageUrl = res.data.data;
-        
+
         // 在光标位置插入图片HTML语法
         const imageHtml = `<img src="${imageUrl}" alt="image" style="width: 100%; object-fit: contain;">\n`;
-        const textarea = this.$refs.markdownEditor.$el.querySelector('textarea');
+        const textarea =
+          this.$refs.markdownEditor.$el.querySelector("textarea");
         const startPos = textarea.selectionStart;
         const endPos = textarea.selectionEnd;
-        
-        this.content = this.content.substring(0, startPos) + 
-                      imageHtml +
-                      this.content.substring(endPos);
-        
+
+        this.content =
+          this.content.substring(0, startPos) +
+          imageHtml +
+          this.content.substring(endPos);
+
         // 更新预览
         this.updatePreview();
-        
-        this.$message.success('图片上传成功');
+
+        this.$message.success("图片上传成功");
       } catch (error) {
-        this.$message.error('图片上传失败');
+        this.$message.error("图片上传失败");
       }
     },
     async handleCoverChange(file) {
       if (!file) return;
-      
+
       const formData = new FormData();
-      formData.append('file', file.raw);
-      
+      formData.append("file", file.raw);
+
       try {
         const res = await uploadImage(formData);
         this.cover = res.data.data;
-        this.$message.success('封面上传成功');
+        this.$message.success("封面上传成功");
       } catch (error) {
-        this.$message.error('封面上传失败');
+        this.$message.error("封面上传失败");
       }
     },
     removeCover() {
@@ -137,12 +155,12 @@ export default {
         ElMessage.error("please input content");
         return;
       }
-      
+
       // 如果没有设置封面,则获取第一张图片作为封面
       if (!this.cover) {
         this.cover = this.getFirstImageUrl();
       }
-      
+
       // 调用发布API
       publishArticle({
         title: this.title,
@@ -159,7 +177,7 @@ export default {
       if (!this.cover) {
         this.cover = this.getFirstImageUrl();
       }
-      
+
       // 调用保存草稿API
       publishArticle({
         title: this.title,

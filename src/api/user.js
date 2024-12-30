@@ -19,7 +19,6 @@ export function getCodeInfo(checkKey) {
 export function getUserInfoById(userId) {
   return request.get(`/user/${userId}`);
 }
-
 /**
  * 登录
  * @param data
@@ -27,4 +26,22 @@ export function getUserInfoById(userId) {
  */
 export function login(data) {
   return request.post(`/login`, data);
+}
+
+/**
+ * 注册
+ * @param data
+ * @returns {*}
+ */
+export function register(data) {
+  return request.post(`/register`, data);
+}
+
+/**
+ * 更新用户信息
+ * @param data
+ * @returns {*}
+ */
+export function updateUserInfo(data) {
+  return request.put(`/user`, data);
 }

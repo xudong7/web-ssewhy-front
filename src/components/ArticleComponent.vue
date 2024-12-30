@@ -2,14 +2,22 @@
   <div class="article-container">
     <div class="article-content">
       <div v-if="article.cover" class="cover-container">
-        <img :src="article.cover" alt="cover" class="article-cover" 
-          @click="showImagePreview(article.cover)" />
+        <img
+          :src="article.cover"
+          alt="cover"
+          class="article-cover"
+          @click="showImagePreview(article.cover)"
+        />
       </div>
       <h1 class="article-title">{{ article.title }}</h1>
       <div class="article-info">
         <span class="author">作者：{{ article.author }}</span>
-        <span class="create-time">创建时间：{{ processDate(article.createTime) }}</span>
-        <span class="update-time">更新时间：{{ processDate(article.updateTime) }}</span>
+        <span class="create-time"
+          >创建时间：{{ processDate(article.createTime) }}</span
+        >
+        <span class="update-time"
+          >更新时间：{{ processDate(article.updateTime) }}</span
+        >
       </div>
       <div class="article-body" v-html="processContent(article.content)"></div>
     </div>
@@ -34,7 +42,7 @@
 
 <script>
 import { getArticleById } from "@/api/article.js";
-import { marked } from 'marked';
+import { marked } from "marked";
 
 export default {
   name: "ArticleComponent",
@@ -57,7 +65,7 @@ export default {
     processDate(date) {
       return new Date(date).toLocaleString("zh-CN", {
         year: "numeric",
-        month: "2-digit", 
+        month: "2-digit",
         day: "2-digit",
         hour: "2-digit",
         minute: "2-digit",
@@ -73,7 +81,7 @@ export default {
       // 将图片标签替换为带有div包裹的形式,并添加点击事件
       return htmlContent.replace(
         /<img(.*?)src="(.*?)"(.*?)>/g,
-        '<div class="image-wrapper"><img$1src="$2"$3 onclick="window.previewImage(\'$2\')"></div>'
+        '<div class="image-wrapper"><img$1src="$2"$3 onclick="window.previewImage(\'$2\')"></div>',
       );
     },
     showImagePreview(url) {
@@ -85,10 +93,13 @@ export default {
     },
     // 为标题添加id
     addHeadingIds(content) {
-      return content.replace(/<h([1-6])(.*?)>(.*?)<\/h\1>/g, (match, level, attrs, text) => {
-        const id = text.toLowerCase().replace(/\s+/g, '-');
-        return `<h${level}${attrs} id="${id}">${text}</h${level}>`;
-      });
+      return content.replace(
+        /<h([1-6])(.*?)>(.*?)<\/h\1>/g,
+        (match, level, attrs, text) => {
+          const id = text.toLowerCase().replace(/\s+/g, "-");
+          return `<h${level}${attrs} id="${id}">${text}</h${level}>`;
+        },
+      );
     },
     // 生成目录
     generateToc(content) {
@@ -97,30 +108,30 @@ export default {
       const htmlContent = marked(content);
       const headings = htmlContent.match(/<h([1-6])(.*?)>(.*?)<\/h\1>/g) || [];
       let toc = "";
-      
-      headings.forEach(heading => {
+
+      headings.forEach((heading) => {
         const level = heading.match(/<h([1-6])/)[1];
-        const text = heading.replace(/<[^>]+>/g, '');
-        const id = text.toLowerCase().replace(/\s+/g, '-');
+        const text = heading.replace(/<[^>]+>/g, "");
+        const id = text.toLowerCase().replace(/\s+/g, "-");
         const indent = (level - 1) * 20;
-        
-        toc += `<div class="toc-item ${this.activeHeading === id ? 'active' : ''}" style="padding-left: ${indent}px">
+
+        toc += `<div class="toc-item ${this.activeHeading === id ? "active" : ""}" style="padding-left: ${indent}px">
           <a href="#${id}" @click="scrollToHeading('${id}')">
             <span class="toc-dot"></span>
             ${text}
           </a>
         </div>`;
       });
-      
+
       return toc;
     },
     scrollToHeading(id) {
       const element = document.getElementById(id);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        element.scrollIntoView({ behavior: "smooth" });
         this.activeHeading = id;
       }
-    }
+    },
   },
   mounted() {
     this.getArticle();
@@ -132,7 +143,7 @@ export default {
   beforeUnmount() {
     // 清理全局方法
     window.previewImage = null;
-  }
+  },
 };
 </script>
 

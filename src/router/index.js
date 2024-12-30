@@ -55,6 +55,11 @@ const router = new createRouter({
       component: () => import("../views/login/index.vue"),
     },
     {
+      path: "/register",
+      name: "Register",
+      component: () => import("../views/register/index.vue"),
+    },
+    {
       path: "/dashboard",
       name: "Dashboard",
       component: () => import("../views/dashboard/index.vue"),

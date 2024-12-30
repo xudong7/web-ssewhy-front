@@ -1,18 +1,27 @@
 // src/store/modules/user.js
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { getUserInfoById } from "@/api/user";
 
-export const useUserStore = defineStore("user", 
+export const useUserStore = defineStore(
+  "user",
   () => {
-    const userInfo = ref({});
+    const userId = ref(0);
     const role = ref("");
     const token = ref("");
-    
+    const userInfo = ref({});
     /**
      * 登录
      */
-    function handleLogin(_token) {
-      token.value = _token;
+    async function handleLogin(data) {
+      token.value = data.token;
+      userId.value = data.userId;
+      try {
+        const res = await getUserInfoById(data.userId);
+        userInfo.value = res.data.data;
+      } catch (error) {
+        console.error("获取用户信息失败:", error);
+      }
     }
 
     /**
@@ -20,19 +29,32 @@ export const useUserStore = defineStore("user",
      */
     function handleLogout() {
       token.value = "";
+      userId.value = 0;
       userInfo.value = {};
       role.value = "";
     }
 
+    /**
+     * 更新用户信息
+     */
+    function updateUserInfo(data) {
+      userInfo.value.username = data.username;
+      userInfo.value.avatar = data.avatar;
+      userInfo.value.cover = data.cover;
+    }
+
     return {
-      userInfo,
+      userId,
       role,
       token,
+      userInfo,
       handleLogin,
       handleLogout,
+      updateUserInfo,
     };
   },
   {
-    persist: true // 开启持久化
-  }
+    // npm i pinia-plugin-persistedstate
+    persist: true, // 开启持久化
+  },
 );

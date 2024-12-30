@@ -34,10 +34,11 @@
       <span>私信</span>
       <span @click="goWrite">创作</span>
       <span>草稿箱</span>
+      <span @click="goLogin">登出</span>
       <el-avatar
         @click="goHome"
         :size="36"
-        src="https://picx.zhimg.com/v2-c1785039cba7dea512f25cc7d0481328_xll.jpg?source=32738c0c&needBackground=1"
+        :src="userStore.userInfo.avatar"
       ></el-avatar>
     </div>
   </header>
@@ -47,11 +48,13 @@
 </template>
 
 <script>
+import { useUserStore } from "@/store/modules/user";
 export default {
   name: "HeaderLayout",
   data() {
     return {
       activeMenu: this.getActiveMenu(),
+      userStore: useUserStore(),
     };
   },
   methods: {
@@ -76,6 +79,9 @@ export default {
     getActiveMenu() {
       const path = this.$route.path;
       return path.split("/").pop();
+    },
+    goLogin() {
+      this.$router.push("/login");
     },
   },
   watch: {
