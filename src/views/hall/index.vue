@@ -20,16 +20,16 @@
           <!-- 文章底部 -->
           <div class="topic-footer">
             <span class="action-item" @click="goDetail(topic.id)"
-              ><i class="el-icon-view"></i> {{ topic.views }} 阅读</span
+              ><el-icon><View /></el-icon> {{ topic.views }} 阅读</span
             >
             <span class="action-item" @click="likeArticle(topic.id)"
-              ><i class="el-icon-heart"></i> {{ topic.likes }} 喜欢</span
+              ><el-icon><Star /></el-icon> {{ topic.likes }} 喜欢</span
             >
             <span class="action-item" @click="markArticle(topic.id)"
-              ><i class="el-icon-star-off"></i> {{ topic.marks }} 收藏</span
+              ><el-icon><Collection /></el-icon> {{ topic.marks }} 收藏</span
             >
             <span class="action-item" @click="goDetail(topic.id)"
-              ><i class="el-icon-chat-dot-round"></i>
+              ><el-icon><ChatDotRound /></el-icon>
               {{ topic.comments }} 评论</span
             >
           </div>
@@ -45,8 +45,15 @@
 
 <script>
 import { getArticleList } from "@/api/article.js";
+import { View, Star, Collection, ChatDotRound } from "@element-plus/icons-vue";
 
 export default {
+  components: {
+    View,
+    Star,
+    Collection,
+    ChatDotRound,
+  },
   data() {
     return {
       topics: [],

@@ -102,11 +102,13 @@ import { useUserStore } from "@/store/modules/user";
 import { Plus } from "@element-plus/icons-vue";
 import { uploadImage } from "@/api/article";
 import { updateUserInfo } from "@/api/user";
+import UserArticles from "@/components/UserArticles.vue";
 
 export default {
   name: "Home",
   components: {
     Plus,
+    UserArticles,
   },
   data() {
     return {
