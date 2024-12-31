@@ -79,6 +79,7 @@
 <script>
 import { marked } from "marked";
 import { publishArticle, uploadImage } from "@/api/article";
+import { useUserStore } from "@/store/modules/user";
 
 export default {
   name: "Write",
@@ -88,6 +89,7 @@ export default {
       content: "",
       previewContent: "",
       cover: "",
+      userStore: useUserStore(),
     };
   },
   methods: {
@@ -166,6 +168,7 @@ export default {
         title: this.title,
         content: this.content,
         cover: this.cover,
+        userId: this.userStore.userId,
         status: 1, // 1表示已发布
       }).then((res) => {
         ElMessage.success("publish success");
@@ -183,6 +186,7 @@ export default {
         title: this.title,
         content: this.content,
         cover: this.cover,
+        userId: this.userStore.userId,
         status: 0, // 0表示草稿
       }).then((res) => {
         ElMessage.success("save draft success");

@@ -1,0 +1,71 @@
+/* Element Plus 样式覆盖 */
+:root {
+  --el-color-primary: var(--primary-color);
+  --el-color-primary-light-3: var(--primary-hover);
+  --el-color-primary-light-7: var(--primary-light);
+  --el-border-radius-base: var(--radius-md);
+  --el-box-shadow-light: var(--shadow-sm);
+}
+
+/* 按钮样式 */
+.el-button {
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.el-button--primary {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.el-button--primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* 输入框样式 */
+.el-input__inner {
+  border-radius: var(--radius-md);
+  border-color: var(--border-color);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.el-input__inner:hover,
+.el-input__inner:focus {
+  border-color: var(--primary-color);
+}
+
+/* 卡片样式 */
+.el-card {
+  border-radius: var(--radius-lg);
+  border: none;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.el-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* 对话框样式 */
+.el-dialog {
+  border-radius: var(--radius-lg);
+}
+
+.el-dialog__header {
+  padding: var(--spacing-lg);
+  margin: 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.el-dialog__body {
+  padding: var(--spacing-lg);
+}
+
+.el-dialog__footer {
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--border-light);
+} 

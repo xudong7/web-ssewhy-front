@@ -11,7 +11,7 @@
       </div>
       <h1 class="article-title">{{ article.title }}</h1>
       <div class="article-info">
-        <span class="author">作者：{{ article.author }}</span>
+        <span class="author">作者：{{ author.username }}</span>
         <span class="create-time"
           >创建时间：{{ processDate(article.createTime) }}</span
         >
@@ -42,6 +42,7 @@
 
 <script>
 import { getArticleById } from "@/api/article.js";
+import { getUserInfoById } from "@/api/user.js";
 import { marked } from "marked";
 
 export default {
@@ -52,15 +53,25 @@ export default {
       showViewer: false,
       previewUrl: "",
       activeHeading: "",
+      author: {},
     };
   },
   methods: {
     async getArticle() {
-      const articleId = this.$route.params.articleId;
-      const res = await getArticleById(articleId);
-      // 筛选status为1的文章
-      this.article = res.data.data;
-      this.article = this.article.filter((item) => item.status === 1);
+      try {
+        const articleId = this.$route.params.articleId;
+        const res = await getArticleById(articleId);
+        // 筛选status为1的文章
+        this.article = res.data.data;
+        
+        // 获取作者信息
+        if(this.article.userId) {
+          const userRes = await getUserInfoById(this.article.userId);
+          this.author = userRes.data.data;
+        }
+      } catch (error) {
+        console.error('获取文章失败:', error);
+      }
     },
     processDate(date) {
       return new Date(date).toLocaleString("zh-CN", {
