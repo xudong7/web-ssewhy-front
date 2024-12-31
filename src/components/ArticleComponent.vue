@@ -48,7 +48,7 @@
 
 <script>
 import { getArticleById } from "@/api/article.js";
-import { getUserInfoById, markArticle } from "@/api/user.js";
+import { getUserInfoById } from "@/api/user.js";
 import { marked } from "marked";
 
 export default {

@@ -217,6 +217,7 @@ body {
 
 .topic-content {
   flex: 1;
+  overflow: hidden; /* 添加overflow处理 */
 }
 
 .topic-title {
@@ -224,6 +225,9 @@ body {
   font-size: 20px;
   color: #121212;
   line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .topic-description {
@@ -233,9 +237,13 @@ body {
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
   white-space: pre-line;
+  max-height: 4.8em; /* 3行文字的高度 */
 }
 
 .topic-footer {
