@@ -8,13 +8,10 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AdComponent: typeof import('./../components/AdComponent.vue')['default']
-    Article: typeof import('./../components/article.vue')['default']
     ArticleComponent: typeof import('./../components/ArticleComponent.vue')['default']
     CommentComponent: typeof import('./../components/CommentComponent.vue')['default']
-    DraftComponent: typeof import('./../components/DraftComponent.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
-    ElAvatarGroup: typeof import('element-plus/es')['ElAvatarGroup']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
@@ -38,6 +35,5 @@ declare module 'vue' {
     ElUpload: typeof import('element-plus/es')['ElUpload']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    WriteComponet: typeof import('./../components/WriteComponet.vue')['default']
   }
 }

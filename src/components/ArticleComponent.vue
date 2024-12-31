@@ -29,6 +29,12 @@
       @close="closeViewer"
     />
 
+    <!-- 赞同按钮和收藏按钮 -->
+    <div class="button-container">
+      <el-button type="primary" @click="handleLike">赞同</el-button>
+      <el-button type="primary" @click="handleMark">收藏</el-button>
+    </div>
+
     <!-- 右侧目录栏 -->
     <div class="toc-container">
       <div class="toc-title">
@@ -42,7 +48,7 @@
 
 <script>
 import { getArticleById } from "@/api/article.js";
-import { getUserInfoById } from "@/api/user.js";
+import { getUserInfoById, markArticle } from "@/api/user.js";
 import { marked } from "marked";
 
 export default {
@@ -63,14 +69,14 @@ export default {
         const res = await getArticleById(articleId);
         // 筛选status为1的文章
         this.article = res.data.data;
-        
+
         // 获取作者信息
-        if(this.article.userId) {
+        if (this.article.userId) {
           const userRes = await getUserInfoById(this.article.userId);
           this.author = userRes.data.data;
         }
       } catch (error) {
-        console.error('获取文章失败:', error);
+        console.error("获取文章失败:", error);
       }
     },
     processDate(date) {

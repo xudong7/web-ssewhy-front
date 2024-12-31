@@ -4,13 +4,9 @@
     <!-- Main Content -->
     <el-main class="main-content">
       <div class="left-column">
-        <div
-          class="topic"
-          v-for="topic in topics"
-          :key="topic.id"
-          @click="goDetail(topic.id)"
-        >
-          <div class="topic-header">
+        <div class="topic" v-for="topic in topics" :key="topic.id">
+          <!-- 文章卡片 -->
+          <div class="topic-header" @click="goDetail(topic.id)">
             <div v-if="topic.cover" class="topic-cover">
               <img :src="topic.cover" alt="封面" class="topic-cover-img" />
             </div>
@@ -21,19 +17,21 @@
               </p>
             </div>
           </div>
+          <!-- 文章底部 -->
           <div class="topic-footer">
-            <span class="action-item"
-              ><i class="el-icon-thumb"></i> {{ topic.likes }} 赞同</span
+            <span class="action-item" @click="goDetail(topic.id)"
+              ><i class="el-icon-view"></i> {{ topic.views }} 阅读</span
             >
-            <span class="action-item"
+            <span class="action-item" @click="likeArticle(topic.id)"
+              ><i class="el-icon-heart"></i> {{ topic.likes }} 喜欢</span
+            >
+            <span class="action-item" @click="markArticle(topic.id)"
+              ><i class="el-icon-star-off"></i> {{ topic.marks }} 收藏</span
+            >
+            <span class="action-item" @click="goDetail(topic.id)"
               ><i class="el-icon-chat-dot-round"></i>
               {{ topic.comments }} 评论</span
             >
-            <span class="action-item"><i class="el-icon-share"></i> 分享</span>
-            <span class="action-item"
-              ><i class="el-icon-star-off"></i> 收藏</span
-            >
-            <span class="action-item"><i class="el-icon-heart"></i> 喜欢</span>
           </div>
         </div>
       </div>
