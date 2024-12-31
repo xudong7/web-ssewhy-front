@@ -20,6 +20,13 @@ export function getUserInfoById(userId) {
   return request.get(`/user/${userId}`);
 }
 /**
+ * 获取全部用户
+ */
+export function getAllUsers() {
+  return request.get(`/user`);
+}
+
+/**
  * 登录
  * @param data
  * @returns {*}

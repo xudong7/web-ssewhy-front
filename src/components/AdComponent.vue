@@ -21,37 +21,22 @@
 </template>
 
 <script>
+import { getAllUsers } from "@/api/user.js";
 export default {
   name: "AdComponent",
   data() {
     return {
-      recommendedUsers: [
-        {
-          id: 1,
-          avatar: "https://via.placeholder.com/40",
-          username: "徐斌",
-          description: "你关注的「寻尘客」也关注...",
-        },
-        {
-          id: 2,
-          avatar: "https://via.placeholder.com/40",
-          username: "贾明子",
-          description: "你关注的「自然科学」领域答主",
-        },
-        {
-          id: 3,
-          avatar: "https://via.placeholder.com/40",
-          username: "rq cen",
-          description: "你关注的「教育」领域答主",
-        },
-        {
-          id: 4,
-          avatar: "https://via.placeholder.com/40",
-          username: "Azul",
-          description: "",
-        },
-      ],
+      recommendedUsers: [],
     };
+  },
+  methods: {
+    async getRecommendedUsers() {
+      const res = await getAllUsers();
+      this.recommendedUsers = res.data.data;
+    },
+  },
+  mounted() {
+    this.getRecommendedUsers();
   },
 };
 </script>
