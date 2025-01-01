@@ -1,45 +1,52 @@
 <template>
   <header class="header">
-    <div class="header-left">
-      <div class="logo">
-        <span @click="goHall"> sse-why </span>
-      </div>
-      <el-menu
-        :default-active="activeMenu"
-        mode="horizontal"
-        class="menu"
-        @select="handleSelect"
-      >
-        <el-menu-item index="hall" @click="goHall">主页</el-menu-item>
-        <el-menu-item index="download" @click="goDownload">下载</el-menu-item>
-        <el-menu-item index="knowledge" @click="goKnowledge">知识</el-menu-item>
-        <el-menu-item index="pins" @click="goPins">想法</el-menu-item>
-      </el-menu>
-    </div>
-    <div class="header-search">
-      <div class="search-bar">
-        <el-input
-          placeholder="搜索你感兴趣的内容..."
-          prefix-icon="el-icon-search"
-          class="search-input"
+    <div class="header-container">
+      <div class="header-left">
+        <div class="logo">
+          <span @click="goHall"> sse-why </span>
+        </div>
+        <el-menu
+          :default-active="activeMenu"
+          mode="horizontal"
+          class="menu"
+          @select="handleSelect"
         >
-          <template #append>
-            <el-button type="primary" class="search-button"> 搜索 </el-button>
-          </template>
-        </el-input>
+          <el-menu-item index="hall" @click="goHall">主页</el-menu-item>
+          <el-menu-item index="download" @click="goDownload">下载</el-menu-item>
+          <el-menu-item index="knowledge" @click="goKnowledge">知识</el-menu-item>
+          <el-menu-item index="pins" @click="goPins">想法</el-menu-item>
+        </el-menu>
       </div>
-    </div>
-    <div class="user-actions">
-      <span>消息</span>
-      <span>私信</span>
-      <span @click="goWrite">创作</span>
-      <span>草稿箱</span>
-      <span @click="goLogin">登出</span>
-      <el-avatar
-        @click="goHome"
-        :size="36"
-        :src="userStore.userInfo.avatar"
-      ></el-avatar>
+      <div class="header-search">
+        <div class="search-bar">
+          <el-input
+            v-model="searchText"
+            placeholder="搜索你感兴趣的内容..."
+            class="search-input"
+            @focus="handleFocus"
+            @blur="handleBlur"
+          >
+            <template #prefix>
+              <el-icon class="search-icon"><Search /></el-icon>
+            </template>
+          </el-input>
+        </div>
+        <div >
+          <el-button type="primary" class="search-button" @click="handleSearch">搜索</el-button>
+        </div>
+      </div>
+      <div class="user-actions">
+        <span>消息</span>
+        <span>私信</span>
+        <span @click="goWrite">创作</span>
+        <span>草稿箱</span>
+        <span @click="goLogin">登出</span>
+        <el-avatar
+          @click="goHome"
+          :size="36"
+          :src="userStore.userInfo.avatar"
+        ></el-avatar>
+      </div>
     </div>
   </header>
   <el-main class="main-content">
@@ -49,15 +56,32 @@
 
 <script>
 import { useUserStore } from "@/store/modules/user";
+import { Search } from '@element-plus/icons-vue';
+
 export default {
   name: "HeaderLayout",
+  components: {
+    Search
+  },
   data() {
     return {
       activeMenu: this.getActiveMenu(),
       userStore: useUserStore(),
+      searchText: '',
+      isFocused: false
     };
   },
   methods: {
+    handleFocus() {
+      this.isFocused = true;
+    },
+    handleBlur() {
+      this.isFocused = false;
+    },
+    handleSearch() {
+      // 处理搜索逻辑
+      console.log('搜索:', this.searchText);
+    },
     goHome() {
       this.$router.push("/home");
     },
@@ -98,8 +122,8 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 40px;
-  height: 52px;
+  padding: 0;
+  height: 6%;
   background-color: #ffffff;
   box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
   position: fixed;
@@ -107,19 +131,31 @@ export default {
   left: 0;
   right: 0;
   z-index: 100;
+  white-space: nowrap;
+}
+
+.header-container {
+  width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  flex: 0 0 30%;
+  min-width: 400px;
 }
 
 .header-search {
+  flex: 1;
   display: flex;
-  align-items: center;
-  gap: 20px;
-  flex: 0 0 20%;
+  justify-content: center;
+  max-width: 800px;
+  min-width: 500px;
+  padding: 0 20px;
 }
 
 .logo {
@@ -135,63 +171,76 @@ export default {
   flex-grow: 1;
   display: flex;
   justify-content: flex-start;
+  margin-bottom: 0;
+  align-items: center;
 }
 
 .search-bar {
-  width: 400px;
-  flex-shrink: 0;
-  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-bar :deep(.el-input__wrapper) {
+  background-color: #f6f6f6;
+  border-radius: 999px;
+  padding: 0 12px;
+  transition: all 0.2s;
+}
+
+.search-bar :deep(.el-input__wrapper.is-focus) {
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(5, 109, 232, 0.1);
 }
 
 .search-bar :deep(.el-input__inner) {
-  font-size: 14px;
-  background: #f6f6f6;
-  border: 2px solid transparent;
-  padding-left: 20px;
-  transition: all 0.3s ease;
-}
-
-.search-bar :deep(.el-input__inner):hover,
-.search-bar :deep(.el-input__inner):focus {
-  background: #ffffff;
-  border-color: #056de8;
-  box-shadow: 0 0 8px rgba(5, 109, 232, 0.2);
-}
-
-.search-bar :deep(.el-input-group__append) {
-  background-color: #056de8;
-  border: none;
-  padding: 0 20px;
-  transition: all 0.3s ease;
-}
-
-.search-bar :deep(.el-input-group__append button) {
-  background: transparent;
-  border: none;
+  height: 36px;
   font-size: 16px;
-  padding: 8px 15px;
-  color: #fff;
+  color: #121212;
 }
 
-.search-bar :deep(.el-input-group__append):hover {
-  background-color: #0461cf;
+.search-bar :deep(.el-input__inner)::placeholder {
+  color: #8590a6;
+}
+
+.search-icon {
+  font-size: 18px;
+  color: #8590a6;
+  margin-right: 8px;
 }
 
 .search-button {
-  border-top-right-radius: 999px;
-  border-bottom-right-radius: 999px;
+  background-color: #3b82f6; 
+  border: none;
+  border-radius: 999px;
+  transition: all 0.2s;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  padding: 0 16px;
+  height: 36px;
+  margin-left: 16px;
+}
+
+.search-button:hover {
+  background-color: #056de8;
+  color: #fff;
 }
 
 .user-actions {
   display: flex;
   align-items: center;
-  font-size: 14px;
+  min-width: 400px;
+  justify-content: flex-end;
 }
 
 .user-actions span {
   margin-right: 15px;
   cursor: pointer;
   transition: color 0.3s;
+  color: #8590a6;
+  font-size: 14px;
 }
 
 .user-actions span:hover {
@@ -214,5 +263,51 @@ export default {
   min-height: calc(100vh - 52px);
   background-color: #f6f6f6;
   padding: 0;
+}
+
+/* 响应式处理 */
+@media screen and (max-width: 1400px) {
+  .header-container {
+    width: 1100px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .header-container {
+    width: 100%;
+    max-width: 1000px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .header-left {
+    min-width: 300px;
+  }
+  
+  .header-search {
+    min-width: 300px;
+  }
+  
+  .user-actions {
+    min-width: 300px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .header-container {
+    padding: 0 10px;
+  }
+  
+  .header-left {
+    min-width: auto;
+  }
+  
+  .header-search {
+    min-width: auto;
+  }
+  
+  .user-actions {
+    min-width: auto;
+  }
 }
 </style>

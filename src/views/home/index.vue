@@ -222,53 +222,56 @@ export default {
 
 <style scoped>
 .home-container {
-  width: 65%;
-  background: #f6f6f6;
+  width: 1200px;
   min-height: 100vh;
   margin: 0 auto;
+  background: #f6f6f6;
 }
 
 .cover-section {
   position: relative;
   background: #fff;
-  border-bottom: 1px solid #f0f0f0;
+  border-radius: 2px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
 }
 
 .cover-image {
+  width: 100%;
   height: 320px;
   background: #e5e5e5;
   overflow: hidden;
   position: relative;
+  border-radius: 2px 2px 0 0;
 }
 
 .cover-image-ratio {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .user-info {
+  width: 100%;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 20px 40px 20px;
   display: flex;
   align-items: flex-start;
   position: relative;
   top: -48px;
+  box-sizing: border-box;
 }
 
 .avatar {
-  width: 180px;
-  height: 180px;
+  width: 240px;
+  height: 240px;
   border-radius: 4px;
   border: 4px solid #fff;
   overflow: hidden;
   background: #fff;
   flex-shrink: 0;
   margin-right: 32px;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
 }
 
 .avatar img {
@@ -278,6 +281,8 @@ export default {
 }
 
 .user-info-content {
+  flex: 1;
+  min-width: 0;
   padding-top: 48px;
 }
 
@@ -315,15 +320,19 @@ export default {
 }
 
 .main-content {
-  margin: 10px auto;
-  background: #fff;
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  width: 100%;
+  margin: 0 auto;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .nav-tabs {
+  background: #fff;
   padding: 0 20px;
+  border-radius: 2px;
   border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
 }
 
 .nav-tabs span {
@@ -346,8 +355,11 @@ export default {
 }
 
 .content-list {
-  min-height: 200px;
-  padding: 0 20px;
+  background: #fff;
+  min-height: 400px;
+  padding: 0;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
 }
 
 /* 添加上传组件的样式 */

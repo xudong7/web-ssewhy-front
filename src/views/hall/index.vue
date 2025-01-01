@@ -1,282 +1,278 @@
 <template>
-  <el-container class="homepage">
-    <el-aside></el-aside>
-    <!-- Main Content -->
-    <el-main class="main-content">
-      <div class="left-column">
-        <div class="topic" v-for="topic in topics" :key="topic.id">
-          <!-- 文章卡片 -->
-          <div class="topic-header" @click="goDetail(topic.id)">
-            <div v-if="topic.cover" class="topic-cover">
-              <img :src="topic.cover" alt="封面" class="topic-cover-img" />
+  <div class="hall-page">
+    <div class="hall-container">
+      <!-- 左侧空白区域 -->
+      <div class="left-aside"></div>
+
+      <!-- 主内容区 -->
+      <div class="main-content">
+        <div class="article-list">
+          <div class="article-item" v-for="article in articles" :key="article.id">
+            <div class="article-header" @click="goDetail(article.id)">
+              <div v-if="article.cover" class="article-cover">
+                <img :src="article.cover" alt="封面" class="article-cover-img" />
+              </div>
+              <div class="article-main">
+                <h2 class="article-title">{{ article.title }}</h2>
+                <p class="article-description">
+                  {{ formatContent(article.content) }}
+                </p>
+              </div>
             </div>
-            <div class="topic-content">
-              <h2 class="topic-title">{{ topic.title }}</h2>
-              <p class="topic-description">
-                {{ formatContent(topic.content) }}
-              </p>
+            <div class="article-footer">
+              <span class="action-item">
+                <el-icon><View /></el-icon>
+                {{ article.views || 0 }} 阅读
+              </span>
+              <span class="action-item">
+                <el-icon><Star /></el-icon>
+                {{ article.likes || 0 }} 喜欢
+              </span>
+              <span class="action-item">
+                <el-icon><Collection /></el-icon>
+                {{ article.marks || 0 }} 收藏
+              </span>
+              <span class="action-item">
+                <el-icon><ChatDotRound /></el-icon>
+                {{ article.comments || 0 }} 评论
+              </span>
             </div>
-          </div>
-          <!-- 文章底部 -->
-          <div class="topic-footer">
-            <span class="action-item" @click="goDetail(topic.id)"
-              ><el-icon><View /></el-icon> {{ topic.views }} 阅读</span
-            >
-            <span class="action-item" @click="likeArticle(topic.id)"
-              ><el-icon><Star /></el-icon> {{ topic.likes }} 喜欢</span
-            >
-            <span class="action-item" @click="markArticle(topic.id)"
-              ><el-icon><Collection /></el-icon> {{ topic.marks }} 收藏</span
-            >
-            <span class="action-item" @click="goDetail(topic.id)"
-              ><el-icon><ChatDotRound /></el-icon>
-              {{ topic.comments }} 评论</span
-            >
           </div>
         </div>
       </div>
-    </el-main>
-    <!-- Right Column -->
-    <el-aside class="right-aside">
-      <AdComponent />
-    </el-aside>
-  </el-container>
+
+      <!-- 右侧广告区域 -->
+      <div class="right-aside">
+        <AdComponent />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { getArticleList } from "@/api/article.js";
-import { View, Star, Collection, ChatDotRound } from "@element-plus/icons-vue";
+import { getArticleList } from "@/api/article";
+import { View, Star, Collection, ChatDotRound } from '@element-plus/icons-vue';
+import AdComponent from '@/components/AdComponent.vue';
 
 export default {
+  name: "Hall",
   components: {
     View,
     Star,
     Collection,
     ChatDotRound,
+    AdComponent
   },
   data() {
     return {
-      topics: [],
+      articles: [],
+      loading: false
     };
   },
   methods: {
-    async getArticleList() {
-      const res = await getArticleList();
-      // 筛选status为1的文章
-      this.topics = res.data.data;
-      this.topics = this.topics.filter((item) => item.status === 1);
-    },
-    goDetail(topicId) {
-      this.$router.push({
-        path: `/detail/${topicId}`,
-      });
+    async getArticles() {
+      this.loading = true;
+      try {
+        const res = await getArticleList();
+        if (res.data.code === 1) {
+          this.articles = res.data.data.filter(item => item.status === 1);
+        }
+      } catch (error) {
+        console.error('获取文章列表失败:', error);
+        ElMessage.error('获取文章列表失败');
+      } finally {
+        this.loading = false;
+      }
     },
     formatContent(content) {
-      if (!content) return "";
-      // 每30个字符添加一个换行符
-      const maxLength = 250;
-      const chunkSize = 60;
-      if (content.length > maxLength) {
-        content = content.substring(0, maxLength) + "...";
-      }
-      return content.match(new RegExp(`.{1,${chunkSize}}`, "g")).join("\n");
+      if (!content) return '';
+      const maxLength = 200;
+      const plainText = content.replace(/<[^>]+>/g, '');
+      return plainText.length > maxLength 
+        ? plainText.slice(0, maxLength) + '...' 
+        : plainText;
     },
+    goDetail(articleId) {
+      this.$router.push(`/detail/${articleId}`);
+    }
   },
   mounted() {
-    this.getArticleList();
-  },
+    this.getArticles();
+  }
 };
 </script>
 
 <style scoped>
-/* General Styles */
-.homepage {
-  font-family: Arial, sans-serif;
-  width: 80%;
+.hall-page {
+  min-height: calc(100vh - 52px);
+  background-color: #f6f6f6;
+  padding-top: 20px;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  justify-content: center;
-}
-
-.nav span {
-  margin-right: 20px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #555;
-}
-
-.search-bar input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.search-bar button {
-  padding: 8px 12px;
-  margin-left: 5px;
-  background-color: #007aff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-}
-
-.user-actions {
-  display: flex;
-  align-items: center;
-}
-
-.user-actions img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  margin-left: 15px;
-}
-
-/* Main Layout */
-.main-content {
-  display: flex;
-  padding: 20px;
-  background-color: #f9f9f9;
-  justify-content: center;
-  align-items: stretch;
-  width: 80%;
+.hall-container {
+  width: 1400px;
   margin: 0 auto;
-}
-
-.left-column {
-  flex: 3;
-  margin-right: 20px;
-  align-items: center;
-}
-
-.right-aside {
-  position: fixed;
-  right: 12%;
-  top: 6%;
-  width: 300px !important;
-  height: 100vh;
-  overflow-y: auto;
-}
-
-.right-column {
-  flex: 1;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
-  padding: 16px;
-}
-
-.topic {
-  margin-bottom: 20px;
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-left: 10%;
-  margin-top: 1%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  width: 75%;
-  box-sizing: border-box;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
-}
-
-.topic:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.topic-header {
   display: flex;
   gap: 20px;
-  margin-bottom: 15px;
+  position: relative;
 }
 
-.topic-cover {
-  width: 320px;
-  height: 200px;
-  overflow: hidden;
-  border-radius: 8px;
+/* 左侧区域 */
+.left-aside {
+  width: 150px;
   flex-shrink: 0;
 }
 
-.topic-cover img {
+/* 主内容区 */
+.main-content {
+  flex: 1;
+  min-width: 0; /* 防止内容溢出 */
+  margin: 0 20px; /* 增加两侧间距 */
+}
+
+.article-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.article-item {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  overflow: hidden;
+}
+
+.article-header {
+  display: flex;
+  padding: 20px;
+  cursor: pointer;
+  gap: 20px;
+}
+
+.article-cover {
+  width: 240px; /* 增加封面图片宽度 */
+  height: 160px; /* 等比例增加高度 */
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.article-cover-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.topic-cover img:hover {
+.article-cover-img:hover {
   transform: scale(1.05);
 }
 
-.topic-cover-img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.topic-content {
+.article-main {
   flex: 1;
-  overflow: hidden; /* 添加overflow处理 */
+  min-width: 0; /* 防止内容溢出 */
 }
 
-.topic-title {
-  margin: 0 0 10px 0;
-  font-size: 20px;
+.article-title {
+  font-size: 18px;
+  font-weight: 600;
   color: #121212;
-  line-height: 1.4;
+  margin-bottom: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.topic-description {
+.article-description {
   font-size: 15px;
   color: #646464;
   line-height: 1.6;
-  margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 3;
-  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  white-space: pre-line;
-  max-height: 4.8em; /* 3行文字的高度 */
+  max-height: 4.8em;
 }
 
-.topic-footer {
-  margin-top: 15px;
-  padding-top: 15px;
+.article-footer {
+  padding: 12px 20px;
   border-top: 1px solid #f0f0f0;
   display: flex;
   align-items: center;
+  gap: 24px;
 }
 
 .action-item {
   display: flex;
   align-items: center;
-  margin-right: 20px;
+  gap: 6px;
   color: #8590a6;
   font-size: 14px;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
 }
 
 .action-item:hover {
   color: #056de8;
 }
 
-.action-item i {
-  margin-right: 4px;
-  font-size: 16px;
+/* 右侧区域 */
+.right-aside {
+  width: 260px;
+  flex-shrink: 0;
+}
+
+/* 响应式处理 */
+@media screen and (max-width: 1400px) {
+  .hall-container {
+    width: 1100px; /* 增加容器宽度 */
+  }
+  
+  .main-content {
+    margin: 0 30px; /* 稍微减小间距 */
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .hall-container {
+    width: 100%;
+    max-width: 1000px; /* 增加最大宽度 */
+    padding: 0 20px;
+  }
+  
+  .main-content {
+    margin: 0 20px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .left-aside {
+    display: none;
+  }
+  
+  .right-aside {
+    display: none;
+  }
+  
+  .main-content {
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .article-header {
+    flex-direction: column;
+  }
+  
+  .article-cover {
+    width: 100%;
+    height: 200px;
+  }
+  
+  .article-footer {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
 }
 </style>

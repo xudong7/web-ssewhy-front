@@ -149,7 +149,7 @@ export default {
 
 <style scoped>
 .user-articles {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: var(--spacing-lg);
 }
