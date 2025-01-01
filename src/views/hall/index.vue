@@ -7,10 +7,18 @@
       <!-- 主内容区 -->
       <div class="main-content">
         <div class="article-list">
-          <div class="article-item" v-for="article in articles" :key="article.id">
+          <div
+            class="article-item"
+            v-for="article in articles"
+            :key="article.id"
+          >
             <div class="article-header" @click="goDetail(article.id)">
               <div v-if="article.cover" class="article-cover">
-                <img :src="article.cover" alt="封面" class="article-cover-img" />
+                <img
+                  :src="article.cover"
+                  alt="封面"
+                  class="article-cover-img"
+                />
               </div>
               <div class="article-main">
                 <h2 class="article-title">{{ article.title }}</h2>
@@ -51,8 +59,8 @@
 
 <script>
 import { getArticleList } from "@/api/article";
-import { View, Star, Collection, ChatDotRound } from '@element-plus/icons-vue';
-import AdComponent from '@/components/AdComponent.vue';
+import { View, Star, Collection, ChatDotRound } from "@element-plus/icons-vue";
+import AdComponent from "@/components/AdComponent.vue";
 
 export default {
   name: "Hall",
@@ -61,12 +69,12 @@ export default {
     Star,
     Collection,
     ChatDotRound,
-    AdComponent
+    AdComponent,
   },
   data() {
     return {
       articles: [],
-      loading: false
+      loading: false,
     };
   },
   methods: {
@@ -75,30 +83,30 @@ export default {
       try {
         const res = await getArticleList();
         if (res.data.code === 1) {
-          this.articles = res.data.data.filter(item => item.status === 1);
+          this.articles = res.data.data.filter((item) => item.status === 1);
         }
       } catch (error) {
-        console.error('获取文章列表失败:', error);
-        ElMessage.error('获取文章列表失败');
+        console.error("获取文章列表失败:", error);
+        ElMessage.error("获取文章列表失败");
       } finally {
         this.loading = false;
       }
     },
     formatContent(content) {
-      if (!content) return '';
+      if (!content) return "";
       const maxLength = 200;
-      const plainText = content.replace(/<[^>]+>/g, '');
-      return plainText.length > maxLength 
-        ? plainText.slice(0, maxLength) + '...' 
+      const plainText = content.replace(/<[^>]+>/g, "");
+      return plainText.length > maxLength
+        ? plainText.slice(0, maxLength) + "..."
         : plainText;
     },
     goDetail(articleId) {
       this.$router.push(`/detail/${articleId}`);
-    }
+    },
   },
   mounted() {
     this.getArticles();
-  }
+  },
 };
 </script>
 
@@ -228,7 +236,7 @@ export default {
   .hall-container {
     width: 1100px; /* 增加容器宽度 */
   }
-  
+
   .main-content {
     margin: 0 30px; /* 稍微减小间距 */
   }
@@ -240,7 +248,7 @@ export default {
     max-width: 1000px; /* 增加最大宽度 */
     padding: 0 20px;
   }
-  
+
   .main-content {
     margin: 0 20px;
   }
@@ -250,11 +258,11 @@ export default {
   .left-aside {
     display: none;
   }
-  
+
   .right-aside {
     display: none;
   }
-  
+
   .main-content {
     margin: 0;
   }
@@ -264,12 +272,12 @@ export default {
   .article-header {
     flex-direction: column;
   }
-  
+
   .article-cover {
     width: 100%;
     height: 200px;
   }
-  
+
   .article-footer {
     flex-wrap: wrap;
     gap: 16px;

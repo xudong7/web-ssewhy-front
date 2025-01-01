@@ -27,6 +27,16 @@ export function publishArticle(data) {
 }
 
 /**
+ * 处理喜欢
+ * @param articleId
+ * @param userId
+ * @returns {*}
+ */
+export function handleLike(articleId, userId) {
+  return request.post(`/article/like?articleId=${articleId}&userId=${userId}`);
+}
+
+/**
  * 上传图片
  * @param data
  * @returns {*}

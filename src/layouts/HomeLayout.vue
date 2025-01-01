@@ -13,7 +13,9 @@
         >
           <el-menu-item index="hall" @click="goHall">主页</el-menu-item>
           <el-menu-item index="download" @click="goDownload">下载</el-menu-item>
-          <el-menu-item index="knowledge" @click="goKnowledge">知识</el-menu-item>
+          <el-menu-item index="knowledge" @click="goKnowledge"
+            >知识</el-menu-item
+          >
           <el-menu-item index="pins" @click="goPins">想法</el-menu-item>
         </el-menu>
       </div>
@@ -31,8 +33,10 @@
             </template>
           </el-input>
         </div>
-        <div >
-          <el-button type="primary" class="search-button" @click="handleSearch">搜索</el-button>
+        <div>
+          <el-button type="primary" class="search-button" @click="handleSearch"
+            >搜索</el-button
+          >
         </div>
       </div>
       <div class="user-actions">
@@ -56,19 +60,19 @@
 
 <script>
 import { useUserStore } from "@/store/modules/user";
-import { Search } from '@element-plus/icons-vue';
+import { Search } from "@element-plus/icons-vue";
 
 export default {
   name: "HeaderLayout",
   components: {
-    Search
+    Search,
   },
   data() {
     return {
       activeMenu: this.getActiveMenu(),
       userStore: useUserStore(),
-      searchText: '',
-      isFocused: false
+      searchText: "",
+      isFocused: false,
     };
   },
   methods: {
@@ -80,7 +84,7 @@ export default {
     },
     handleSearch() {
       // 处理搜索逻辑
-      console.log('搜索:', this.searchText);
+      console.log("搜索:", this.searchText);
     },
     goHome() {
       this.$router.push("/home");
@@ -209,7 +213,7 @@ export default {
 }
 
 .search-button {
-  background-color: #3b82f6; 
+  background-color: #3b82f6;
   border: none;
   border-radius: 999px;
   transition: all 0.2s;
@@ -283,11 +287,11 @@ export default {
   .header-left {
     min-width: 300px;
   }
-  
+
   .header-search {
     min-width: 300px;
   }
-  
+
   .user-actions {
     min-width: 300px;
   }
@@ -297,15 +301,15 @@ export default {
   .header-container {
     padding: 0 10px;
   }
-  
+
   .header-left {
     min-width: auto;
   }
-  
+
   .header-search {
     min-width: auto;
   }
-  
+
   .user-actions {
     min-width: auto;
   }

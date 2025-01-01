@@ -47,9 +47,10 @@
 </template>
 
 <script>
-import { getArticleById } from "@/api/article.js";
-import { getUserInfoById } from "@/api/user.js";
+import { getArticleById, handleLike } from "@/api/article.js";
+import { getUserInfoById, handleCollection } from "@/api/user.js";
 import { marked } from "marked";
+import { useUserStore } from "@/store/modules/user.js";
 
 export default {
   name: "ArticleComponent",
@@ -60,9 +61,30 @@ export default {
       previewUrl: "",
       activeHeading: "",
       author: {},
+      userStore: useUserStore(),
     };
   },
   methods: {
+    async handleLike() {
+      const userId = this.userStore.userId;
+      const articleId = this.article.id;
+      const res = await handleLike(articleId, userId);
+      if (res.data.data) {
+        ElMessage.success("点赞");
+      } else {
+        ElMessage.success("取消点赞");
+      }
+    },
+    async handleMark() {
+      const userId = this.userStore.userId;
+      const articleId = this.article.id;
+      const res = await handleCollection(userId, articleId);
+      if (res.data.data) {
+        ElMessage.success("收藏");
+      } else {
+        ElMessage.success("取消收藏");
+      }
+    },
     async getArticle() {
       try {
         const articleId = this.$route.params.articleId;

@@ -52,3 +52,13 @@ export function register(data) {
 export function updateUserInfo(data) {
   return request.put(`/user`, data);
 }
+
+/**
+ * 处理收藏夹
+ * @param userId
+ * @param articleId
+ * @returns {*}
+ */
+export function handleCollection(userId, articleId) {
+  return request.post(`/user/collect?userId=${userId}&articleId=${articleId}`);
+}
