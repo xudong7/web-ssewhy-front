@@ -30,9 +30,15 @@
     />
 
     <!-- 赞同按钮和收藏按钮 -->
-    <div class="button-container">
-      <el-button type="primary" @click="handleLike">赞同</el-button>
-      <el-button type="primary" @click="handleMark">收藏</el-button>
+    <div class="action-buttons">
+      <div class="action-button" @click="handleLike">
+        <el-icon class="action-icon like-icon"><Star /></el-icon>
+        <span class="action-text">喜欢</span>
+      </div>
+      <div class="action-button" @click="handleMark">
+        <el-icon class="action-icon collect-icon"><Collection /></el-icon>
+        <span class="action-text">收藏</span>
+      </div>
     </div>
 
     <!-- 右侧目录栏 -->
@@ -51,9 +57,14 @@ import { getArticleById, handleLike } from "@/api/article.js";
 import { getUserInfoById, handleCollection } from "@/api/user.js";
 import { marked } from "marked";
 import { useUserStore } from "@/store/modules/user.js";
+import { Star, Collection } from "@element-plus/icons-vue";
 
 export default {
   name: "ArticleComponent",
+  components: {
+    Star,
+    Collection,
+  },
   data() {
     return {
       article: {},
@@ -154,7 +165,9 @@ export default {
         const id = text.toLowerCase().replace(/\s+/g, "-");
         const indent = (level - 1) * 20;
 
-        toc += `<div class="toc-item ${this.activeHeading === id ? "active" : ""}" style="padding-left: ${indent}px">
+        toc += `<div class="toc-item ${
+          this.activeHeading === id ? "active" : ""
+        }" style="padding-left: ${indent}px">
           <a href="#${id}" @click="scrollToHeading('${id}')">
             <span class="toc-dot"></span>
             ${text}
@@ -253,6 +266,33 @@ export default {
   border-radius: 8px;
   display: block;
   cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 20px;
+  right: 20px;
+  bottom: 20px;
+}
+
+.action-button {
+  display: flex;
+  font-size: 14px;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 8px;
+  background: #fff;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-button:hover {
+  background: #f0f2f7;
+  color: #1890ff;
 }
 
 /* 目录样式 */

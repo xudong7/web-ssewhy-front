@@ -103,12 +103,14 @@ import { Plus } from "@element-plus/icons-vue";
 import { uploadImage } from "@/api/article";
 import { updateUserInfo } from "@/api/user";
 import UserArticles from "@/components/UserArticles.vue";
+import UserCollect from "@/components/UserCollect.vue";
 
 export default {
   name: "Home",
   components: {
     Plus,
     UserArticles,
+    UserCollect,
   },
   data() {
     return {
@@ -117,6 +119,7 @@ export default {
         { key: "dynamic", name: "动态" },
         { key: "answers", name: "回答" },
         { key: "articles", name: "文章" },
+        { key: "collect", name: "收藏" },
         { key: "pins", name: "想法" },
       ],
       userInfo: {},
@@ -135,6 +138,7 @@ export default {
         dynamic: "UserDynamic",
         answers: "UserAnswers",
         articles: "UserArticles",
+        collect: "UserCollect",
         pins: "UserPins",
       };
       return components[this.currentTab];
