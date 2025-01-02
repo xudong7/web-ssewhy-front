@@ -65,6 +65,7 @@
   <el-main class="main-content">
     <router-view></router-view>
   </el-main>
+  <FooterComponent />
 </template>
 
 <script>
@@ -76,6 +77,7 @@ import {
   Edit,
   SwitchButton,
 } from "@element-plus/icons-vue";
+import FooterComponent from "@/components/FooterComponent.vue";
 
 export default {
   name: "HeaderLayout",
@@ -85,6 +87,7 @@ export default {
     ChatDotRound,
     Edit,
     SwitchButton,
+    FooterComponent,
   },
   data() {
     return {

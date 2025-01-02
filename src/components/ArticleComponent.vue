@@ -31,13 +31,21 @@
 
     <!-- 赞同按钮和收藏按钮 -->
     <div class="action-buttons">
-      <div class="action-button" @click="handleLike">
+      <div
+        class="action-button"
+        :class="{ active: isLiked }"
+        @click="handleLike"
+      >
         <el-icon class="action-icon like-icon"><Star /></el-icon>
-        <span class="action-text">喜欢</span>
+        <span class="action-text">{{ isLiked ? "已喜欢" : "喜欢" }}</span>
       </div>
-      <div class="action-button" @click="handleMark">
+      <div
+        class="action-button"
+        :class="{ active: isCollected }"
+        @click="handleMark"
+      >
         <el-icon class="action-icon collect-icon"><Collection /></el-icon>
-        <span class="action-text">收藏</span>
+        <span class="action-text">{{ isCollected ? "已收藏" : "收藏" }}</span>
       </div>
     </div>
 
@@ -73,6 +81,8 @@ export default {
       activeHeading: "",
       author: {},
       userStore: useUserStore(),
+      isLiked: false,
+      isCollected: false,
     };
   },
   methods: {
@@ -81,8 +91,10 @@ export default {
       const articleId = this.article.id;
       const res = await handleLike(articleId, userId);
       if (res.data.data) {
-        ElMessage.success("点赞");
+        this.isLiked = true;
+        ElMessage.success("点赞成功");
       } else {
+        this.isLiked = false;
         ElMessage.success("取消点赞");
       }
     },
@@ -91,8 +103,10 @@ export default {
       const articleId = this.article.id;
       const res = await handleCollection(userId, articleId);
       if (res.data.data) {
-        ElMessage.success("收藏");
+        this.isCollected = true;
+        ElMessage.success("收藏成功");
       } else {
+        this.isCollected = false;
         ElMessage.success("取消收藏");
       }
     },
@@ -270,29 +284,65 @@ export default {
 
 .action-buttons {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  gap: 20px;
-  right: 20px;
-  bottom: 20px;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 20px;
+  margin-top: 40px;
+  border-top: 1px solid #f0f2f5;
 }
 
 .action-button {
   display: flex;
-  font-size: 14px;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   cursor: pointer;
-  padding: 8px;
-  background: #fff;
-  border-radius: 9999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 8px 12px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  color: #8590a6;
+  background: transparent;
 }
 
 .action-button:hover {
-  background: #f0f2f7;
-  color: #1890ff;
+  background-color: #f2f3f5;
+  color: #76839b;
+}
+
+.action-icon {
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.action-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.like-icon {
+  color: inherit;
+}
+
+.collect-icon {
+  color: inherit;
+}
+
+/* 激活状态 */
+.action-button.active {
+  color: #056de8;
+  background-color: rgba(5, 109, 232, 0.1);
+}
+
+.action-button.active:hover {
+  background-color: rgba(5, 109, 232, 0.15);
+  color: #056de8;
+}
+
+.action-button.active .like-icon {
+  color: #056de8;
+}
+
+.action-button.active .collect-icon {
+  color: #056de8;
 }
 
 /* 目录样式 */

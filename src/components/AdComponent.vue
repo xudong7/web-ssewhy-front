@@ -1,5 +1,6 @@
 <template>
   <div class="right-column">
+    <!-- 用户推荐部分 -->
     <div class="recommended-follows">
       <h3 class="recommended-title">推荐关注</h3>
       <div class="user-list">
@@ -19,33 +20,124 @@
         </div>
       </div>
     </div>
+
+    <!-- 图片轮播部分 -->
+    <div class="carousel-section">
+      <el-carousel
+        :interval="3000"
+        type="card"
+        height="200px"
+        :autoplay="true"
+        trigger="click"
+        class="image-carousel"
+      >
+        <el-carousel-item v-for="(item, index) in carouselItems" :key="index">
+          <div class="carousel-content" @click="handleClick(item.link)">
+            <el-image
+              :src="item.image"
+              fit="cover"
+              class="carousel-image"
+              loading="lazy"
+            >
+              <template #error>
+                <div class="image-placeholder">
+                  <el-icon><Picture /></el-icon>
+                </div>
+              </template>
+            </el-image>
+            <div class="carousel-title">{{ item.title }}</div>
+          </div>
+        </el-carousel-item>
+      </el-carousel>
+
+      <div class="ad-list">
+        <div
+          v-for="(ad, index) in adItems"
+          :key="index"
+          class="ad-item"
+          @click="handleClick(ad.link)"
+        >
+          <el-image :src="ad.image" fit="cover" class="ad-image" loading="lazy">
+            <template #error>
+              <div class="image-placeholder">
+                <el-icon><Picture /></el-icon>
+              </div>
+            </template>
+          </el-image>
+          <div class="ad-info">
+            <div class="ad-title">{{ ad.title }}</div>
+            <div class="ad-desc">{{ ad.description }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { getAllUsers } from "@/api/user.js";
 import { useUserStore } from "@/store/modules/user.js";
+import { Picture } from "@element-plus/icons-vue";
 
 export default {
   name: "AdComponent",
+  components: {
+    Picture,
+  },
   data() {
     return {
       recommendedUsers: [],
       userStore: useUserStore(),
+      carouselItems: [
+        {
+          image: "https://picsum.photos/800/400?random=1",
+          title: "探索编程的奥秘",
+          link: "/knowledge",
+        },
+        {
+          image: "https://picsum.photos/800/400?random=2",
+          title: "最新技术动态",
+          link: "/hall",
+        },
+        {
+          image: "https://picsum.photos/800/400?random=3",
+          title: "加入我们的社区",
+          link: "/pins",
+        },
+      ],
+      adItems: [
+        {
+          image: "https://picsum.photos/300/200?random=4",
+          title: "编程入门指南",
+          description: "从零开始学习编程的完整路线",
+          link: "/knowledge",
+        },
+        {
+          image: "https://picsum.photos/300/200?random=5",
+          title: "技术社区互动",
+          description: "分享你的见解，参与技术讨论",
+          link: "/pins",
+        },
+      ],
     };
   },
   methods: {
     async getRecommendedUsers() {
       const res = await getAllUsers();
       this.recommendedUsers = res.data.data;
-      // 随机取5个 且不包含当前用户
+      // 随机取3个 且不包含当前用户
       this.recommendedUsers = this.recommendedUsers
         .filter((user) => user.id !== this.userStore.userId)
         .sort(() => Math.random() - 0.5)
-        .slice(0, 5);
+        .slice(0, 3);
     },
     goUser(id) {
       this.$router.push(`/user/${id}`);
+    },
+    handleClick(link) {
+      if (link) {
+        this.$router.push(link);
+      }
     },
   },
   mounted() {
@@ -55,10 +147,19 @@ export default {
 </script>
 
 <style scoped>
-/* Recommended Follows Section */
+.right-column {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 推荐关注部分样式 */
 .recommended-follows {
   background: #fff;
   border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  padding: 16px;
 }
 
 .recommended-title {
@@ -110,7 +211,6 @@ export default {
 
 .username {
   cursor: pointer;
-  width: 20px;
   font-size: 15px;
   font-weight: 500;
   color: #121212;
@@ -138,11 +238,123 @@ export default {
   background-color: #0461cf;
 }
 
-.right-column {
-  flex: 1;
+/* 轮播图部分样式 */
+.carousel-section {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
   padding: 16px;
+}
+
+.image-carousel {
+  margin-bottom: 20px;
+}
+
+.carousel-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+.carousel-content:hover .carousel-image {
+  transform: scale(1.05);
+}
+
+.carousel-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.ad-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ad-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ad-item:hover {
+  background: #f0f2f7;
+  transform: translateX(4px);
+}
+
+.ad-image {
+  width: 120px;
+  height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ad-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ad-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ad-desc {
+  font-size: 14px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-size: 24px;
+}
+
+:deep(.el-carousel__item) {
+  border-radius: 8px;
+}
+
+:deep(.el-carousel__item--card) {
+  border-radius: 8px;
+}
+
+:deep(.el-carousel__item--card.is-active) {
+  transform: translateX(0) scale(1.1) !important;
 }
 </style>
