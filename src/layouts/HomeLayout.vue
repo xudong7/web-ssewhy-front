@@ -27,6 +27,7 @@
             class="search-input"
             @focus="handleFocus"
             @blur="handleBlur"
+            @keyup.enter="handleSearch"
           >
             <template #prefix>
               <el-icon class="search-icon"><Search /></el-icon>
@@ -83,8 +84,12 @@ export default {
       this.isFocused = false;
     },
     handleSearch() {
-      // 处理搜索逻辑
-      console.log("搜索:", this.searchText);
+      // 跳转到搜索页面
+      if (this.searchText) {
+        this.$router.push(`/search?keyword=${this.searchText}`);
+      } else {
+        this.$router.push("/hall");
+      }
     },
     goHome() {
       this.$router.push("/home");
@@ -127,7 +132,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 0;
-  height: 6%;
+  height: auto;
   background-color: #ffffff;
   box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
   position: fixed;

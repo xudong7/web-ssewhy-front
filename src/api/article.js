@@ -1,3 +1,11 @@
+/*
+ * @Author: xudong7 13433126742@163.com
+ * @Date: 2024-12-28 19:28:12
+ * @LastEditors: xudong7 13433126742@163.com
+ * @LastEditTime: 2025-01-02 17:10:42
+ * @FilePath: \front\src\api\article.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import request from "@/utils/request";
 
 /**
@@ -9,12 +17,21 @@ export function getArticleList() {
 }
 
 /**
- * 获取id对应的文章内容
+ * 获取id对应的文章
  * @param id
  * @returns {*}
  */
 export function getArticleById(id) {
   return request.get(`/article/${id}`);
+}
+
+/**
+ * 模糊搜索文章
+ * @param keyword
+ * @returns {*}
+ */
+export function searchArticle(keyword) {
+  return request.get(`/article/search?keyword=${keyword}`);
 }
 
 /**

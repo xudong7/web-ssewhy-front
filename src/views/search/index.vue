@@ -1,6 +1,6 @@
 <template>
-  <div class="hall-page">
-    <div class="hall-container">
+  <div class="search-page">
+    <div class="search-container">
       <!-- 左侧空白区域 -->
       <div class="left-aside"></div>
 
@@ -58,11 +58,11 @@
 </template>
 
 <script>
-import { getArticleList } from "@/api/article";
+import { searchArticle } from "@/api/article";
 import { View, Star, Collection, ChatDotRound } from "@element-plus/icons-vue";
 
 export default {
-  name: "Hall",
+  name: "Search",
   components: {
     View,
     Star,
@@ -73,22 +73,16 @@ export default {
     return {
       articles: [],
       loading: false,
+      keyword: "",
     };
   },
   methods: {
     async getArticles() {
       this.loading = true;
-      try {
-        const res = await getArticleList();
-        if (res.data.code === 1) {
-          this.articles = res.data.data.filter((item) => item.status === 1);
-        }
-      } catch (error) {
-        console.error("获取文章列表失败:", error);
-        ElMessage.error("获取文章列表失败");
-      } finally {
-        this.loading = false;
-      }
+      this.keyword = this.$route.query.keyword;
+      const res = await searchArticle(this.keyword);
+      this.articles = res.data.data;
+      this.loading = false;
     },
     formatContent(content) {
       if (!content) return "";
@@ -105,17 +99,26 @@ export default {
   mounted() {
     this.getArticles();
   },
+  watch: {
+    $route: {
+      immediate: true,
+      handler(to) {
+        this.keyword = to.query.keyword;
+        this.getArticles();
+      },
+    },
+  },
 };
 </script>
 
 <style scoped>
-.hall-page {
+.search-page {
   min-height: calc(100vh - 52px);
   background-color: #f6f6f6;
   padding-top: 20px;
 }
 
-.hall-container {
+.search-container {
   width: 1400px;
   margin: 0 auto;
   display: flex;
