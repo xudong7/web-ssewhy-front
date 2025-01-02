@@ -105,21 +105,38 @@ export default {
     return {
       articles: [],
       userStore: useUserStore(),
+      loading: false,
     };
   },
   methods: {
     async getUserArticles() {
+      this.loading = true;
       try {
-        const res = await getArticleList();
-        if (res.data.code === 1) {
-          // 筛选当前用户的文章
-          this.articles = res.data.data.filter(
-            (article) => article.userId === this.userStore.userId,
-          );
+        // 获取当前路由信息
+        const currentRoute = this.$route;
+        let userId;
+
+        // 根据路由名称判断获取哪个用户的文章
+        if (currentRoute.name === "Home") {
+          // 在个人主页显示当前登录用户的文章
+          userId = this.userStore.userId;
+        } else if (currentRoute.name === "User") {
+          // 在用户页面显示对应用户的文章
+          userId = currentRoute.params.userId;
         }
+
+        // 获取文章列表
+        const res = await getArticleList();
+
+        this.articles = res.data.data.filter(
+          // userId 是字符串类型,需要转换为数字类型
+          (article) => article.userId === parseInt(userId),
+        );
       } catch (error) {
         console.error("获取用户文章失败:", error);
         ElMessage.error("获取文章列表失败");
+      } finally {
+        this.loading = false;
       }
     },
     formatContent(content) {
@@ -143,6 +160,12 @@ export default {
   },
   mounted() {
     this.getUserArticles();
+  },
+  watch: {
+    // 监听路由变化,重新获取文章列表
+    $route() {
+      this.getUserArticles();
+    },
   },
 };
 </script>

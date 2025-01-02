@@ -1,9 +1,18 @@
 <template>
-  <div class="user-collect">
-    <el-loading :loading="loading" />
-
+  <div class="user-collect" v-loading="loading">
     <div v-if="!loading && articles.length === 0" class="empty-state">
-      <el-empty description="暂无文章"> </el-empty>
+      <el-empty description="暂无文章">
+        <template #extra>
+          <el-button
+            type="primary"
+            class="create-button"
+            @click="$router.push('/write')"
+          >
+            <el-icon><Plus /></el-icon>
+            创作文章
+          </el-button>
+        </template>
+      </el-empty>
     </div>
 
     <div v-else class="article-list">
@@ -95,17 +104,33 @@ export default {
     return {
       articles: [],
       userStore: useUserStore(),
+      loading: false,
     };
   },
   methods: {
     async getUserCollect() {
-      const res1 = await getArticleList();
-      const res2 = await getUserInfoById(this.userStore.userId);
-      const allArticles = res1.data.data;
-      const markCart = res2.data.data.markCart;
-      this.articles = allArticles.filter((article) =>
-        markCart.includes(article.id),
-      );
+      this.loading = true;
+      try {
+        const currentRoute = this.$route;
+        let userId;
+        if (currentRoute.name === "Home") {
+          userId = this.userStore.userId;
+        } else if (currentRoute.name === "User") {
+          userId = currentRoute.params.userId;
+        }
+        const res1 = await getArticleList();
+        const res2 = await getUserInfoById(userId);
+        const allArticles = res1.data.data;
+        const markCart = res2.data.data?.markCart || [];
+        this.articles = allArticles.filter((article) =>
+          markCart.includes(article.id),
+        );
+      } catch (error) {
+        console.error("获取用户收藏文章失败:", error);
+        ElMessage.error("获取文章列表失败");
+      } finally {
+        this.loading = false;
+      }
     },
     formatContent(content) {
       if (!content) return "";
@@ -128,6 +153,11 @@ export default {
   },
   mounted() {
     this.getUserCollect();
+  },
+  watch: {
+    $route() {
+      this.getUserCollect();
+    },
   },
 };
 </script>

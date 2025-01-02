@@ -41,16 +41,24 @@
         </div>
       </div>
       <div class="user-actions">
-        <span>消息</span>
-        <span>私信</span>
-        <span @click="goWrite">创作</span>
-        <span>草稿箱</span>
-        <span @click="goLogin">登出</span>
+        <span
+          ><el-icon class="icon"><Message /></el-icon>消息</span
+        >
+        <span
+          ><el-icon class="icon"><ChatDotRound /></el-icon>私信</span
+        >
+        <span @click="goWrite"
+          ><el-icon class="icon"><Edit /></el-icon>创作</span
+        >
+        <span @click="goLogin"
+          ><el-icon class="icon"><SwitchButton /></el-icon>登出</span
+        >
         <el-avatar
           @click="goHome"
           :size="36"
           :src="userStore.userInfo.avatar"
         ></el-avatar>
+        <!-- <span>{{ userStore.userInfo.username }}</span> -->
       </div>
     </div>
   </header>
@@ -62,11 +70,21 @@
 <script>
 import { useUserStore } from "@/store/modules/user";
 import { Search } from "@element-plus/icons-vue";
+import {
+  Message,
+  ChatDotRound,
+  Edit,
+  SwitchButton,
+} from "@element-plus/icons-vue";
 
 export default {
   name: "HeaderLayout",
   components: {
     Search,
+    Message,
+    ChatDotRound,
+    Edit,
+    SwitchButton,
   },
   data() {
     return {
@@ -250,10 +268,23 @@ export default {
   transition: color 0.3s;
   color: #8590a6;
   font-size: 14px;
+  display: flex;
+  align-items: center;
 }
 
 .user-actions span:hover {
   color: #056de8;
+}
+
+.user-actions span:hover .icon {
+  color: #056de8;
+}
+
+.icon {
+  margin-right: 5px;
+  font-size: 14px;
+  color: #8590a6;
+  transition: color 0.3s;
 }
 
 .el-avatar {

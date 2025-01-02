@@ -4,11 +4,13 @@
       <h3 class="recommended-title">推荐关注</h3>
       <div class="user-list">
         <div class="user-card" v-for="user in recommendedUsers" :key="user.id">
-          <div class="user-avatar">
+          <div class="user-avatar" @click="goUser(user.id)">
             <img :src="user.avatar" alt="用户头像" />
           </div>
           <div class="user-info">
-            <div class="username">{{ user.username }}</div>
+            <div class="username" @click="goUser(user.id)">
+              {{ user.username }}
+            </div>
             <div class="description">{{ user.description }}</div>
             <el-button type="primary" size="small" class="follow-btn"
               >关注</el-button
@@ -22,17 +24,28 @@
 
 <script>
 import { getAllUsers } from "@/api/user.js";
+import { useUserStore } from "@/store/modules/user.js";
+
 export default {
   name: "AdComponent",
   data() {
     return {
       recommendedUsers: [],
+      userStore: useUserStore(),
     };
   },
   methods: {
     async getRecommendedUsers() {
       const res = await getAllUsers();
       this.recommendedUsers = res.data.data;
+      // 随机取5个 且不包含当前用户
+      this.recommendedUsers = this.recommendedUsers
+        .filter((user) => user.id !== this.userStore.userId)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 5);
+    },
+    goUser(id) {
+      this.$router.push(`/user/${id}`);
     },
   },
   mounted() {
@@ -76,6 +89,7 @@ export default {
 }
 
 .user-avatar {
+  cursor: pointer;
   margin-right: 12px;
   flex-shrink: 0;
 }
@@ -95,6 +109,8 @@ export default {
 }
 
 .username {
+  cursor: pointer;
+  width: 20px;
   font-size: 15px;
   font-weight: 500;
   color: #121212;

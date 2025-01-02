@@ -7,7 +7,6 @@
         class="title-input"
       />
       <div class="header-actions">
-        <el-button type="info" @click="saveDraft" plain>保存草稿</el-button>
         <el-button type="primary" @click="publishArticle">发布文章</el-button>
       </div>
     </div>
@@ -173,24 +172,6 @@ export default {
       }).then((res) => {
         ElMessage.success("publish success");
         this.$router.push("/hall");
-      });
-    },
-    saveDraft() {
-      // 如果没有设置封面,则获取第一张图片作为封面
-      if (!this.cover) {
-        this.cover = this.getFirstImageUrl();
-      }
-
-      // 调用保存草稿API
-      publishArticle({
-        title: this.title,
-        content: this.content,
-        cover: this.cover,
-        userId: this.userStore.userId,
-        status: 0, // 0表示草稿
-      }).then((res) => {
-        ElMessage.success("save draft success");
-        this.$router.push("/draft");
       });
     },
   },
