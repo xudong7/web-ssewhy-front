@@ -14,11 +14,18 @@
           >
             <div class="article-header" @click="goDetail(article.id)">
               <div v-if="article.cover" class="article-cover">
-                <img
+                <el-image
                   :src="article.cover"
-                  alt="封面"
-                  class="article-cover-img"
-                />
+                  fit="cover"
+                  lazy
+                  class="cover-image"
+                >
+                  <template #error>
+                    <div class="image-slot">
+                      <el-icon><Picture /></el-icon>
+                    </div>
+                  </template>
+                </el-image>
               </div>
               <div class="article-main">
                 <h2 class="article-title">{{ article.title }}</h2>
@@ -78,6 +85,7 @@ import {
   Collection,
   ChatDotRound,
   CaretTop,
+  Picture,
 } from "@element-plus/icons-vue";
 
 export default {
@@ -88,6 +96,7 @@ export default {
     Collection,
     ChatDotRound,
     CaretTop,
+    Picture,
   },
   data() {
     return {
@@ -179,20 +188,31 @@ export default {
 .article-cover {
   width: 240px;
   height: 160px;
-  border-radius: 8px;
+  border-radius: 4px;
   overflow: hidden;
-  flex-shrink: 0;
+  margin-right: 24px;
+  cursor: pointer;
 }
 
-.article-cover-img {
+.cover-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.article-cover-img:hover {
+.cover-image:hover {
   transform: scale(1.05);
+}
+
+.image-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: #f5f7fa;
+  color: #909399;
+  font-size: 24px;
 }
 
 .article-main {

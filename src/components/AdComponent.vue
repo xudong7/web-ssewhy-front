@@ -42,12 +42,13 @@
       >
         <el-carousel-item v-for="(item, index) in carouselItems" :key="index">
           <div class="carousel-content" @click="handleClick(item.link)">
-            <el-image
-              :src="item.image"
-              fit="cover"
-              class="carousel-image"
-              loading="lazy"
-            >
+            <el-image :src="item.image" fit="cover" lazy class="carousel-image">
+              <template #placeholder>
+                <div class="image-placeholder">
+                  <div class="loading-spinner"></div>
+                  <div class="loading-text">{{ item.title }}</div>
+                </div>
+              </template>
               <template #error>
                 <div class="image-placeholder">
                   <el-icon><Picture /></el-icon>
@@ -66,7 +67,13 @@
           class="ad-item"
           @click="handleClick(ad.link)"
         >
-          <el-image :src="ad.image" fit="cover" class="ad-image" loading="lazy">
+          <el-image :src="ad.image" fit="cover" lazy class="ad-image">
+            <template #placeholder>
+              <div class="image-placeholder">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">{{ ad.title }}</div>
+              </div>
+            </template>
             <template #error>
               <div class="image-placeholder">
                 <el-icon><Picture /></el-icon>
@@ -86,7 +93,13 @@
 <script>
 import { getAllUsers } from "@/api/user.js";
 import { useUserStore } from "@/store/modules/user.js";
-import { Picture, Plus, Refresh, UserFilled } from "@element-plus/icons-vue";
+import {
+  Picture,
+  Plus,
+  Refresh,
+  UserFilled,
+  Loading,
+} from "@element-plus/icons-vue";
 
 export default {
   name: "AdComponent",
@@ -95,6 +108,7 @@ export default {
     Plus,
     Refresh,
     UserFilled,
+    Loading,
   },
   data() {
     return {
@@ -389,11 +403,44 @@ export default {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
-  color: #9ca3af;
-  font-size: 24px;
+  background: #f7f8f9;
+  position: relative;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #8590a6;
+  border-radius: 50%;
+  animation: loading-rotate 0.8s linear infinite;
+  margin-bottom: 8px;
+}
+
+.loading-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+  color: #fff;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes loading-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 :deep(.el-carousel__item) {
