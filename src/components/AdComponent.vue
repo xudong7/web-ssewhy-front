@@ -2,7 +2,16 @@
   <div class="right-column">
     <!-- 用户推荐部分 -->
     <div class="recommended-follows">
-      <h3 class="recommended-title">推荐关注</h3>
+      <div class="recommended-header">
+        <h3 class="recommended-title">
+          <el-icon><UserFilled /></el-icon>
+          推荐关注
+        </h3>
+        <span class="refresh-btn" @click="refreshUsers">
+          <el-icon><Refresh /></el-icon>
+          换一批
+        </span>
+      </div>
       <div class="user-list">
         <div class="user-card" v-for="user in recommendedUsers" :key="user.id">
           <div class="user-avatar" @click="goUser(user.id)">
@@ -12,11 +21,11 @@
             <div class="username" @click="goUser(user.id)">
               {{ user.username }}
             </div>
-            <div class="description">{{ user.description }}</div>
-            <el-button type="primary" size="small" class="follow-btn"
-              >关注</el-button
-            >
+            <div class="description">{{ user.description || "暂无简介" }}</div>
           </div>
+          <el-button type="primary" size="small" class="follow-btn" plain>
+            <el-icon><Plus /></el-icon>关注
+          </el-button>
         </div>
       </div>
     </div>
@@ -77,16 +86,20 @@
 <script>
 import { getAllUsers } from "@/api/user.js";
 import { useUserStore } from "@/store/modules/user.js";
-import { Picture } from "@element-plus/icons-vue";
+import { Picture, Plus, Refresh, UserFilled } from "@element-plus/icons-vue";
 
 export default {
   name: "AdComponent",
   components: {
     Picture,
+    Plus,
+    Refresh,
+    UserFilled,
   },
   data() {
     return {
       recommendedUsers: [],
+      allUsers: [],
       userStore: useUserStore(),
       carouselItems: [
         {
@@ -124,12 +137,15 @@ export default {
   methods: {
     async getRecommendedUsers() {
       const res = await getAllUsers();
-      this.recommendedUsers = res.data.data;
-      // 随机取3个 且不包含当前用户
-      this.recommendedUsers = this.recommendedUsers
-        .filter((user) => user.id !== this.userStore.userId)
+      this.allUsers = res.data.data.filter(
+        (user) => user.id !== this.userStore.userId,
+      );
+      this.refreshUsers();
+    },
+    refreshUsers() {
+      this.recommendedUsers = this.allUsers
         .sort(() => Math.random() - 0.5)
-        .slice(0, 3);
+        .slice(0, 5);
     },
     goUser(id) {
       this.$router.push(`/user/${id}`);
@@ -157,32 +173,59 @@ export default {
 /* 推荐关注部分样式 */
 .recommended-follows {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
-  padding: 16px;
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.recommended-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f6f6f6;
 }
 
 .recommended-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #121212;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.recommended-title :deep(.el-icon) {
+  font-size: 16px;
+  color: #8590a6;
+}
+
+.refresh-btn {
+  font-size: 14px;
+  color: #8590a6;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.refresh-btn:hover {
+  color: #175199;
 }
 
 .user-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .user-card {
   display: flex;
-  align-items: flex-start;
-  padding: 12px;
-  border-radius: 4px;
+  align-items: center;
+  padding: 12px 16px;
   transition: background-color 0.2s;
+  position: relative;
 }
 
 .user-card:hover {
@@ -196,46 +239,53 @@ export default {
 }
 
 .user-avatar img {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
   object-fit: cover;
 }
 
 .user-info {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  min-width: 0;
+  margin-right: 12px;
 }
 
 .username {
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: #121212;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.username:hover {
+  color: #175199;
 }
 
 .description {
   font-size: 13px;
   color: #8590a6;
-  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .follow-btn {
-  width: fit-content;
-  font-size: 14px;
-  padding: 4px 16px;
+  padding: 0 12px;
+  height: 28px;
+  font-size: 13px;
   border-radius: 3px;
-  background-color: #056de8;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.follow-btn:hover {
-  background-color: #0461cf;
+.follow-btn :deep(.el-icon) {
+  font-size: 12px;
 }
 
 /* 轮播图部分样式 */

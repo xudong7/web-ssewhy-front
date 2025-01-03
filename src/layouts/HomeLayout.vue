@@ -95,6 +95,7 @@ export default {
       userStore: useUserStore(),
       searchText: "",
       isFocused: false,
+      userStore: useUserStore(),
     };
   },
   methods: {
@@ -135,6 +136,7 @@ export default {
       return path.split("/").pop();
     },
     goLogin() {
+      this.userStore.handleLogout();
       this.$router.push("/login");
     },
   },

@@ -10,6 +10,7 @@
     "prettier": "prettier --write src/**/*.{vue,js,jsx,ts,tsx,json,css,scss,md}"
   },
   "dependencies": {
+    "@huggingface/inference": "^2.8.1",
     "@vueuse/core": "^12.2.0",
     "axios": "^1.7.9",
     "echarts": "^5.5.1",
