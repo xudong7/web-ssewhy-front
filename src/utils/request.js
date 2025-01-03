@@ -1,6 +1,7 @@
 // src/utils/request.js
 import axios from "axios";
 import { useUserStore } from "@/store/modules/user";
+import { ElMessage } from "element-plus";
 
 const request = axios.create({
   baseURL: "http://localhost:8080/api", // import.meta.env.VITE_APP_URL,

@@ -114,7 +114,6 @@ export default {
         }
       } catch (error) {
         console.error("获取文章列表失败:", error);
-        ElMessage.error("获取文章列表失败");
       } finally {
         this.loading = false;
       }
