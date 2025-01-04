@@ -41,11 +41,11 @@
         </div>
       </div>
       <div class="user-actions">
-        <span
+        <span @click="goMessage"
           ><el-icon class="icon"><Message /></el-icon>消息</span
         >
-        <span
-          ><el-icon class="icon"><ChatDotRound /></el-icon>私信</span
+        <span @click="goChat"
+          ><el-icon class="icon"><ChatDotRound /></el-icon>交流</span
         >
         <span @click="goWrite"
           ><el-icon class="icon"><Edit /></el-icon>创作</span
@@ -138,6 +138,12 @@ export default {
     goLogin() {
       this.userStore.handleLogout();
       this.$router.push("/login");
+    },
+    goMessage() {
+      this.$router.push("/message");
+    },
+    goChat() {
+      this.$router.push("/chat");
     },
   },
   watch: {

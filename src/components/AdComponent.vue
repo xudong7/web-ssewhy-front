@@ -15,7 +15,19 @@
       <div class="user-list">
         <div class="user-card" v-for="user in recommendedUsers" :key="user.id">
           <div class="user-avatar" @click="goUser(user.id)">
-            <img :src="user.avatar" alt="用户头像" />
+            <el-image
+              :src="user.avatar"
+              alt="用户头像"
+              fit="cover"
+              style="width: 50px; height: 50px; border-radius: 50%"
+            >
+              <template #error>
+                <img
+                  src="https://th.bing.com/th/id/OIP.ClY0OPQozu6eTKTQEt1hgwHaHa?rs=1&pid=ImgDetMain"
+                  alt="默认头像"
+                />
+              </template>
+            </el-image>
           </div>
           <div class="user-info">
             <div class="username" @click="goUser(user.id)">
@@ -250,13 +262,6 @@ export default {
   cursor: pointer;
   margin-right: 12px;
   flex-shrink: 0;
-}
-
-.user-avatar img {
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  object-fit: cover;
 }
 
 .user-info {
