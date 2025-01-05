@@ -175,13 +175,13 @@ export default {
       try {
         const res = await getAllUsers();
         if (res.data.code === 1) {
-          // 获取所有用户信息，过滤掉当前用户
+          // 获取所有用户信息，过滤掉当前登录用户
           this.allUsers = res.data.data
             .filter(user => user.id !== this.userStore.userId)
             .map(user => ({
               ...user,
-              // 检查用户的followCart字符串中是否包含当前用户ID
-              isFollowed: user.followCart && user.followCart.includes(`,${this.userStore.userId},`)
+              // 检查用户的fansCart字符串中是否包含当前登录用户ID
+              isFollowed: user.fansCart && user.fansCart.includes(`,${this.userStore.userId},`)
             }));
           this.refreshUsers();
         } else {
@@ -207,20 +207,9 @@ export default {
     },
     async handleFollow(user) {
       try {
-        const res = await handleFollow(this.userStore.userId, user.id);
+        const res = await handleFollow(user.id, this.userStore.userId);
         if (res.data.code === 1) {
           user.isFollowed = !user.isFollowed;
-          // 更新用户的followCart字符串
-          if (user.isFollowed) {
-            if (!user.followCart) {
-              user.followCart = ',';
-            }
-            if (!user.followCart.includes(`,${this.userStore.userId},`)) {
-              user.followCart += `${this.userStore.userId},`;
-            }
-          } else {
-            user.followCart = user.followCart.replace(`,${this.userStore.userId},`, ',');
-          }
           ElMessage.success(user.isFollowed ? '关注成功' : '已取消关注');
         } else {
           ElMessage.error(res.data.msg || '操作失败');

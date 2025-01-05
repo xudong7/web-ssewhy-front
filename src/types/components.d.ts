@@ -46,6 +46,9 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     UserArticles: typeof import('./../components/UserArticles.vue')['default']
     UserCollect: typeof import('./../components/UserCollect.vue')['default']
+    UserFan: typeof import('./../components/UserFan.vue')['default']
+    UserFans: typeof import('./../components/UserFans.vue')['default']
+    UserFollow: typeof import('./../components/UserFollow.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

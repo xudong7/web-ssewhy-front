@@ -53,6 +53,8 @@ import { Plus } from "@element-plus/icons-vue";
 import { getUserInfoById } from "@/api/user";
 import UserArticles from "@/components/UserArticles.vue";
 import UserCollect from "@/components/UserCollect.vue";
+import UserFollow from "@/components/UserFollow.vue";
+import UserFans from "@/components/UserFans.vue";
 
 export default {
   name: "User",
@@ -60,6 +62,8 @@ export default {
     Plus,
     UserArticles,
     UserCollect,
+    UserFollow,
+    UserFans,
   },
   data() {
     return {
@@ -69,6 +73,8 @@ export default {
         { key: "answers", name: "回答" },
         { key: "articles", name: "文章" },
         { key: "collect", name: "收藏" },
+        { key: "follow", name: "关注" },
+        { key: "fans", name: "粉丝" },
         { key: "pins", name: "想法" },
       ],
       userInfo: {},
@@ -83,8 +89,13 @@ export default {
   computed: {
     currentComponent() {
       const components = {
+        dynamic: "UserDynamic",
+        answers: "UserAnswers",
         articles: "UserArticles",
         collect: "UserCollect",
+        follow: "UserFollow",
+        fans: "UserFans",
+        pins: "UserPins",
       };
       return components[this.currentTab];
     },
