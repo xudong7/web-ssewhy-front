@@ -35,8 +35,16 @@
             </div>
             <div class="description">{{ user.description || "暂无简介" }}</div>
           </div>
-          <el-button type="primary" size="small" class="follow-btn" plain>
-            <el-icon><Plus /></el-icon>关注
+          <el-button 
+            type="primary" 
+            @click="handleFollow(user)" 
+            size="small" 
+            class="follow-btn" 
+            :class="{ 'is-followed': user.isFollowed }"
+            :plain="!user.isFollowed"
+          >
+            <el-icon><component :is="user.isFollowed ? 'Check' : 'Plus'" /></el-icon>
+            {{ user.isFollowed ? '取消关注' : '关注' }}
           </el-button>
         </div>
       </div>
@@ -103,7 +111,7 @@
 </template>
 
 <script>
-import { getAllUsers } from "@/api/user.js";
+import { getAllUsers, handleFollow } from "@/api/user.js";
 import { useUserStore } from "@/store/modules/user.js";
 import {
   Picture,
@@ -111,6 +119,7 @@ import {
   Refresh,
   UserFilled,
   Loading,
+  Check,
 } from "@element-plus/icons-vue";
 
 export default {
@@ -121,6 +130,7 @@ export default {
     Refresh,
     UserFilled,
     Loading,
+    Check,
   },
   data() {
     return {
@@ -162,11 +172,25 @@ export default {
   },
   methods: {
     async getRecommendedUsers() {
-      const res = await getAllUsers();
-      this.allUsers = res.data.data.filter(
-        (user) => user.id !== this.userStore.userId,
-      );
-      this.refreshUsers();
+      try {
+        const res = await getAllUsers();
+        if (res.data.code === 1) {
+          // 获取所有用户信息，过滤掉当前用户
+          this.allUsers = res.data.data
+            .filter(user => user.id !== this.userStore.userId)
+            .map(user => ({
+              ...user,
+              // 检查用户的followCart字符串中是否包含当前用户ID
+              isFollowed: user.followCart && user.followCart.includes(`,${this.userStore.userId},`)
+            }));
+          this.refreshUsers();
+        } else {
+          ElMessage.error(res.data.msg || '获取用户列表失败');
+        }
+      } catch (error) {
+        console.error('获取推荐用户失败:', error);
+        ElMessage.error('获取推荐用户失败');
+      }
     },
     refreshUsers() {
       this.recommendedUsers = this.allUsers
@@ -179,6 +203,31 @@ export default {
     handleClick(link) {
       if (link) {
         this.$router.push(link);
+      }
+    },
+    async handleFollow(user) {
+      try {
+        const res = await handleFollow(this.userStore.userId, user.id);
+        if (res.data.code === 1) {
+          user.isFollowed = !user.isFollowed;
+          // 更新用户的followCart字符串
+          if (user.isFollowed) {
+            if (!user.followCart) {
+              user.followCart = ',';
+            }
+            if (!user.followCart.includes(`,${this.userStore.userId},`)) {
+              user.followCart += `${this.userStore.userId},`;
+            }
+          } else {
+            user.followCart = user.followCart.replace(`,${this.userStore.userId},`, ',');
+          }
+          ElMessage.success(user.isFollowed ? '关注成功' : '已取消关注');
+        } else {
+          ElMessage.error(res.data.msg || '操作失败');
+        }
+      } catch (error) {
+        console.error('关注操作失败:', error);
+        ElMessage.error('操作失败');
       }
     },
   },
@@ -301,10 +350,27 @@ export default {
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.follow-btn.is-followed {
+  background-color: #f2f3f5;
+  border-color: #e5e6eb;
+  color: #8590a6;
+}
+
+.follow-btn.is-followed:hover {
+  background-color: #f7f8fa;
+  color: #ff4d4f;
+}
+
+.follow-btn.is-followed:hover .el-icon {
+  transform: scale(1.1);
 }
 
 .follow-btn :deep(.el-icon) {
   font-size: 12px;
+  transition: transform 0.2s ease;
 }
 
 /* 轮播图部分样式 */

@@ -62,3 +62,13 @@ export function updateUserInfo(data) {
 export function handleCollection(userId, articleId) {
   return request.post(`/user/collect?userId=${userId}&articleId=${articleId}`);
 }
+
+/**
+ * 处理关注
+ * @param userId
+ * @param fanId
+ * @returns {*}
+ */
+export function handleFollow(userId, fanId) {
+  return request.post(`/user/fan?userId=${userId}&fanId=${fanId}`);
+}
