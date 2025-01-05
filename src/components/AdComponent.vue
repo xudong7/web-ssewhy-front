@@ -35,16 +35,18 @@
             </div>
             <div class="description">{{ user.description || "暂无简介" }}</div>
           </div>
-          <el-button 
-            type="primary" 
-            @click="handleFollow(user)" 
-            size="small" 
-            class="follow-btn" 
+          <el-button
+            type="primary"
+            @click="handleFollow(user)"
+            size="small"
+            class="follow-btn"
             :class="{ 'is-followed': user.isFollowed }"
             :plain="!user.isFollowed"
           >
-            <el-icon><component :is="user.isFollowed ? 'Check' : 'Plus'" /></el-icon>
-            {{ user.isFollowed ? '取消关注' : '关注' }}
+            <el-icon
+              ><component :is="user.isFollowed ? 'Check' : 'Plus'"
+            /></el-icon>
+            {{ user.isFollowed ? "取消关注" : "关注" }}
           </el-button>
         </div>
       </div>
@@ -177,19 +179,21 @@ export default {
         if (res.data.code === 1) {
           // 获取所有用户信息，过滤掉当前登录用户
           this.allUsers = res.data.data
-            .filter(user => user.id !== this.userStore.userId)
-            .map(user => ({
+            .filter((user) => user.id !== this.userStore.userId)
+            .map((user) => ({
               ...user,
               // 检查用户的fansCart字符串中是否包含当前登录用户ID
-              isFollowed: user.fansCart && user.fansCart.includes(`,${this.userStore.userId},`)
+              isFollowed:
+                user.fansCart &&
+                user.fansCart.includes(`,${this.userStore.userId},`),
             }));
           this.refreshUsers();
         } else {
-          ElMessage.error(res.data.msg || '获取用户列表失败');
+          ElMessage.error(res.data.msg || "获取用户列表失败");
         }
       } catch (error) {
-        console.error('获取推荐用户失败:', error);
-        ElMessage.error('获取推荐用户失败');
+        console.error("获取推荐用户失败:", error);
+        ElMessage.error("获取推荐用户失败");
       }
     },
     refreshUsers() {
@@ -210,13 +214,13 @@ export default {
         const res = await handleFollow(user.id, this.userStore.userId);
         if (res.data.code === 1) {
           user.isFollowed = !user.isFollowed;
-          ElMessage.success(user.isFollowed ? '关注成功' : '已取消关注');
+          ElMessage.success(user.isFollowed ? "关注成功" : "已取消关注");
         } else {
-          ElMessage.error(res.data.msg || '操作失败');
+          ElMessage.error(res.data.msg || "操作失败");
         }
       } catch (error) {
-        console.error('关注操作失败:', error);
-        ElMessage.error('操作失败');
+        console.error("关注操作失败:", error);
+        ElMessage.error("操作失败");
       }
     },
   },

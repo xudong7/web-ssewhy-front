@@ -26,16 +26,18 @@
           </div>
           <div class="description">{{ user.description || "暂无简介" }}</div>
         </div>
-        <el-button 
-          type="primary" 
-          @click="handleFollow(user)" 
-          size="small" 
-          class="follow-btn" 
+        <el-button
+          type="primary"
+          @click="handleFollow(user)"
+          size="small"
+          class="follow-btn"
           :class="{ 'is-followed': user.isFollowed }"
           :plain="!user.isFollowed"
         >
-          <el-icon><component :is="user.isFollowed ? 'Check' : 'Plus'" /></el-icon>
-          {{ user.isFollowed ? '取消关注' : '关注' }}
+          <el-icon
+            ><component :is="user.isFollowed ? 'Check' : 'Plus'"
+          /></el-icon>
+          {{ user.isFollowed ? "取消关注" : "关注" }}
         </el-button>
       </div>
     </div>
@@ -64,7 +66,7 @@ export default {
     // 根据路由判断要显示的用户ID
     targetUserId() {
       const path = this.$route.path;
-      if (path.startsWith('/user/')) {
+      if (path.startsWith("/user/")) {
         return this.$route.params.userId;
       }
       return this.userStore.userId;
@@ -72,7 +74,7 @@ export default {
     // 是否是当前登录用户的页面
     isCurrentUser() {
       return this.targetUserId === this.userStore.userId;
-    }
+    },
   },
   methods: {
     async getFollowList() {
@@ -83,59 +85,66 @@ export default {
           const userInfo = res.data.data;
           // 从用户的followCart中获取关注的用户ID列表
           const followIds = userInfo.followCart
-            ? userInfo.followCart.split(',').filter(id => id)
+            ? userInfo.followCart.split(",").filter((id) => id)
             : [];
-          
+
           // 获取每个关注用户的详细信息
-          const promises = followIds.map(id => getUserInfoById(id));
+          const promises = followIds.map((id) => getUserInfoById(id));
           const results = await Promise.all(promises);
-          
+
           // 如果是当前用户的页面，所有用户都是已关注状态
           // 如果是其他用户的页面，需要检查当前用户是否关注了这些用户
           if (this.isCurrentUser) {
             this.followList = results
-              .filter(res => res.data.code === 1)
-              .map(res => ({
+              .filter((res) => res.data.code === 1)
+              .map((res) => ({
                 ...res.data.data,
-                isFollowed: true
+                isFollowed: true,
               }));
           } else {
             // 获取当前用户的关注列表
             const currentUserRes = await getUserInfoById(this.userStore.userId);
             const currentUserFollowIds = currentUserRes.data.data.followCart
-              ? currentUserRes.data.data.followCart.split(',').filter(id => id)
+              ? currentUserRes.data.data.followCart
+                  .split(",")
+                  .filter((id) => id)
               : [];
-            
+
             this.followList = results
-              .filter(res => res.data.code === 1)
-              .map(res => ({
+              .filter((res) => res.data.code === 1)
+              .map((res) => ({
                 ...res.data.data,
-                isFollowed: currentUserFollowIds.includes(res.data.data.id.toString())
+                isFollowed: currentUserFollowIds.includes(
+                  res.data.data.id.toString(),
+                ),
               }));
           }
         }
       } catch (error) {
-        console.error('获取关注列表失败:', error);
-        ElMessage.error('获取关注列表失败');
+        console.error("获取关注列表失败:", error);
+        ElMessage.error("获取关注列表失败");
       } finally {
         this.loading = false;
       }
     },
     async handleFollow(user) {
+      // 如果是当前登录用户，不允许关注操作
+      if (user.id === this.userStore.userId) {
+        ElMessage.error("不能关注自己");
+        return;
+      }
+
       try {
         const res = await handleFollow(user.id, this.userStore.userId);
         if (res.data.code === 1) {
-          // 取消关注后从列表中移除
-          if (user.isFollowed) {
-            this.followList = this.followList.filter(item => item.id !== user.id);
-          }
-          ElMessage.success(user.isFollowed ? '已取消关注' : '关注成功');
+          user.isFollowed = !user.isFollowed;
+          ElMessage.success(user.isFollowed ? "关注成功" : "已取消关注");
         } else {
-          ElMessage.error(res.data.msg || '操作失败');
+          ElMessage.error(res.data.msg || "操作失败");
         }
       } catch (error) {
-        console.error('关注操作失败:', error);
-        ElMessage.error('操作失败');
+        console.error("关注操作失败:", error);
+        ElMessage.error("操作失败");
       }
     },
     goUser(id) {

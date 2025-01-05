@@ -41,10 +41,10 @@
         </div>
       </div>
       <div class="user-actions">
-        <span 
+        <span
           ><el-icon class="icon"><Message /></el-icon>消息</span
         >
-        <span 
+        <span
           ><el-icon class="icon"><ChatDotRound /></el-icon>交流</span
         >
         <span @click="goWrite"
