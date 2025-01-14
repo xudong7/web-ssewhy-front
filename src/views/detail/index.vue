@@ -13,6 +13,8 @@ export default {
 
 <style scoped>
 .detail-page {
+  width: 1000px;
+  margin: 0 auto;
   padding: 20px;
   background-color: #f6f6f6;
   min-height: calc(100vh - 52px);

@@ -41,11 +41,11 @@
       </div>
       <div
         class="action-button"
-        :class="{ active: isCollected }"
+        :class="{ active: isMarked }"
         @click="handleMark"
       >
         <el-icon class="action-icon collect-icon"><Collection /></el-icon>
-        <span class="action-text">{{ isCollected ? "已收藏" : "收藏" }}</span>
+        <span class="action-text">{{ isMarked ? "已收藏" : "收藏" }}</span>
       </div>
     </div>
 
@@ -57,6 +57,19 @@
       </div>
       <div class="toc-content" v-html="generateToc(article.content)"></div>
     </div>
+
+    <!-- 返回顶部按钮 -->
+    <el-backtop
+      :right="40"
+      :bottom="80"
+      :visibility-height="300"
+      class="back-to-top"
+    >
+      <div class="back-top-content">
+        <el-icon><CaretTop /></el-icon>
+        <span>顶部</span>
+      </div>
+    </el-backtop>
   </div>
 </template>
 
@@ -65,13 +78,14 @@ import { getArticleById, handleLike } from "@/api/article.js";
 import { getUserInfoById, handleCollection } from "@/api/user.js";
 import { marked } from "marked";
 import { useUserStore } from "@/store/modules/user.js";
-import { Star, Collection } from "@element-plus/icons-vue";
+import { Star, Collection, CaretTop } from "@element-plus/icons-vue";
 
 export default {
   name: "ArticleComponent",
   components: {
     Star,
     Collection,
+    CaretTop,
   },
   data() {
     return {
@@ -82,7 +96,7 @@ export default {
       author: {},
       userStore: useUserStore(),
       isLiked: false,
-      isCollected: false,
+      isMarked: false,
     };
   },
   methods: {
@@ -103,10 +117,10 @@ export default {
       const articleId = this.article.id;
       const res = await handleCollection(userId, articleId);
       if (res.data.data) {
-        this.isCollected = true;
+        this.isMarked = true;
         ElMessage.success("收藏成功");
       } else {
-        this.isCollected = false;
+        this.isMarked = false;
         ElMessage.success("取消收藏");
       }
     },
@@ -114,8 +128,17 @@ export default {
       try {
         const articleId = this.$route.params.articleId;
         const res = await getArticleById(articleId);
+        // 获取当前登录用户信息
+        const res2 = await getUserInfoById(this.userStore.userId);
+        const user = res2.data.data;
+
         // 筛选status为1的文章
         this.article = res.data.data;
+        this.isLiked =
+          this.article.likesCart &&
+          this.article.likesCart.includes(`,${this.userStore.userId},`);
+        this.isMarked =
+          user.markCart && user.markCart.includes(`,${this.article.id},`);
 
         // 获取作者信息
         if (this.article.userId) {
@@ -215,7 +238,7 @@ export default {
 
 <style scoped>
 .article-container {
-  max-width: 800px;
+  max-width: 100%;
   margin: 20px auto;
   padding: 20px;
   background: #fff;
@@ -226,6 +249,7 @@ export default {
 
 .article-content {
   padding: 20px;
+  min-width: 0; /* 防止内容溢出 */
 }
 
 .cover-container {
@@ -348,9 +372,9 @@ export default {
 /* 目录样式 */
 .toc-container {
   position: fixed;
-  right: 20px;
-  top: 100px;
-  width: 280px;
+  right: 5%;
+  top: 90px;
+  width: 300px;
   max-height: 80vh;
   overflow-y: auto;
   background: #fff;
@@ -424,5 +448,39 @@ export default {
 .toc-item.active .toc-dot {
   background: #1890ff;
   transform: scale(1.2);
+}
+
+/* 返回顶部按钮样式 */
+.back-to-top {
+  --el-backtop-bg-color: #fff;
+  --el-backtop-hover-bg-color: #f0f2f7;
+}
+
+.back-top-content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #606266;
+}
+
+.back-top-content .el-icon {
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+:deep(.el-backtop) {
+  width: 56px;
+  height: 56px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+:deep(.el-backtop:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 </style>

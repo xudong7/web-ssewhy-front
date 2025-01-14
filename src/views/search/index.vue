@@ -54,12 +54,31 @@
         <AdComponent />
       </div>
     </div>
+
+    <!-- 返回顶部按钮 -->
+    <el-backtop
+      :right="40"
+      :bottom="80"
+      :visibility-height="300"
+      class="back-to-top"
+    >
+      <div class="back-top-content">
+        <el-icon><CaretTop /></el-icon>
+        <span>顶部</span>
+      </div>
+    </el-backtop>
   </div>
 </template>
 
 <script>
 import { searchArticle } from "@/api/article";
-import { View, Star, Collection, ChatDotRound } from "@element-plus/icons-vue";
+import {
+  View,
+  Star,
+  Collection,
+  ChatDotRound,
+  CaretTop,
+} from "@element-plus/icons-vue";
 
 export default {
   name: "Search",
@@ -68,6 +87,7 @@ export default {
     Star,
     Collection,
     ChatDotRound,
+    CaretTop,
   },
   data() {
     return {
@@ -119,7 +139,7 @@ export default {
 }
 
 .search-container {
-  width: 1400px;
+  width: 1500px;
   margin: 0 auto;
   display: flex;
   gap: 20px;
@@ -128,7 +148,7 @@ export default {
 
 /* 左侧区域 */
 .left-aside {
-  width: 150px;
+  width: 120px;
   flex-shrink: 0;
 }
 
@@ -160,11 +180,12 @@ export default {
 }
 
 .article-cover {
-  width: 240px; /* 增加封面图片宽度 */
-  height: 160px; /* 等比例增加高度 */
-  border-radius: 8px;
+  width: 240px;
+  height: 160px;
+  border-radius: 4px;
   overflow: hidden;
-  flex-shrink: 0;
+  margin-right: 24px;
+  cursor: pointer;
 }
 
 .article-cover-img {
@@ -229,8 +250,42 @@ export default {
 
 /* 右侧区域 */
 .right-aside {
-  width: 260px;
+  width: 360px;
   flex-shrink: 0;
+}
+
+/* 返回顶部按钮样式 */
+.back-to-top {
+  --el-backtop-bg-color: #fff;
+  --el-backtop-hover-bg-color: #f0f2f7;
+}
+
+.back-top-content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #606266;
+}
+
+.back-top-content .el-icon {
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+:deep(.el-backtop) {
+  width: 56px;
+  height: 56px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+:deep(.el-backtop:hover) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* 响应式处理 */
