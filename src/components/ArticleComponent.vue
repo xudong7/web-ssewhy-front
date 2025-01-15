@@ -11,7 +11,15 @@
       </div>
       <h1 class="article-title">{{ article.title }}</h1>
       <div class="article-info">
-        <span class="author">作者：{{ author.username }}</span>
+        <el-avatar
+          :src="author.avatar"
+          @click="goToAuthor(author.id)"
+          class="author-avatar"
+          style="width: 36px; height: 36px"
+        />
+        <span class="author-name" @click="goToAuthor(author.id)"
+          >作者：{{ author.username }}</span
+        >
         <span class="create-time"
           >创建时间：{{ processDate(article.createTime) }}</span
         >
@@ -149,6 +157,9 @@ export default {
         console.error("获取文章失败:", error);
       }
     },
+    goToAuthor(authorId) {
+      this.$router.push(`/user/${authorId}`);
+    },
     processDate(date) {
       return new Date(date).toLocaleString("zh-CN", {
         year: "numeric",
@@ -249,12 +260,28 @@ export default {
 
 .article-content {
   padding: 20px;
-  min-width: 0; /* 防止内容溢出 */
+  min-width: 0;
 }
 
 .cover-container {
   width: 100%;
   margin-bottom: 20px;
+}
+
+.author-avatar {
+  cursor: pointer;
+}
+
+.author-avatar:hover {
+  transform: scale(1.1);
+}
+
+.author-name {
+  cursor: pointer;
+}
+
+.author-name:hover {
+  color: #056de8;
 }
 
 .article-cover {
@@ -350,7 +377,6 @@ export default {
   color: inherit;
 }
 
-/* 激活状态 */
 .action-button.active {
   color: #056de8;
   background-color: rgba(5, 109, 232, 0.1);
@@ -369,75 +395,141 @@ export default {
   color: #056de8;
 }
 
-/* 目录样式 */
 .toc-container {
   position: fixed;
   right: 5%;
-  top: 90px;
-  width: 300px;
+  top: 12vh;
+  width: 200px;
   max-height: 80vh;
   overflow-y: auto;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  padding: 20px 16px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  z-index: 10;
 }
 
-.toc-container:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
+@media (max-width: 1650px) {
+  .toc-container {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .article-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .article-body {
+    font-size: 14px;
+  }
+
+  .action-buttons {
+    gap: 12px;
+  }
+
+  .back-to-top {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-container {
+    padding: 15px;
+  }
+
+  .cover-container {
+    margin-bottom: 10px;
+  }
+
+  .article-cover {
+    max-height: 300px;
+  }
+
+  .toc-container {
+    width: 160px;
+    top: 8vh;
+  }
+
+  .action-buttons {
+    gap: 8px;
+  }
+
+  .article-info {
+    font-size: 12px;
+    gap: 10px;
+  }
+
+  .article-body {
+    font-size: 12px;
+  }
 }
 
 .toc-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #f0f2f7;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 3px solid #f0f2f7;
   color: #2c3e50;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+}
+
+.toc-title i {
+  font-size: 24px;
+  color: #056de8;
 }
 
 .toc-content {
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #5a6c84;
+  letter-spacing: 0.5px;
+  text-shadow: 0.5px 0.5px 2px rgba(0, 0, 0, 0.1);
 }
 
 .toc-item {
-  margin: 4px 0;
+  margin: 8px 0;
   position: relative;
 }
 
 .toc-item a {
   color: #5a6c84;
   text-decoration: none;
-  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  padding: 6px 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.toc-dot {
-  width: 6px;
-  height: 6px;
-  background: #cbd5e1;
-  border-radius: 50%;
-  margin-right: 8px;
+  padding: 10px 0;
+  font-size: 16px;
   transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+  font-family: "Arial", sans-serif;
+  font-weight: 500;
 }
 
 .toc-item a:hover {
   color: #1890ff;
-  padding-left: 4px;
+  padding-left: 10px;
+  border-left-color: #1890ff;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toc-dot {
+  width: 8px;
+  height: 8px;
+  background: #cbd5e1;
+  border-radius: 50%;
+  margin-right: 12px;
+  transition: all 0.3s ease;
 }
 
 .toc-item a:hover .toc-dot {
   background: #1890ff;
-  transform: scale(1.2);
+  transform: scale(1.4);
 }
 
 .toc-item.active a {
@@ -447,10 +539,9 @@ export default {
 
 .toc-item.active .toc-dot {
   background: #1890ff;
-  transform: scale(1.2);
+  transform: scale(1.4);
 }
 
-/* 返回顶部按钮样式 */
 .back-to-top {
   --el-backtop-bg-color: #fff;
   --el-backtop-hover-bg-color: #f0f2f7;
