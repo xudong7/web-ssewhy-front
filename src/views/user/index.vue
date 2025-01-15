@@ -20,11 +20,24 @@
             <span> 0 关注</span>
             <span> 0 粉丝</span>
           </div>
-          <div class="edit-profile">
+          <el-button
+            type="primary"
+            @click="handleFollow()"
+            size="small"
+            class="follow-btn"
+            :class="{ 'is-followed': userInfo.isFollowed }"
+            :plain="!userInfo.isFollowed"
+          >
+            <el-icon
+              ><component :is="userInfo.isFollowed ? 'Check' : 'Plus'"
+            /></el-icon>
+            {{ userInfo.isFollowed ? "取消关注" : "关注" }}
+          </el-button>
+          <!-- <div class="edit-profile">
             <el-button type="primary" size="medium" @click="handleEditProfile"
               >编辑个人资料</el-button
             >
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -49,17 +62,19 @@
 </template>
 
 <script>
-import { Plus } from "@element-plus/icons-vue";
-import { getUserInfoById } from "@/api/user";
+import { Plus, Check } from "@element-plus/icons-vue";
+import { getUserInfoById, handleFollow } from "@/api/user";
 import UserArticles from "@/components/UserArticles.vue";
 import UserCollect from "@/components/UserCollect.vue";
 import UserFollow from "@/components/UserFollow.vue";
 import UserFans from "@/components/UserFans.vue";
+import { useUserStore } from "@/store/modules/user";
 
 export default {
   name: "User",
   components: {
     Plus,
+    Check,
     UserArticles,
     UserCollect,
     UserFollow,
@@ -84,6 +99,7 @@ export default {
         avatar: "",
         cover: "",
       },
+      userStore: useUserStore(),
     };
   },
   computed: {
@@ -105,6 +121,25 @@ export default {
       const userId = this.$route.params.userId;
       const res = await getUserInfoById(userId);
       this.userInfo = res.data.data;
+      this.userInfo.isFollowed =
+        this.userInfo.fansCart &&
+        this.userInfo.fansCart.includes(`,${this.userStore.userId},`);
+    },
+    async handleFollow() {
+      try {
+        const res = await handleFollow(this.userInfo.id, this.userStore.userId);
+        if (res.data.code === 1) {
+          this.userInfo.isFollowed = !this.userInfo.isFollowed;
+          ElMessage.success(
+            this.userInfo.isFollowed ? "关注成功" : "已取消关注",
+          );
+        } else {
+          ElMessage.error(res.data.msg || "操作失败");
+        }
+      } catch (error) {
+        console.error("关注操作失败:", error);
+        ElMessage.error("操作失败");
+      }
     },
   },
   mounted() {
@@ -210,6 +245,37 @@ export default {
 
 .edit-profile {
   margin-top: 16px;
+}
+
+.follow-btn {
+  padding: 0 12px;
+  height: 28px;
+  font-size: 13px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.follow-btn.is-followed {
+  background-color: #f2f3f5;
+  border-color: #e5e6eb;
+  color: #8590a6;
+}
+
+.follow-btn.is-followed:hover {
+  background-color: #f7f8fa;
+  color: #ff4d4f;
+}
+
+.follow-btn.is-followed:hover .el-icon {
+  transform: scale(1.1);
+}
+
+.follow-btn :deep(.el-icon) {
+  font-size: 12px;
+  transition: transform 0.2s ease;
 }
 
 .main-content {

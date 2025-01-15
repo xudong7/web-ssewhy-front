@@ -85,7 +85,11 @@ export default {
       }
     },
     goToUser(userId) {
-      this.$router.push(`/user/${userId}`);
+      if (userId == this.userStore.userId) {
+        this.$router.push(`/home`);
+      } else {
+        this.$router.push(`/user/${userId}`);
+      }
     },
     goToHome() {
       this.$router.push(`/home`);

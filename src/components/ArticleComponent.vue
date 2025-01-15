@@ -158,7 +158,11 @@ export default {
       }
     },
     goToAuthor(authorId) {
-      this.$router.push(`/user/${authorId}`);
+      if (authorId == this.userStore.userId) {
+        this.$router.push(`/home`);
+      } else {
+        this.$router.push(`/user/${authorId}`);
+      }
     },
     processDate(date) {
       return new Date(date).toLocaleString("zh-CN", {
