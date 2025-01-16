@@ -1,18 +1,17 @@
-/*
- * @Author: xudong7 13433126742@163.com
- * @Date: 2024-12-26 22:38:02
- * @LastEditors: xudong7 13433126742@163.com
- * @LastEditTime: 2025-01-11 15:30:14
- * @FilePath: \front\src\utils\request.js
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 // src/utils/request.js
 import axios from "axios";
 import { useUserStore } from "@/store/modules/user";
 import { ElMessage } from "element-plus";
 
+const url = "http://localhost:8080/api"; // 本地环境
+// 线上环境
+// const url = "http://8.134.51.50:8080/api";
+const jumpUrl = "http://localhost:5173/login"; // 本地环境
+// 线上环境
+// const jumpUrl = "http://8.134.51.50:5173/login";
+
 const request = axios.create({
-  baseURL: "http://localhost:8080/api", // import.meta.env.VITE_APP_URL,
+  baseURL: url,
   timeout: 5000,
 });
 
@@ -55,7 +54,7 @@ request.interceptors.response.use(
           console.error("未授权，请登录");
           ElMessage.error("未授权，请登录");
           setTimeout(() => {
-            window.location.href = "http://localhost:5173/login";
+            window.location.href = jumpUrl;
           }, 1000);
           break;
         case 403:
