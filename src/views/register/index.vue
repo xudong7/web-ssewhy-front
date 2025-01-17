@@ -177,49 +177,59 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f7fa;
+  background-color: var(--bg-secondary);
 }
 
 .register-box {
   width: 500px;
   padding: 40px;
-  background: #fff;
+  background: var(--bg-primary);
   border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .register-title {
   text-align: center;
   margin-bottom: 30px;
+  color: var(--text-primary);
 }
 
 .register-title h2 {
-  color: #303133;
   margin: 0;
 }
 
 .register-form {
   margin-top: 20px;
+  background: var(--bg-primary);
 }
 
 .register-button {
   width: 100%;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--text-inverse);
+}
+
+.register-button:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: var(--text-inverse);
 }
 
 .login-link {
   text-align: center;
   margin-top: 20px;
-  color: #606266;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 .login-link a {
-  color: #409eff;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
 .login-link a:hover {
-  color: #66b1ff;
+  color: var(--primary-hover);
 }
 
 :deep(.el-form-item__label) {
@@ -233,5 +243,17 @@ export default {
 :deep(.el-button) {
   height: 40px;
   font-size: 16px;
+}
+
+.register-tip {
+  color: var(--text-secondary);
+}
+
+.register-link {
+  color: var(--primary-color);
+}
+
+.register-link:hover {
+  color: var(--primary-hover);
 }
 </style>

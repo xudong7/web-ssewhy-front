@@ -15,7 +15,7 @@
           :src="author.avatar"
           @click="goToAuthor(author.id)"
           class="author-avatar"
-          style="width: 36px; height: 36px"
+          style="width: var(--spacing-lg); height: var(--spacing-lg)"
         />
         <span class="author-name" @click="goToAuthor(author.id)"
           >作者：{{ author.username }}</span
@@ -254,22 +254,22 @@ export default {
 <style scoped>
 .article-container {
   max-width: 100%;
-  margin: 20px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  margin: var(--spacing-lg) auto;
+  padding: var(--spacing-lg);
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   position: relative;
 }
 
 .article-content {
-  padding: 20px;
+  padding: var(--spacing-lg);
   min-width: 0;
 }
 
 .cover-container {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .author-avatar {
@@ -285,14 +285,14 @@ export default {
 }
 
 .author-name:hover {
-  color: #056de8;
+  color: var(--primary-color);
 }
 
 .article-cover {
   width: 100%;
   max-height: 400px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   display: block;
   cursor: pointer;
 }
@@ -300,14 +300,14 @@ export default {
 .article-title {
   font-size: 28px;
   font-weight: bold;
-  color: #121212;
-  margin-bottom: 20px;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
 }
 
 .article-info {
   display: flex;
-  gap: 20px;
-  color: #8590a6;
+  gap: var(--spacing-lg);
+  color: var(--text-secondary);
   font-size: 14px;
   margin-bottom: 30px;
 }
@@ -315,13 +315,13 @@ export default {
 .article-body {
   font-size: 16px;
   line-height: 1.8;
-  color: #121212;
+  color: var(--text-primary);
   white-space: pre-wrap;
   word-wrap: break-word;
 }
 
 .article-body :deep(.image-wrapper) {
-  margin: 20px 0;
+  margin: var(--spacing-lg) 0;
   text-align: center;
   display: flex;
   width: 100%;
@@ -332,7 +332,7 @@ export default {
 .article-body :deep(.image-wrapper img) {
   width: 100%;
   height: auto;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   display: block;
   cursor: pointer;
 }
@@ -340,10 +340,10 @@ export default {
 .action-buttons {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: var(--spacing-lg);
   padding: 12px 20px;
   margin-top: 40px;
-  border-top: 1px solid #f0f2f5;
+  border-top: 1px solid var(--border-light);
 }
 
 .action-button {
@@ -352,20 +352,20 @@ export default {
   gap: 6px;
   cursor: pointer;
   padding: 8px 12px;
-  border-radius: 3px;
-  transition: all 0.2s ease;
-  color: #8590a6;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-all);
+  color: var(--text-secondary);
   background: transparent;
 }
 
 .action-button:hover {
-  background-color: #f2f3f5;
-  color: #76839b;
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .action-icon {
   font-size: 16px;
-  transition: all 0.2s ease;
+  transition: var(--transition-all);
 }
 
 .action-text {
@@ -382,21 +382,21 @@ export default {
 }
 
 .action-button.active {
-  color: #056de8;
-  background-color: rgba(5, 109, 232, 0.1);
+  color: var(--primary-color);
+  background-color: var(--primary-bg);
 }
 
 .action-button.active:hover {
-  background-color: rgba(5, 109, 232, 0.15);
-  color: #056de8;
+  background-color: var(--primary-hover);
+  color: var(--primary-color);
 }
 
 .action-button.active .like-icon {
-  color: #056de8;
+  color: var(--primary-color);
 }
 
 .action-button.active .collect-icon {
-  color: #056de8;
+  color: var(--primary-color);
 }
 
 .toc-container {
@@ -406,11 +406,11 @@ export default {
   width: 200px;
   max-height: 80vh;
   overflow-y: auto;
-  background: #ffffff;
-  padding: 20px 16px;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  background: var(--bg-primary);
+  padding: var(--spacing-lg) var(--spacing-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-all);
   z-index: 10;
 }
 
@@ -431,7 +431,7 @@ export default {
   }
 
   .action-buttons {
-    gap: 12px;
+    gap: var(--spacing-sm);
   }
 
   .back-to-top {
@@ -441,11 +441,11 @@ export default {
 
 @media (max-width: 480px) {
   .article-container {
-    padding: 15px;
+    padding: var(--spacing-md);
   }
 
   .cover-container {
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-sm);
   }
 
   .article-cover {
@@ -458,12 +458,12 @@ export default {
   }
 
   .action-buttons {
-    gap: 8px;
+    gap: var(--spacing-xs);
   }
 
   .article-info {
     font-size: 12px;
-    gap: 10px;
+    gap: var(--spacing-xs);
   }
 
   .article-body {
@@ -474,50 +474,50 @@ export default {
 .toc-title {
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-lg);
   padding-bottom: 14px;
-  border-bottom: 3px solid #f0f2f7;
-  color: #2c3e50;
+  border-bottom: 3px solid var(--border-light);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-sm);
 }
 
 .toc-title i {
   font-size: 24px;
-  color: #056de8;
+  color: var(--primary-color);
 }
 
 .toc-content {
   font-size: 16px;
   line-height: 1.6;
-  color: #5a6c84;
+  color: var(--text-secondary);
   letter-spacing: 0.5px;
   text-shadow: 0.5px 0.5px 2px rgba(0, 0, 0, 0.1);
 }
 
 .toc-item {
-  margin: 8px 0;
+  margin: var(--spacing-xs) 0;
   position: relative;
 }
 
 .toc-item a {
-  color: #5a6c84;
+  color: var(--text-secondary);
   text-decoration: none;
   display: flex;
   align-items: center;
   padding: 10px 0;
   font-size: 16px;
-  transition: all 0.3s ease;
+  transition: var(--transition-all);
   border-left: 3px solid transparent;
   font-family: "Arial", sans-serif;
   font-weight: 500;
 }
 
 .toc-item a:hover {
-  color: #1890ff;
+  color: var(--primary-color);
   padding-left: 10px;
-  border-left-color: #1890ff;
+  border-left-color: var(--primary-color);
   font-weight: 600;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
@@ -525,30 +525,30 @@ export default {
 .toc-dot {
   width: 8px;
   height: 8px;
-  background: #cbd5e1;
+  background: var(--text-tertiary);
   border-radius: 50%;
-  margin-right: 12px;
-  transition: all 0.3s ease;
+  margin-right: var(--spacing-sm);
+  transition: var(--transition-all);
 }
 
 .toc-item a:hover .toc-dot {
-  background: #1890ff;
+  background: var(--primary-color);
   transform: scale(1.4);
 }
 
 .toc-item.active a {
-  color: #1890ff;
+  color: var(--primary-color);
   font-weight: 600;
 }
 
 .toc-item.active .toc-dot {
-  background: #1890ff;
+  background: var(--primary-color);
   transform: scale(1.4);
 }
 
 .back-to-top {
-  --el-backtop-bg-color: #fff;
-  --el-backtop-hover-bg-color: #f0f2f7;
+  --el-backtop-bg-color: var(--bg-primary);
+  --el-backtop-hover-bg-color: var(--bg-hover);
 }
 
 .back-top-content {
@@ -559,7 +559,7 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  color: #606266;
+  color: var(--text-secondary);
 }
 
 .back-top-content .el-icon {
@@ -570,12 +570,12 @@ export default {
 :deep(.el-backtop) {
   width: 56px;
   height: 56px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-all);
 }
 
 :deep(.el-backtop:hover) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-hover);
 }
 </style>

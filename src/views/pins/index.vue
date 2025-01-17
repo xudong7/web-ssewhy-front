@@ -87,7 +87,7 @@ export default {
 <style scoped>
 .pins-page {
   padding: 20px;
-  background-color: #f6f6f6;
+  background-color: var(--bg-secondary);
   min-height: calc(100vh - 52px);
   max-width: 800px;
   margin: 0 auto;
@@ -102,6 +102,7 @@ export default {
 
 .pin-item {
   margin-bottom: 20px;
+  background-color: var(--bg-primary);
 }
 
 .pin-author {
@@ -117,16 +118,18 @@ export default {
 .author-name {
   font-weight: bold;
   font-size: 16px;
+  color: var(--text-primary);
 }
 
 .pin-time {
   font-size: 12px;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .pin-text {
   margin-bottom: 12px;
   line-height: 1.6;
+  color: var(--text-secondary);
 }
 
 .pin-images {
@@ -146,7 +149,7 @@ export default {
 .pin-actions {
   display: flex;
   gap: 24px;
-  color: #666;
+  color: var(--text-tertiary);
 }
 
 .action-item {
@@ -154,6 +157,14 @@ export default {
 }
 
 .action-item:hover {
-  color: #409eff;
+  color: var(--primary-color);
+}
+
+.pins-container {
+  background-color: var(--bg-secondary);
+}
+
+.pin-link {
+  color: var(--primary-color);
 }
 </style>

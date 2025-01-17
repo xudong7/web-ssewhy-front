@@ -122,7 +122,7 @@ export default {
 <style scoped>
 .knowledge-page {
   padding: 20px;
-  background-color: #f6f6f6;
+  background-color: var(--bg-primary);
   min-height: calc(100vh - 52px);
   max-width: 1200px;
   margin: 0 auto;
@@ -136,7 +136,7 @@ export default {
 }
 
 .knowledge-content {
-  background: #fff;
+  background: var(--bg-primary);
   padding: 20px;
   border-radius: 8px;
 }
@@ -151,11 +151,12 @@ export default {
   margin-bottom: 20px;
   cursor: pointer;
   transition: all 0.3s;
+  background-color: var(--bg-primary);
 }
 
 .article-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-hover);
 }
 
 .article-info {
@@ -165,19 +166,19 @@ export default {
 
 .article-title {
   font-size: 18px;
-  color: #121212;
+  color: var(--text-primary);
   margin-bottom: 10px;
 }
 
 .article-desc {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 14px;
   margin-bottom: 10px;
   line-height: 1.5;
 }
 
 .article-meta {
-  color: #8590a6;
+  color: var(--text-tertiary);
   font-size: 13px;
 }
 
@@ -190,5 +191,25 @@ export default {
   height: 120px;
   object-fit: cover;
   border-radius: 4px;
+}
+
+.knowledge-container {
+  background-color: var(--bg-secondary);
+}
+
+.knowledge-card {
+  background: var(--bg-primary);
+}
+
+.knowledge-title {
+  color: var(--text-primary);
+}
+
+.knowledge-desc {
+  color: var(--text-secondary);
+}
+
+.knowledge-tag {
+  color: var(--text-tertiary);
 }
 </style>

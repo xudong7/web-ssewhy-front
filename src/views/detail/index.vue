@@ -16,7 +16,11 @@ export default {
   width: 1000px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f6f6f6;
+  background-color: var(--bg-secondary);
   min-height: calc(100vh - 52px);
+}
+
+.detail-container {
+  background-color: var(--bg-secondary);
 }
 </style>

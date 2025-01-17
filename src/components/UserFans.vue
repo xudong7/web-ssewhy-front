@@ -137,100 +137,135 @@ export default {
 </script>
 
 <style scoped>
-.fans-container {
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
-  padding: 20px;
+.user-fans {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+}
+
+.empty-state {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) 0;
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .user-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.empty-state {
-  text-align: center;
-  color: #8590a6;
-  padding: 40px 0;
+  gap: var(--spacing-md);
 }
 
 .user-card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-light);
+  padding: var(--spacing-md);
   display: flex;
   align-items: center;
-  padding: 12px;
-  border-radius: 8px;
-  transition: background-color 0.2s;
 }
 
 .user-card:hover {
-  background-color: #f6f6f6;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-hover);
 }
 
 .user-avatar {
-  cursor: pointer;
-  margin-right: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-right: var(--spacing-md);
+  background: var(--bg-tertiary);
   flex-shrink: 0;
+  cursor: pointer;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
 .user-info {
   flex: 1;
   min-width: 0;
-  margin-right: 12px;
+  margin-right: var(--spacing-md);
 }
 
 .username {
-  cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
-  color: #121212;
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+  cursor: pointer;
 }
 
 .username:hover {
-  color: #175199;
+  color: var(--primary-color);
 }
 
 .description {
   font-size: 14px;
-  color: #8590a6;
-  white-space: nowrap;
+  color: var(--text-secondary);
+  line-height: 1.6;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .follow-btn {
-  padding: 0 12px;
-  height: 28px;
-  font-size: 13px;
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  cursor: pointer;
   transition: all 0.3s ease;
+  background: var(--primary-color);
+  color: var(--bg-primary);
+  border: none;
+}
+
+.follow-btn:hover {
+  background: var(--primary-hover);
 }
 
 .follow-btn.is-followed {
-  background-color: #f2f3f5;
-  border-color: #e5e6eb;
-  color: #8590a6;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
 }
 
 .follow-btn.is-followed:hover {
-  background-color: #f7f8fa;
-  color: #ff4d4f;
+  background: var(--error-color);
+  color: var(--bg-primary);
 }
 
-.follow-btn.is-followed:hover .el-icon {
-  transform: scale(1.1);
-}
+@media screen and (max-width: 768px) {
+  .user-card {
+    padding: var(--spacing-sm);
+  }
 
-.follow-btn :deep(.el-icon) {
-  font-size: 12px;
-  transition: transform 0.2s ease;
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: var(--spacing-sm);
+  }
+
+  .username {
+    font-size: 14px;
+  }
+
+  .description {
+    font-size: 12px;
+  }
 }
 </style>

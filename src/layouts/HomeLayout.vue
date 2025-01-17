@@ -50,6 +50,11 @@
         <span @click="goWrite"
           ><el-icon class="icon"><Edit /></el-icon>创作</span
         >
+        <span @click="toggleTheme"
+          ><el-icon class="icon" v-if="isDarkTheme"><Moon /></el-icon
+          ><el-icon class="icon" v-else><Sunny /></el-icon
+          >{{ isDarkTheme ? "深色" : "浅色" }}</span
+        >
         <span @click="goLogin"
           ><el-icon class="icon"><SwitchButton /></el-icon>登出</span
         >
@@ -76,6 +81,8 @@ import {
   ChatDotRound,
   Edit,
   SwitchButton,
+  Moon,
+  Sunny,
 } from "@element-plus/icons-vue";
 import FooterComponent from "@/components/FooterComponent.vue";
 
@@ -87,6 +94,8 @@ export default {
     ChatDotRound,
     Edit,
     SwitchButton,
+    Moon,
+    Sunny,
     FooterComponent,
   },
   data() {
@@ -95,7 +104,7 @@ export default {
       userStore: useUserStore(),
       searchText: "",
       isFocused: false,
-      userStore: useUserStore(),
+      isDarkTheme: false,
     };
   },
   methods: {
@@ -139,11 +148,39 @@ export default {
       this.userStore.handleLogout();
       this.$router.push("/login");
     },
+    toggleTheme() {
+      this.isDarkTheme = !this.isDarkTheme;
+      // 设置 HTML data-theme 属性
+      document.documentElement.setAttribute(
+        "data-theme",
+        this.isDarkTheme ? "dark" : "light",
+      );
+      // 设置 Element Plus 暗黑模式
+      if (this.isDarkTheme) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+      localStorage.setItem("theme", this.isDarkTheme ? "dark" : "light");
+    },
   },
   watch: {
     $route() {
       this.activeMenu = this.getActiveMenu();
     },
+  },
+  mounted() {
+    // 从 localStorage 中获取主题设置
+    const savedTheme = localStorage.getItem("theme") || "light";
+    this.isDarkTheme = savedTheme === "dark";
+    // 设置 HTML data-theme 属性
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    // 设置 Element Plus 暗黑模式
+    if (this.isDarkTheme) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   },
 };
 </script>
@@ -156,8 +193,8 @@ export default {
   align-items: center;
   padding: 0;
   height: auto;
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-sm);
   position: fixed;
   top: 0;
   left: 0;
@@ -193,7 +230,7 @@ export default {
 .logo {
   font-size: 24px;
   font-weight: bold;
-  color: #056de8;
+  color: var(--primary-color);
   margin-right: 20px;
   cursor: pointer;
 }
@@ -213,39 +250,39 @@ export default {
 }
 
 .search-bar :deep(.el-input__wrapper) {
-  background-color: #f6f6f6;
-  border-radius: 999px;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-full);
   padding: 0 12px;
-  transition: all 0.2s;
+  transition: var(--transition-all);
 }
 
 .search-bar :deep(.el-input__wrapper.is-focus) {
-  background-color: #fff;
-  box-shadow: 0 0 0 2px rgba(5, 109, 232, 0.1);
+  background-color: var(--bg-primary);
+  box-shadow: 0 0 0 2px var(--primary-bg);
 }
 
 .search-bar :deep(.el-input__inner) {
   height: 36px;
   font-size: 16px;
-  color: #121212;
+  color: var(--text-primary);
 }
 
 .search-bar :deep(.el-input__inner)::placeholder {
-  color: #8590a6;
+  color: var(--text-tertiary);
 }
 
 .search-icon {
   font-size: 18px;
-  color: #8590a6;
+  color: var(--text-tertiary);
   margin-right: 8px;
 }
 
 .search-button {
-  background-color: #3b82f6;
+  background-color: var(--primary-color);
   border: none;
-  border-radius: 999px;
-  transition: all 0.2s;
-  color: #fff;
+  border-radius: var(--radius-full);
+  transition: var(--transition-all);
+  color: var(--text-inverse);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -256,8 +293,8 @@ export default {
 }
 
 .search-button:hover {
-  background-color: #056de8;
-  color: #fff;
+  background-color: var(--primary-hover);
+  color: var(--text-inverse);
 }
 
 .user-actions {
@@ -270,43 +307,43 @@ export default {
 .user-actions span {
   margin-right: 15px;
   cursor: pointer;
-  transition: color 0.3s;
-  color: #8590a6;
+  transition: var(--transition-colors);
+  color: var(--text-tertiary);
   font-size: 14px;
   display: flex;
   align-items: center;
 }
 
 .user-actions span:hover {
-  color: #056de8;
+  color: var(--primary-color);
 }
 
 .user-actions span:hover .icon {
-  color: #056de8;
+  color: var(--primary-color);
 }
 
 .icon {
   margin-right: 5px;
   font-size: 14px;
-  color: #8590a6;
-  transition: color 0.3s;
+  color: var(--text-tertiary);
+  transition: var(--transition-colors);
 }
 
 .el-avatar {
   cursor: pointer;
   border: 2px solid transparent;
-  transition: border-color 0.2s;
+  transition: var(--transition-colors);
 }
 
 .el-avatar:hover {
-  border-color: #056de8;
+  border-color: var(--primary-color);
 }
 
 /* Main Content Styles */
 .main-content {
   margin-top: 52px;
   min-height: calc(100vh - 52px);
-  background-color: #f6f6f6;
+  background-color: var(--bg-secondary);
   padding: 0;
 }
 

@@ -181,7 +181,7 @@ export default {
 <style scoped>
 .write-container {
   padding: 24px;
-  background: #fff;
+  background: var(--bg-primary);
   min-height: calc(100vh - 52px);
   max-width: 1200px;
   margin: 0 auto;
@@ -220,15 +220,15 @@ export default {
 }
 
 .editor-container {
-  border: 1px solid #e4e7ed;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
 }
 
 .editor-toolbar {
   padding: 12px;
-  border-bottom: 1px solid #e4e7ed;
-  background: #f9fafb;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
   border-radius: 8px 8px 0 0;
   display: flex;
   gap: 12px;
@@ -241,7 +241,7 @@ export default {
 
 .markdown-editor {
   flex: 1;
-  border-right: 1px solid #e4e7ed;
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
 }
@@ -249,7 +249,7 @@ export default {
 .cover-preview {
   position: relative;
   padding: 12px;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .cover-preview img {
@@ -269,7 +269,7 @@ export default {
   flex: 1;
   padding: 24px;
   overflow-y: auto;
-  background: #fafbfc;
+  background: var(--bg-tertiary);
 }
 
 :deep(.el-textarea__inner) {
@@ -292,7 +292,7 @@ export default {
     sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  color: #24292e;
+  color: var(--text-primary);
 }
 
 .markdown-body img {
@@ -306,14 +306,18 @@ export default {
 
 .markdown-body h1,
 .markdown-body h2 {
-  border-bottom: 1px solid #eaecef;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.3em;
 }
 
 .markdown-body pre {
-  background-color: #f6f8fa;
+  background-color: var(--bg-tertiary);
   border-radius: 6px;
   padding: 16px;
   overflow: auto;
+}
+
+.markdown-body code {
+  background-color: var(--bg-tertiary);
 }
 </style>

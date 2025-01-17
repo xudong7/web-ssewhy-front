@@ -240,9 +240,9 @@ export default {
 
 /* 推荐关注部分样式 */
 .recommended-follows {
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   padding: 0;
   margin-bottom: 8px;
 }
@@ -251,53 +251,47 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #f6f6f6;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .recommended-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #121212;
-  margin: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.recommended-title :deep(.el-icon) {
+  gap: 8px;
+  margin: 0;
   font-size: 16px;
-  color: #8590a6;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .refresh-btn {
-  font-size: 14px;
-  color: #8590a6;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
+  font-size: 14px;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: var(--transition-colors);
 }
 
 .refresh-btn:hover {
-  color: #175199;
+  color: var(--primary-color);
 }
 
 .user-list {
-  display: flex;
-  flex-direction: column;
+  padding: 8px 16px;
 }
 
 .user-card {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  transition: background-color 0.2s;
-  position: relative;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.user-card:hover {
-  background-color: #f6f6f6;
+.user-card:last-child {
+  border-bottom: none;
 }
 
 .user-avatar {
@@ -308,28 +302,25 @@ export default {
 
 .user-info {
   flex: 1;
+  margin: 0 12px;
   min-width: 0;
-  margin-right: 12px;
 }
 
 .username {
-  cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #121212;
+  color: var(--text-primary);
   margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  cursor: pointer;
 }
 
 .username:hover {
-  color: #175199;
+  color: var(--primary-color);
 }
 
 .description {
   font-size: 13px;
-  color: #8590a6;
+  color: var(--text-tertiary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -339,22 +330,22 @@ export default {
   padding: 0 12px;
   height: 28px;
   font-size: 13px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   gap: 4px;
-  transition: all 0.3s ease;
+  transition: var(--transition-all);
 }
 
 .follow-btn.is-followed {
-  background-color: #f2f3f5;
-  border-color: #e5e6eb;
-  color: #8590a6;
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-tertiary);
 }
 
 .follow-btn.is-followed:hover {
-  background-color: #f7f8fa;
-  color: #ff4d4f;
+  background-color: var(--bg-hover);
+  color: var(--error-color);
 }
 
 .follow-btn.is-followed:hover .el-icon {
@@ -368,9 +359,9 @@ export default {
 
 /* 轮播图部分样式 */
 .carousel-section {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   padding: 16px;
 }
 
@@ -379,18 +370,16 @@ export default {
 }
 
 .carousel-content {
-  width: 100%;
-  height: 100%;
   position: relative;
-  cursor: pointer;
-  border-radius: 8px;
+  height: 100%;
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
 .carousel-image {
   width: 100%;
   height: 100%;
-  transition: transform 0.3s ease;
+  object-fit: cover;
 }
 
 .carousel-content:hover .carousel-image {
@@ -402,65 +391,51 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 12px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-  color: #fff;
-  font-size: 16px;
-  font-weight: 500;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--text-inverse);
+  font-size: 14px;
 }
 
 .ad-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  margin-top: 16px;
 }
 
 .ad-item {
   display: flex;
-  gap: 12px;
+  align-items: center;
   padding: 12px;
-  border-radius: 8px;
-  background: #f9fafb;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition-all);
 }
 
 .ad-item:hover {
-  background: #f0f2f7;
-  transform: translateX(4px);
+  background: var(--bg-hover);
 }
 
 .ad-image {
-  width: 120px;
+  width: 80px;
   height: 80px;
-  border-radius: 4px;
-  overflow: hidden;
-  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  margin-right: 12px;
 }
 
 .ad-info {
   flex: 1;
-  min-width: 0;
 }
 
 .ad-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .ad-desc {
-  font-size: 14px;
-  color: #6b7280;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.5;
 }
 
 .image-placeholder {
@@ -468,43 +443,19 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  background: #f7f8f9;
-  position: relative;
+  align-items: center;
+  background: var(--bg-tertiary);
+  color: var(--text-tertiary);
 }
 
 .loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #e5e7eb;
-  border-top-color: #8590a6;
-  border-radius: 50%;
-  animation: loading-rotate 0.8s linear infinite;
   margin-bottom: 8px;
 }
 
 .loading-text {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 12px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
-  color: #fff;
   font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@keyframes loading-rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  color: var(--text-tertiary);
 }
 
 :deep(.el-carousel__item) {

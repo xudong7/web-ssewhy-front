@@ -134,7 +134,7 @@ export default {
 <style scoped>
 .search-page {
   min-height: calc(100vh - 52px);
-  background-color: #f6f6f6;
+  background-color: var(--bg-secondary);
   padding-top: 20px;
 }
 
@@ -166,9 +166,9 @@ export default {
 }
 
 .article-item {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -207,7 +207,7 @@ export default {
 .article-title {
   font-size: 18px;
   font-weight: 600;
-  color: #121212;
+  color: var(--text-primary);
   margin-bottom: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -216,7 +216,7 @@ export default {
 
 .article-description {
   font-size: 15px;
-  color: #646464;
+  color: var(--text-secondary);
   line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -228,7 +228,7 @@ export default {
 
 .article-footer {
   padding: 12px 20px;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   gap: 24px;
@@ -238,14 +238,14 @@ export default {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #8590a6;
+  color: var(--text-tertiary);
   font-size: 14px;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: var(--transition-colors);
 }
 
 .action-item:hover {
-  color: #056de8;
+  color: var(--primary-color);
 }
 
 /* 右侧区域 */
@@ -256,8 +256,8 @@ export default {
 
 /* 返回顶部按钮样式 */
 .back-to-top {
-  --el-backtop-bg-color: #fff;
-  --el-backtop-hover-bg-color: #f0f2f7;
+  --el-backtop-bg-color: var(--bg-primary);
+  --el-backtop-hover-bg-color: var(--bg-hover);
 }
 
 .back-top-content {
@@ -268,7 +268,7 @@ export default {
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  color: #606266;
+  color: var(--text-secondary);
 }
 
 .back-top-content .el-icon {
@@ -279,13 +279,13 @@ export default {
 :deep(.el-backtop) {
   width: 56px;
   height: 56px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-all);
 }
 
 :deep(.el-backtop:hover) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-hover);
 }
 
 /* 响应式处理 */
@@ -339,5 +339,29 @@ export default {
     flex-wrap: wrap;
     gap: 16px;
   }
+}
+
+.search-result {
+  background: var(--bg-primary);
+}
+
+.result-title {
+  color: var(--text-primary);
+}
+
+.result-info {
+  color: var(--text-secondary);
+}
+
+.result-divider {
+  border-top: 1px solid var(--border-color);
+}
+
+.result-tag {
+  color: var(--text-tertiary);
+}
+
+.result-link {
+  color: var(--primary-color);
 }
 </style>

@@ -237,30 +237,31 @@ export default {
   width: 1200px;
   min-height: 100vh;
   margin: 0 auto;
-  background: #f6f6f6;
+  background: var(--bg-secondary);
 }
 
 .cover-section {
   position: relative;
-  background: #fff;
-  border-radius: 2px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
   margin-bottom: 10px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .cover-image {
   width: 100%;
   height: 320px;
-  background: #e5e5e5;
+  background: var(--bg-tertiary);
   overflow: hidden;
   position: relative;
-  border-radius: 2px 2px 0 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .cover-image-ratio {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: var(--bg-tertiary);
 }
 
 .user-info {
@@ -277,19 +278,20 @@ export default {
 .avatar {
   width: 240px;
   height: 240px;
-  border-radius: 4px;
-  border: 4px solid #fff;
+  border-radius: var(--radius-md);
+  border: 4px solid var(--bg-primary);
   overflow: hidden;
-  background: #fff;
+  background: var(--bg-primary);
   flex-shrink: 0;
   margin-right: 32px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  background: var(--bg-tertiary);
 }
 
 .user-info-content {
@@ -302,18 +304,18 @@ export default {
   margin: 0 0 8px;
   font-size: 26px;
   font-weight: 600;
-  color: #121212;
+  color: var(--text-primary);
 }
 
 .headline {
-  color: #646464;
+  color: var(--text-secondary);
   font-size: 15px;
   margin-bottom: 16px;
   line-height: 1.6;
 }
 
 .user-stats {
-  color: #646464;
+  color: var(--text-secondary);
   font-size: 15px;
   margin-bottom: 16px;
 }
@@ -324,11 +326,16 @@ export default {
 }
 
 .user-stats span:hover {
-  color: #175199;
+  color: var(--primary-color);
 }
 
 .edit-profile {
   margin-top: 16px;
+  color: var(--text-primary);
+}
+
+.edit-profile:hover {
+  color: var(--primary-color);
 }
 
 .main-content {
@@ -340,45 +347,45 @@ export default {
 }
 
 .nav-tabs {
-  background: #fff;
+  background: var(--bg-primary);
   padding: 0 20px;
-  border-radius: 2px;
-  border-bottom: 1px solid #f0f0f0;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  border-radius: var(--radius-md);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .nav-tabs span {
   display: inline-block;
   padding: 16px 20px;
-  color: #121212;
+  color: var(--text-primary);
   cursor: pointer;
   font-size: 16px;
   margin-right: 8px;
 }
 
 .nav-tabs span:hover {
-  color: #175199;
+  color: var(--primary-color);
 }
 
 .nav-tabs span.active {
-  color: #056de8;
-  border-bottom: 3px solid #056de8;
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
   font-weight: 500;
 }
 
 .content-list {
-  background: #fff;
+  background: var(--bg-primary);
   min-height: 400px;
   padding: 0;
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(18, 18, 18, 0.1);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
-/* 添加上传组件的样式 */
+/* 上传组件样式 */
 .avatar-uploader,
 .cover-uploader {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -386,13 +393,13 @@ export default {
 
 .avatar-uploader:hover,
 .cover-uploader:hover {
-  border-color: #409eff;
+  border-color: var(--primary-color);
 }
 
 .avatar-uploader-icon,
 .cover-uploader-icon {
   font-size: 28px;
-  color: #8c939d;
+  color: var(--text-tertiary);
   width: 100px;
   height: 100px;
   line-height: 100px;
@@ -404,6 +411,7 @@ export default {
   height: 100px;
   display: block;
   object-fit: cover;
+  background: var(--bg-tertiary);
 }
 
 .cover-preview {
@@ -411,5 +419,102 @@ export default {
   height: 100px;
   display: block;
   object-fit: cover;
+  background: var(--bg-tertiary);
+}
+
+.home-card {
+  background: var(--bg-primary);
+}
+
+.avatar-wrapper {
+  background: var(--bg-tertiary);
+}
+
+.user-avatar {
+  border: 4px solid var(--bg-primary);
+  background: var(--bg-primary);
+}
+
+.user-name {
+  color: var(--text-primary);
+}
+
+.user-bio {
+  color: var(--text-secondary);
+}
+
+.user-stats {
+  color: var(--text-secondary);
+}
+
+.user-link {
+  color: var(--primary-color);
+}
+
+.content-wrapper {
+  background: var(--bg-primary);
+}
+
+.content-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.content-title {
+  color: var(--text-primary);
+}
+
+.content-link {
+  color: var(--primary-color);
+}
+
+.content-link.active {
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+}
+
+.content-body {
+  background: var(--bg-primary);
+}
+
+.upload-wrapper {
+  border: 1px dashed var(--border-color);
+}
+
+.upload-wrapper:hover {
+  border-color: var(--primary-color);
+}
+
+.upload-text {
+  color: var(--text-tertiary);
+}
+
+/* 对话框样式 */
+:deep(.el-dialog) {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+:deep(.el-dialog__title) {
+  color: var(--text-primary);
+}
+
+:deep(.el-dialog__body) {
+  color: var(--text-secondary);
+}
+
+:deep(.el-form-item__label) {
+  color: var(--text-primary);
+}
+
+:deep(.el-input__inner) {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+:deep(.el-input__inner:hover),
+:deep(.el-input__inner:focus) {
+  border-color: var(--primary-color);
 }
 </style>

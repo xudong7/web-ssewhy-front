@@ -74,7 +74,7 @@ export default {
 <style scoped>
 .download-page {
   padding: 20px;
-  background-color: #f6f6f6;
+  background-color: var(--bg-secondary);
   min-height: calc(100vh - 52px);
   max-width: 1200px;
   margin: 0 auto;
@@ -87,13 +87,13 @@ export default {
 
 .download-header h1 {
   font-size: 32px;
-  color: #121212;
+  color: var(--text-primary);
   margin-bottom: 12px;
 }
 
 .download-header .desc {
   font-size: 16px;
-  color: #8590a6;
+  color: var(--text-tertiary);
 }
 
 .download-content {
@@ -105,6 +105,7 @@ export default {
 .download-item {
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-primary);
 }
 
 .item-info {
@@ -114,13 +115,13 @@ export default {
 .item-title {
   font-size: 18px;
   font-weight: bold;
-  color: #121212;
+  color: var(--text-primary);
   margin-bottom: 12px;
 }
 
 .item-desc {
   font-size: 14px;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 16px;
   line-height: 1.5;
 }
@@ -128,12 +129,36 @@ export default {
 .item-meta {
   display: flex;
   gap: 16px;
-  color: #8590a6;
+  color: var(--text-tertiary);
   font-size: 12px;
   margin-bottom: 16px;
 }
 
 .item-action {
   text-align: right;
+}
+
+.download-container {
+  background-color: var(--bg-secondary);
+}
+
+.download-title {
+  color: var(--text-primary);
+}
+
+.download-tag {
+  color: var(--text-tertiary);
+}
+
+.download-item-title {
+  color: var(--text-primary);
+}
+
+.download-item-desc {
+  color: var(--text-secondary);
+}
+
+.download-item-tag {
+  color: var(--text-tertiary);
 }
 </style>

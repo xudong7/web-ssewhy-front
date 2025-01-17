@@ -119,88 +119,88 @@ export default {
 
 <style scoped>
 .comment-component {
-  margin: 20px auto;
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: var(--spacing-lg) auto;
+  background: var(--bg-primary);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
 }
 
 .comment-count {
   font-size: 14px;
-  margin-bottom: 10px;
-  color: #666;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
 }
 
 .comment-input-container {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .comment-input-avatar {
   width: 40px;
   height: 40px;
-  margin-right: 10px;
+  margin-right: var(--spacing-sm);
   cursor: pointer;
 }
 
 .comment-input {
   flex: 1;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
 }
 
 .comment-button {
-  margin-left: 10px;
+  margin-left: var(--spacing-sm);
 }
 
 .comment-list {
-  margin-top: 20px;
-  border: 1px solid #fff;
-  border-radius: 5px;
-  padding: 10px;
+  margin-top: var(--spacing-lg);
+  border: 1px solid var(--bg-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs);
 }
 
 .comment-item {
   display: flex;
   align-items: flex-start;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .comment-avatar {
   width: 40px;
   height: 40px;
-  margin-right: 10px;
+  margin-right: var(--spacing-sm);
   cursor: pointer;
 }
 
 .comment-content {
   flex: 1;
-  background: #fff;
-  border-radius: 5px;
-  padding: 10px 15px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  box-shadow: var(--shadow-sm);
 }
 
 .comment-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
+  margin-bottom: var(--spacing-xs);
 }
 
 .comment-username {
   font-weight: bold;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .comment-time {
   font-size: 12px;
-  color: #999;
+  color: var(--text-tertiary);
 }
 
 .comment-text {
   font-size: 14px;
-  color: #555;
+  color: var(--text-primary);
   line-height: 1.5;
 }
 </style>
