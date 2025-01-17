@@ -77,6 +77,8 @@
 
 <script>
 import { marked } from "marked";
+import { ElMessage } from "element-plus";
+import hljs from "highlight.js";
 import { publishArticle, uploadImage } from "@/api/article";
 import { useUserStore } from "@/store/modules/user";
 
@@ -93,7 +95,18 @@ export default {
   },
   methods: {
     updatePreview() {
-      this.previewContent = marked(this.content);
+      this.previewContent = marked(this.content, {
+        highlight: function (code, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return hljs.highlight(code, { language: lang }).value;
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          return code;
+        },
+      });
     },
     async handleImageChange(file) {
       if (!file) return;
@@ -121,9 +134,9 @@ export default {
         // 更新预览
         this.updatePreview();
 
-        this.$message.success("图片上传成功");
+        ElMessage.success("图片上传成功");
       } catch (error) {
-        this.$message.error("图片上传失败");
+        ElMessage.error("图片上传失败");
       }
     },
     async handleCoverChange(file) {
@@ -135,9 +148,9 @@ export default {
       try {
         const res = await uploadImage(formData);
         this.cover = res.data.data;
-        this.$message.success("封面上传成功");
+        ElMessage.success("封面上传成功");
       } catch (error) {
-        this.$message.error("封面上传失败");
+        ElMessage.error("封面上传失败");
       }
     },
     removeCover() {
@@ -147,13 +160,13 @@ export default {
       const imgMatch = this.content.match(/<img.*?src="(.*?)".*?>/);
       return imgMatch ? imgMatch[1] : "";
     },
-    publishArticle() {
+    async publishArticle() {
       if (!this.title.trim()) {
-        ElMessage.error("please input title");
+        ElMessage.error("请输入标题");
         return;
       }
       if (!this.content.trim()) {
-        ElMessage.error("please input content");
+        ElMessage.error("请输入内容");
         return;
       }
 
@@ -162,17 +175,36 @@ export default {
         this.cover = this.getFirstImageUrl();
       }
 
-      // 调用发布API
-      publishArticle({
-        title: this.title,
-        content: this.content,
-        cover: this.cover,
-        userId: this.userStore.userId,
-        status: 1, // 1表示已发布
-      }).then((res) => {
-        ElMessage.success("publish success");
-        this.$router.push("/hall");
+      // 将 Markdown 内容转换为 HTML
+      const htmlContent = marked(this.content, {
+        highlight: function (code, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return hljs.highlight(code, { language: lang }).value;
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          return code;
+        },
       });
+
+      try {
+        // 调用发布API
+        await publishArticle({
+          title: this.title,
+          content: htmlContent, // 发送转换后的HTML内容
+          rawContent: this.content, // 保存原始Markdown内容
+          cover: this.cover,
+          userId: this.userStore.userId,
+          status: 1, // 1表示已发布
+        });
+
+        ElMessage.success("发布成功");
+        this.$router.push("/hall");
+      } catch (error) {
+        ElMessage.error("发布失败");
+      }
     },
   },
 };
@@ -269,17 +301,20 @@ export default {
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+  font-family: Consolas, monospace;
   background: var(--bg-tertiary);
+  height: 552px;
 }
 
 :deep(.el-textarea__inner) {
   border: none;
   resize: none;
-  height: 100%;
-  font-family: "Monaco", monospace;
-  font-size: 15px;
-  line-height: 1.6;
+  height: 600px;
+  font-family: "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.5;
   padding: 20px;
+  background-color: var(--bg-primary);
 }
 
 .markdown-body {
@@ -311,13 +346,51 @@ export default {
 }
 
 .markdown-body pre {
-  background-color: var(--bg-tertiary);
+  background-color: #1e1e1e;
   border-radius: 6px;
   padding: 16px;
   overflow: auto;
+  margin: 16px 0;
 }
 
-.markdown-body code {
+.markdown-body pre code {
+  display: block;
+  padding: 16px;
+  font-family: "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #d4d4d4;
+  background: none;
+  border-radius: 0;
+  overflow-x: auto;
+  letter-spacing: 0;
+  font-weight: normal;
+}
+
+/* 内联代码样式 */
+.markdown-body code:not(pre code) {
+  padding: 2px 6px;
+  margin: 0 2px;
+  font-size: 0.9em;
+  font-family: "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
   background-color: var(--bg-tertiary);
+  border-radius: 4px;
+  color: var(--primary-color);
+}
+
+/* 行号样式 */
+.markdown-body pre {
+  position: relative;
+}
+
+.markdown-body pre::before {
+  content: "1";
+  position: absolute;
+  left: 8px;
+  top: 16px;
+  color: #858585;
+  font-size: 13px;
+  font-family: "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  user-select: none;
 }
 </style>

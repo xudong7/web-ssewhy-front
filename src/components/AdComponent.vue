@@ -392,8 +392,8 @@ export default {
   left: 0;
   right: 0;
   padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.6);
-  color: var(--text-inverse);
+  background: var(--bg-hover);
+  color: var(--text-primary);
   font-size: 14px;
 }
 

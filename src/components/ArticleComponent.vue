@@ -27,7 +27,10 @@
           >更新时间：{{ processDate(article.updateTime) }}</span
         >
       </div>
-      <div class="article-body" v-html="processContent(article.content)"></div>
+      <div
+        class="article-body markdown-body"
+        v-html="processContent(article.content)"
+      ></div>
     </div>
 
     <!-- 图片预览组件 -->
@@ -85,6 +88,7 @@
 import { getArticleById, handleLike } from "@/api/article.js";
 import { getUserInfoById, handleCollection } from "@/api/user.js";
 import { marked } from "marked";
+import hljs from "highlight.js";
 import { useUserStore } from "@/store/modules/user.js";
 import { Star, Collection, CaretTop } from "@element-plus/icons-vue";
 
@@ -100,7 +104,6 @@ export default {
       article: {},
       showViewer: false,
       previewUrl: "",
-      activeHeading: "",
       author: {},
       userStore: useUserStore(),
       isLiked: false,
@@ -153,6 +156,14 @@ export default {
           const userRes = await getUserInfoById(this.article.userId);
           this.author = userRes.data.data;
         }
+
+        // 在文章内容加载后应用代码高亮
+        this.$nextTick(() => {
+          const blocks = document.querySelectorAll(".article-body pre code");
+          blocks.forEach((block) => {
+            hljs.highlightElement(block);
+          });
+        });
       } catch (error) {
         console.error("获取文章失败:", error);
       }
@@ -176,7 +187,24 @@ export default {
     },
     processContent(content) {
       if (!content) return "";
-      // 先将markdown转换为HTML
+
+      // 配置 marked 选项
+      marked.setOptions({
+        highlight: function (code, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return hljs.highlight(code, { language: lang }).value;
+            } catch (err) {
+              console.error(err);
+            }
+          }
+          return code;
+        },
+        breaks: true,
+        gfm: true,
+      });
+
+      // 转换 Markdown 为 HTML
       let htmlContent = marked(content);
       // 为标题添加id
       htmlContent = this.addHeadingIds(htmlContent);
@@ -577,5 +605,118 @@ export default {
 :deep(.el-backtop:hover) {
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
+}
+
+/* Markdown 样式 */
+.markdown-body pre {
+  background-color: var(--bg-primary);
+  border-radius: 6px;
+  padding: 16px;
+  overflow: auto;
+  margin: 16px 0;
+  position: relative;
+}
+
+.markdown-body pre code {
+  display: block;
+  padding: 16px;
+  font-family: Consolas, "Liberation Mono", Monaco, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background: none;
+  border-radius: 0;
+  overflow-x: auto;
+  letter-spacing: 0;
+  font-weight: normal;
+}
+
+/* 内联代码样式 */
+.markdown-body code:not(pre code) {
+  padding: 2px 6px;
+  margin: 0 2px;
+  font-size: 0.9em;
+  font-family: Consolas, "Liberation Mono", Monaco, "Courier New", monospace;
+  background-color: var(--bg-tertiary);
+  border-radius: 4px;
+  color: var(--primary-color);
+}
+
+/* 优化滚动条样式 */
+.markdown-body pre code::-webkit-scrollbar {
+  height: 6px;
+}
+
+.markdown-body pre code::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+}
+
+.markdown-body pre code::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 其他 Markdown 样式 */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-body h1,
+.markdown-body h2 {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 16px auto;
+  border-radius: 8px;
+}
+
+.markdown-body blockquote {
+  padding: 0 1em;
+  color: var(--text-secondary);
+  border-left: 0.25em solid var(--border-color);
+  margin: 16px 0;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 2em;
+  margin: 16px 0;
+}
+
+.markdown-body table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+  margin: 16px 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: 6px 13px;
+  border: 1px solid var(--border-color);
+}
+
+.markdown-body table tr {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border-color);
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background-color: var(--bg-secondary);
 }
 </style>
