@@ -17,8 +17,8 @@
           <h1 class="username">{{ userInfo.username }}</h1>
           <p class="headline">个人简介</p>
           <div class="user-stats">
-            <span> 0 关注</span>
-            <span> 0 粉丝</span>
+            <span> {{ userInfo.followNum }} 关注</span>
+            <span> {{ userInfo.fansNum }} 粉丝</span>
           </div>
           <el-button
             type="primary"
@@ -124,6 +124,12 @@ export default {
       this.userInfo.isFollowed =
         this.userInfo.fansCart &&
         this.userInfo.fansCart.includes(`,${this.userStore.userId},`);
+      this.userInfo.followNum = this.userInfo.followCart
+        .split(",")
+        .filter(Boolean).length;
+      this.userInfo.fansNum = this.userInfo.fansCart
+        .split(",")
+        .filter(Boolean).length;
     },
     async handleFollow() {
       try {

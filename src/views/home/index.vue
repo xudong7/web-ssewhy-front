@@ -17,8 +17,8 @@
           <h1 class="username">{{ userInfo.username }}</h1>
           <p class="headline">个人简介</p>
           <div class="user-stats">
-            <span> 0 关注</span>
-            <span> 0 粉丝</span>
+            <span> {{ userInfo.followNum }} 关注</span>
+            <span> {{ userInfo.fansNum }} 粉丝</span>
           </div>
           <div class="edit-profile">
             <el-button type="primary" size="medium" @click="handleEditProfile"
@@ -155,6 +155,12 @@ export default {
   methods: {
     async getUserInfo() {
       this.userInfo = this.userStore.userInfo;
+      this.userInfo.followNum = this.userInfo.followCart
+        .split(",")
+        .filter(Boolean).length;
+      this.userInfo.fansNum = this.userInfo.fansCart
+        .split(",")
+        .filter(Boolean).length;
     },
     handleEditProfile() {
       this.editForm = {

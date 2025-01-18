@@ -43,6 +43,11 @@ const router = new createRouter({
           component: () => import("../views/pins/index.vue"),
         },
         {
+          path: "upload",
+          name: "Upload",
+          component: () => import("../views/upload/index.vue"),
+        },
+        {
           path: "write",
           name: "Write",
           component: () => import("../views/write/index.vue"),

@@ -41,8 +41,11 @@
         </div>
       </div>
       <div class="user-actions">
-        <span
+        <!-- <span
           ><el-icon class="icon"><Message /></el-icon>消息</span
+        > -->
+        <span @click="goUpload"
+          ><el-icon class="icon"><Upload /></el-icon>上传</span
         >
         <span
           ><el-icon class="icon"><ChatDotRound /></el-icon>交流</span
@@ -83,6 +86,7 @@ import {
   SwitchButton,
   Moon,
   Sunny,
+  Upload,
 } from "@element-plus/icons-vue";
 import FooterComponent from "@/components/FooterComponent.vue";
 
@@ -96,6 +100,7 @@ export default {
     SwitchButton,
     Moon,
     Sunny,
+    Upload,
     FooterComponent,
   },
   data() {
@@ -130,6 +135,9 @@ export default {
     },
     goDownload() {
       this.$router.push("/download");
+    },
+    goUpload() {
+      this.$router.push("/upload");
     },
     goKnowledge() {
       this.$router.push("/knowledge");

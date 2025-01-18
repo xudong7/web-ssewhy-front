@@ -42,7 +42,7 @@ export default {
           size: "120MB",
           downloads: 1234,
           updateTime: "2023-05-20",
-          url: "https://example.com/frontend.zip",
+          url: "https://caihanlin.com/mypaper/modeling/figure.pdf",
         },
         {
           title: "Vue.js 实战教程",

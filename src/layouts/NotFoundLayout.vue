@@ -1,11 +1,3 @@
-<!--
- * @Author: xudong7 13433126742@163.com
- * @Date: 2024-12-26 22:40:22
- * @LastEditors: xudong7 13433126742@163.com
- * @LastEditTime: 2025-01-17 16:35:44
- * @FilePath: \front\src\layouts\NotFoundLayout.vue
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
--->
 <template>
   <div class="not-found-container">
     <div class="loading">
@@ -41,7 +33,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f7f9fa;
+  background: var(--bg-primary);
 }
 
 .loading {
@@ -50,7 +42,7 @@ export default {
 
 .loading-text {
   font-size: 24px;
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 .loading-text span {
