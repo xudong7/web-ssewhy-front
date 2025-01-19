@@ -396,24 +396,106 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
-  .article-cover {
-    width: 120px;
-    height: 80px;
+  .user-articles,
+  .user-collect {
+    padding: var(--spacing-xs);
+  }
+
+  .article-item {
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-xs);
   }
 
   .article-header {
     padding: var(--spacing-md);
   }
 
+  .article-main {
+    margin-right: var(--spacing-sm);
+  }
+
+  .article-cover {
+    width: 100px;
+    height: 70px;
+  }
+
+  .article-title {
+    font-size: 16px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .article-description {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .article-meta {
+    font-size: 12px;
+    gap: var(--spacing-xs);
+  }
+
+  .status {
+    font-size: 12px;
+    padding: 2px 8px;
+  }
+
   .article-footer {
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
   }
 
   .action-items {
     width: 100%;
     justify-content: space-between;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+  }
+
+  .action-item {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .article-actions {
+    width: 100%;
+  }
+
+  :deep(.el-button--link) {
+    width: 100%;
+    justify-content: center;
+    padding: 6px 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .user-articles,
+  .user-collect {
+    padding: var(--spacing-xs) 0;
+  }
+
+  .article-cover {
+    width: 80px;
+    height: 60px;
+  }
+
+  .article-title {
+    font-size: 15px;
+  }
+
+  .article-description {
+    font-size: 12px;
+    -webkit-line-clamp: 2;
+  }
+
+  .action-items {
+    gap: 4px;
+  }
+
+  .action-item {
+    font-size: 11px;
+    padding: 3px 6px;
   }
 }
 </style>

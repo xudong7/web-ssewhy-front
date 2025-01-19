@@ -78,6 +78,7 @@ export default {
   min-height: calc(100vh - 52px);
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .download-header {
@@ -138,27 +139,29 @@ export default {
   text-align: right;
 }
 
-.download-container {
-  background-color: var(--bg-secondary);
-}
+@media (max-width: 768px) {
+  .download-header h1 {
+    font-size: 24px;
+  }
 
-.download-title {
-  color: var(--text-primary);
-}
+  .download-header .desc {
+    font-size: 14px;
+  }
 
-.download-tag {
-  color: var(--text-tertiary);
-}
+  .download-content {
+    grid-template-columns: 1fr;
+  }
 
-.download-item-title {
-  color: var(--text-primary);
-}
+  .item-title {
+    font-size: 16px;
+  }
 
-.download-item-desc {
-  color: var(--text-secondary);
-}
+  .item-desc {
+    font-size: 12px;
+  }
 
-.download-item-tag {
-  color: var(--text-tertiary);
+  .item-meta {
+    font-size: 10px;
+  }
 }
 </style>

@@ -442,4 +442,112 @@ export default {
 .upload-text {
   color: var(--text-tertiary);
 }
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .user-container {
+    width: 100%;
+    padding: 0;
+  }
+
+  .cover-section {
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+
+  .cover-image {
+    height: 200px;
+    border-radius: 0;
+  }
+
+  .user-info {
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+    top: -30px;
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .user-info-content {
+    padding-top: 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .username {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+
+  .headline {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .user-stats {
+    font-size: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .user-stats span {
+    margin-right: 0;
+  }
+
+  .follow-btn {
+    margin: 0 auto;
+  }
+
+  .nav-tabs {
+    padding: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-tabs span {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+
+  .content-list {
+    border-radius: 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .cover-image {
+    height: 160px;
+  }
+
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .username {
+    font-size: 18px;
+  }
+
+  .headline {
+    font-size: 13px;
+  }
+
+  .user-stats {
+    font-size: 13px;
+  }
+
+  .nav-tabs span {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
 </style>

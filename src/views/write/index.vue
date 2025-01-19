@@ -393,4 +393,90 @@ export default {
   font-family: "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
   user-select: none;
 }
+
+/* 添加移动端适配样式 */
+@media screen and (max-width: 768px) {
+  .write-container {
+    padding: 5px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .write-header {
+    padding: 10px;
+  }
+
+  .editor-container {
+    margin: 0;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .markdown-preview {
+    margin-top: 5px;
+    height: auto;
+  }
+
+  .editor-toolbar {
+    border-radius: 0;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .markdown-editor,
+  .markdown-preview {
+    padding: 10px;
+  }
+
+  .markdown-body pre {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  .markdown-body img {
+    max-width: 100%;
+    margin: 10px 0;
+  }
+
+  /* 确保代码不会溢出 */
+  .markdown-body pre code {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* 调整图片容器 */
+  :deep(.image-wrapper) {
+    margin: 10px 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  :deep(.image-wrapper img) {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .write-header {
+    padding: 8px;
+  }
+
+  .editor-toolbar,
+  .markdown-editor,
+  .markdown-preview {
+    padding: 8px;
+  }
+
+  .markdown-body {
+    font-size: 14px;
+  }
+}
 </style>

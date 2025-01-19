@@ -240,10 +240,12 @@ export default {
 
 <style scoped>
 .home-container {
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
   min-height: 100vh;
   margin: 0 auto;
   background: var(--bg-secondary);
+  padding: 0 20px;
 }
 
 .cover-section {
@@ -273,16 +275,18 @@ export default {
 .user-info {
   width: 100%;
   margin: 0 auto;
-  padding: 20px 40px 20px;
+  padding: 20px;
   display: flex;
   align-items: flex-start;
   position: relative;
   top: -48px;
   box-sizing: border-box;
+  flex-wrap: wrap;
 }
 
 .avatar {
-  width: 240px;
+  width: 100%;
+  max-width: 240px;
   height: 240px;
   border-radius: var(--radius-md);
   border: 4px solid var(--bg-primary);
@@ -358,6 +362,8 @@ export default {
   border-radius: var(--radius-md);
   border-bottom: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .nav-tabs span {
@@ -428,99 +434,129 @@ export default {
   background: var(--bg-tertiary);
 }
 
-.home-card {
-  background: var(--bg-primary);
+@media (max-width: 768px) {
+  .user-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .avatar {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  .user-info-content {
+    padding-top: 0;
+    text-align: center;
+  }
+
+  .nav-tabs {
+    justify-content: center;
+  }
+
+  .home-container {
+    padding: 0;
+    width: 100%;
+  }
+
+  .cover-section {
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+
+  .cover-image {
+    height: 200px;
+    border-radius: 0;
+  }
+
+  .user-info {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    top: -30px;
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  .user-info-content {
+    padding-top: 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .username {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  .headline {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .user-stats {
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .user-stats span {
+    margin-right: 0;
+  }
+
+  .nav-tabs {
+    padding: 0;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    position: sticky;
+    top: 52px;
+    z-index: 1;
+  }
+
+  .nav-tabs span {
+    padding: 12px 15px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .content-list {
+    border-radius: 0;
+  }
 }
 
-.avatar-wrapper {
-  background: var(--bg-tertiary);
-}
+@media (max-width: 480px) {
+  .cover-image {
+    height: 150px;
+  }
 
-.user-avatar {
-  border: 4px solid var(--bg-primary);
-  background: var(--bg-primary);
-}
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
 
-.user-name {
-  color: var(--text-primary);
-}
+  .username {
+    font-size: 18px;
+  }
 
-.user-bio {
-  color: var(--text-secondary);
-}
+  .headline {
+    font-size: 13px;
+  }
 
-.user-stats {
-  color: var(--text-secondary);
-}
+  .user-stats {
+    font-size: 13px;
+  }
 
-.user-link {
-  color: var(--primary-color);
-}
-
-.content-wrapper {
-  background: var(--bg-primary);
-}
-
-.content-header {
-  border-bottom: 1px solid var(--border-color);
-}
-
-.content-title {
-  color: var(--text-primary);
-}
-
-.content-link {
-  color: var(--primary-color);
-}
-
-.content-link.active {
-  color: var(--primary-color);
-  border-bottom: 3px solid var(--primary-color);
-}
-
-.content-body {
-  background: var(--bg-primary);
-}
-
-.upload-wrapper {
-  border: 1px dashed var(--border-color);
-}
-
-.upload-wrapper:hover {
-  border-color: var(--primary-color);
-}
-
-.upload-text {
-  color: var(--text-tertiary);
-}
-
-/* 对话框样式 */
-:deep(.el-dialog) {
-  background: var(--bg-primary);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-}
-
-:deep(.el-dialog__title) {
-  color: var(--text-primary);
-}
-
-:deep(.el-dialog__body) {
-  color: var(--text-secondary);
-}
-
-:deep(.el-form-item__label) {
-  color: var(--text-primary);
-}
-
-:deep(.el-input__inner) {
-  background: var(--bg-secondary);
-  border-color: var(--border-color);
-  color: var(--text-primary);
-}
-
-:deep(.el-input__inner:hover),
-:deep(.el-input__inner:focus) {
-  border-color: var(--primary-color);
+  .nav-tabs span {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
 }
 </style>

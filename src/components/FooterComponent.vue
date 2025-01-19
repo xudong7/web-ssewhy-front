@@ -33,4 +33,14 @@ export default {
 .footer p:hover {
   color: #000;
 }
+
+@media screen and (max-width: 768px) {
+  .footer {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    margin: 0;
+    font-size: 12px;
+  }
+}
 </style>

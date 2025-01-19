@@ -364,4 +364,89 @@ export default {
 .result-link {
   color: var(--primary-color);
 }
+
+@media screen and (max-width: 768px) {
+  .search-page {
+    padding-top: 5px;
+  }
+
+  .search-container {
+    width: 100%;
+    padding: 0;
+  }
+
+  .article-item {
+    border-radius: 0;
+    margin-bottom: 8px;
+    box-shadow: none;
+  }
+
+  .article-header {
+    padding: 12px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .article-cover {
+    width: 100%;
+    height: 180px;
+    margin-right: 0;
+  }
+
+  .article-main {
+    padding: 0;
+  }
+
+  .article-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .article-description {
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-line-clamp: 3;
+    max-height: 4.5em;
+  }
+
+  .article-footer {
+    padding: 8px 12px;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .action-item {
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .back-to-top {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .article-cover {
+    height: 160px;
+  }
+
+  .article-title {
+    font-size: 15px;
+  }
+
+  .article-description {
+    font-size: 13px;
+    -webkit-line-clamp: 2;
+  }
+
+  .article-footer {
+    padding: 6px 12px;
+  }
+
+  .action-item {
+    font-size: 11px;
+    padding: 2px 4px;
+  }
+}
 </style>

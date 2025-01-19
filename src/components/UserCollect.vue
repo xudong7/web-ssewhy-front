@@ -360,24 +360,105 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
-  .article-cover {
-    width: 120px;
-    height: 80px;
+  .user-collect {
+    padding: 10px;
+  }
+
+  .empty-state {
+    min-height: 300px;
+    padding: var(--spacing-md);
+  }
+
+  .article-list {
+    gap: 10px;
+    padding: 5px 0;
+  }
+
+  .article-item {
+    border-radius: 8px;
+    margin-bottom: 8px;
   }
 
   .article-header {
-    padding: var(--spacing-md);
+    padding: 12px;
+  }
+
+  .article-main {
+    margin-right: 10px;
+  }
+
+  .article-cover {
+    width: 90px;
+    height: 60px;
+  }
+
+  .article-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .article-description {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+    -webkit-line-clamp: 2;
+  }
+
+  .article-meta {
+    font-size: 12px;
+    gap: 8px;
   }
 
   .article-footer {
-    padding: var(--spacing-md);
+    padding: 10px;
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: 8px;
   }
 
   .action-items {
     width: 100%;
     justify-content: space-between;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .action-item {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+
+  .create-button {
+    width: 120px;
+    height: 36px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .user-collect {
+    padding: 8px;
+  }
+
+  .article-cover {
+    width: 80px;
+    height: 50px;
+  }
+
+  .article-title {
+    font-size: 15px;
+  }
+
+  .article-description {
+    font-size: 12px;
+  }
+
+  .action-item {
+    font-size: 11px;
+    padding: 3px 5px;
+  }
+
+  .article-meta {
+    font-size: 11px;
   }
 }
 </style>

@@ -13,7 +13,8 @@ export default {
 
 <style scoped>
 .detail-page {
-  width: 1000px;
+  max-width: 1000px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
   background-color: var(--bg-secondary);
@@ -22,5 +23,21 @@ export default {
 
 .detail-container {
   background-color: var(--bg-secondary);
+}
+
+@media screen and (max-width: 768px) {
+  .detail-page {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden; /* 防止水平滚动 */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .detail-page {
+    padding: 0;
+  }
 }
 </style>

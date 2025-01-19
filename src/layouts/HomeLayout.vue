@@ -7,23 +7,33 @@
         </div>
         <el-menu
           :default-active="activeMenu"
-          mode="horizontal"
+          :ellipsis="false"
           class="menu"
+          mode="horizontal"
           @select="handleSelect"
         >
-          <el-menu-item index="hall" @click="goHall">主页</el-menu-item>
-          <el-menu-item index="download" @click="goDownload">下载</el-menu-item>
-          <el-menu-item index="knowledge" @click="goKnowledge"
+          <el-menu-item index="hall" @click="goHall" class="hide-mobile"
+            >主页</el-menu-item
+          >
+          <el-menu-item index="download" @click="goDownload" class="hide-mobile"
+            >下载</el-menu-item
+          >
+          <el-menu-item
+            index="knowledge"
+            @click="goKnowledge"
+            class="hide-mobile"
             >知识</el-menu-item
           >
-          <el-menu-item index="pins" @click="goPins">想法</el-menu-item>
+          <!-- <el-menu-item index="pins" @click="goPins" class="hide-mobile"
+            >想法</el-menu-item
+          > -->
         </el-menu>
       </div>
       <div class="header-search">
         <div class="search-bar">
           <el-input
             v-model="searchText"
-            placeholder="搜索你感兴趣的内容..."
+            placeholder="搜索..."
             class="search-input"
             @focus="handleFocus"
             @blur="handleBlur"
@@ -35,38 +45,45 @@
           </el-input>
         </div>
         <div>
-          <el-button type="primary" class="search-button" @click="handleSearch"
+          <el-button
+            type="primary"
+            class="search-button hide-mobile"
+            @click="handleSearch"
             >搜索</el-button
           >
         </div>
       </div>
       <div class="user-actions">
-        <!-- <span
-          ><el-icon class="icon"><Message /></el-icon>消息</span
-        > -->
-        <span @click="goUpload"
-          ><el-icon class="icon"><Upload /></el-icon>上传</span
-        >
-        <span
-          ><el-icon class="icon"><ChatDotRound /></el-icon>交流</span
-        >
+        <!-- <span class="hide-mobile"
+          ><el-icon class="icon"><Message /></el-icon>
+          <div class="hide-mobile">消息</div>
+        </span> -->
+        <span class="hide-mobile" @click="goUpload"
+          ><el-icon class="icon"><Upload /></el-icon>
+          <div class="hide-mobile">上传</div>
+        </span>
+        <span class="hide-mobile"
+          ><el-icon class="icon"><ChatDotRound /></el-icon>
+          <div class="hide-mobile">交流</div>
+        </span>
         <span @click="goWrite"
-          ><el-icon class="icon"><Edit /></el-icon>创作</span
-        >
-        <span @click="toggleTheme"
-          ><el-icon class="icon" v-if="isDarkTheme"><Moon /></el-icon
-          ><el-icon class="icon" v-else><Sunny /></el-icon
-          >{{ isDarkTheme ? "深色" : "浅色" }}</span
-        >
-        <span @click="goLogin"
-          ><el-icon class="icon"><SwitchButton /></el-icon>登出</span
-        >
+          ><el-icon class="icon"><Edit /></el-icon>
+          <div class="hide-mobile">创作</div>
+        </span>
+        <span @click="toggleTheme">
+          <el-icon class="icon" v-if="isDarkTheme"><Moon /></el-icon>
+          <el-icon class="icon" v-else><Sunny /></el-icon>
+          <div class="hide-mobile">{{ isDarkTheme ? "深色" : "浅色" }}</div>
+        </span>
+        <span @click="goLogin">
+          <el-icon class="icon"><SwitchButton /></el-icon>
+          <span class="hide-mobile">登出</span>
+        </span>
         <el-avatar
           @click="goHome"
           :size="36"
           :src="userStore.userInfo.avatar"
         ></el-avatar>
-        <!-- <span>{{ userStore.userInfo.username }}</span> -->
       </div>
     </div>
   </header>
@@ -252,6 +269,12 @@ export default {
   align-items: center;
 }
 
+.el-menu-item {
+  font-size: 14px;
+  padding-right: 20px;
+  padding-top: 5px;
+}
+
 .search-bar {
   width: 100%;
   max-width: 400px;
@@ -309,6 +332,7 @@ export default {
   display: flex;
   align-items: center;
   min-width: 400px;
+  padding-top: 5px;
   justify-content: flex-end;
 }
 
@@ -322,11 +346,11 @@ export default {
   align-items: center;
 }
 
-.user-actions span:hover {
+.user-actions span :hover {
   color: var(--primary-color);
 }
 
-.user-actions span:hover .icon {
+.user-actions span :hover .icon {
   color: var(--primary-color);
 }
 
@@ -385,19 +409,74 @@ export default {
 
 @media screen and (max-width: 768px) {
   .header-container {
-    padding: 0 10px;
+    padding-right: 10px;
   }
 
   .header-left {
     min-width: auto;
   }
 
+  .logo {
+    padding-left: 5px;
+    margin: 0;
+    font-size: 20px;
+  }
+
   .header-search {
-    min-width: auto;
+    min-width: 120px;
+    padding-right: 10px;
+    padding-top: 5px;
+  }
+
+  .search-bar {
+    max-width: 150px;
   }
 
   .user-actions {
-    min-width: auto;
+    min-width: 15px;
+  }
+
+  .user-actions span {
+    margin-right: 10px;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .menu {
+    padding: 0 5px;
+  }
+
+  .el-menu-item {
+    padding-right: 10px;
+    padding-top: 5px;
+  }
+
+  .search-bar :deep(.el-input__inner) {
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .el-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* 添加平板响应式样式 */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .header-container {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .header-search {
+    min-width: 200px;
+  }
+
+  .user-actions {
+    min-width: 250px;
   }
 }
 </style>

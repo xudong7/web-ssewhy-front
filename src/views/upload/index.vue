@@ -91,6 +91,7 @@ export default {
   min-height: calc(100vh - 52px);
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .upload-title {
@@ -130,5 +131,27 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .upload-container {
+    padding: 10px;
+  }
+
+  .upload-title {
+    font-size: 24px;
+  }
+
+  .upload-item {
+    padding: 10px;
+  }
+
+  .item-title {
+    font-size: 16px;
+  }
+
+  .item-desc {
+    font-size: 12px;
+  }
 }
 </style>
