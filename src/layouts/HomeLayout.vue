@@ -409,7 +409,7 @@ export default {
 
 @media screen and (max-width: 768px) {
   .header-container {
-    padding-right: 10px;
+    padding-right: 5%;
   }
 
   .header-left {
@@ -417,27 +417,28 @@ export default {
   }
 
   .logo {
-    padding-left: 5px;
+    padding-left: 5%;
     margin: 0;
     font-size: 20px;
   }
 
   .header-search {
-    min-width: 120px;
-    padding-right: 10px;
+    min-width: 30%;
+    padding-right: 0;
     padding-top: 5px;
   }
 
   .search-bar {
-    max-width: 150px;
+    max-width: 100%;
   }
 
   .user-actions {
-    min-width: 15px;
+    min-width: 35%;
+    padding-right: 0;
   }
 
   .user-actions span {
-    margin-right: 10px;
+    margin-right: 3%;
   }
 
   .hide-mobile {
