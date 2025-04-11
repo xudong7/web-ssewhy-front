@@ -18,12 +18,15 @@
           <el-menu-item index="download" @click="goDownload" class="hide-mobile"
             >下载</el-menu-item
           >
-          <el-menu-item
+          <el-menu-item index="code" @click="goCode" class="hide-mobile"
+            >刷题</el-menu-item
+          >
+          <!-- <el-menu-item
             index="knowledge"
             @click="goKnowledge"
             class="hide-mobile"
             >知识</el-menu-item
-          >
+          > -->
           <!-- <el-menu-item index="pins" @click="goPins" class="hide-mobile"
             >想法</el-menu-item
           > -->
@@ -158,6 +161,9 @@ export default {
     },
     goKnowledge() {
       this.$router.push("/knowledge");
+    },
+    goCode() {
+      this.$router.push("/code");
     },
     goPins() {
       this.$router.push("/pins");
