@@ -1,92 +1,117 @@
 <template>
-  <div class="code-editor-container">
-    <div class="problem-description">
-      <div class="problem-header">
-        <h2 class="problem-title">{{ problem.title }}</h2>
-        <div class="problem-difficulty" :class="difficultyClass">
-          {{ problem.difficulty }}
+  <div class="code-editor-page">
+    <!-- 题目列表侧边栏 -->
+    <div class="problem-sidebar" :class="{ 'collapsed': sidebarCollapsed }">
+      <div class="sidebar-header">
+        <h3>题目列表</h3>
+        <el-input
+          v-model="searchQuery"
+          placeholder="搜索题目"
+          prefix-icon="el-icon-search"
+          clearable
+          size="small"
+        />
+        <div class="filter-options">
+          <el-select v-model="difficultyFilter" placeholder="难度" size="small" style="width: 100%">
+            <el-option label="全部难度" value="" />
+            <el-option label="简单" value="简单" />
+            <el-option label="中等" value="中等" />
+            <el-option label="困难" value="困难" />
+          </el-select>
         </div>
       </div>
-      <div class="problem-content" v-html="problem.description"></div>
-      <div class="problem-examples">
+      <div class="problem-list">
         <div
-          v-for="(example, index) in problem.examples"
-          :key="index"
-          class="example"
+          v-for="prob in filteredProblems"
+          :key="prob.id"
+          class="problem-item"
+          :class="{ 'active': prob.id === problem.id }"
+          @click="selectProblem(prob.id)"
         >
-          <div class="example-header">示例 {{ index + 1 }}:</div>
-          <div class="example-content">
-            <div><strong>输入:</strong> {{ example.input }}</div>
-            <div><strong>输出:</strong> {{ example.output }}</div>
-            <div v-if="example.explanation">
-              <strong>解释:</strong> {{ example.explanation }}
-            </div>
+          <div class="problem-item-id">{{ prob.id }}</div>
+          <div class="problem-item-title">{{ prob.title }}</div>
+          <div class="problem-item-difficulty" :class="getDifficultyClass(prob.difficulty)">
+            {{ prob.difficulty }}
           </div>
         </div>
       </div>
-      <div v-if="problem.constraints" class="problem-constraints">
-        <div class="constraints-header">提示:</div>
-        <ul>
-          <li v-for="(constraint, index) in problem.constraints" :key="index">
-            {{ constraint }}
-          </li>
-        </ul>
-      </div>
+    </div>
+    
+    <!-- 切换按钮 -->
+    <div class="sidebar-toggle" @click="toggleSidebar" :class="{ 'sidebar-open': !sidebarCollapsed }">
+      <el-icon size="20">
+        <ArrowLeft v-if="!sidebarCollapsed" />
+        <ArrowRight v-else />
+      </el-icon>
     </div>
 
-    <div class="editor-container">
-      <div class="editor-header">
-        <div class="language-selector">
-          <el-select
-            v-model="selectedLanguage"
-            placeholder="选择编程语言"
-            size="small"
-          >
-            <el-option
-              v-for="lang in languages"
-              :key="lang.id"
-              :label="lang.name"
-              :value="lang.id"
-            ></el-option>
-          </el-select>
+    <!-- 主内容区 -->
+    <div class="code-editor-container" :class="{ 'with-sidebar': !sidebarCollapsed }">
+      <div class="problem-description">
+        <div class="problem-header">
+          <h2 class="problem-title">{{ problem.title }}</h2>
+          <div class="problem-difficulty" :class="difficultyClass">{{ problem.difficulty }}</div>
         </div>
-        <div class="editor-actions">
-          <el-button type="primary" @click="runCode" size="small"
-            >运行代码</el-button
-          >
-          <el-button type="success" @click="submitCode" size="small"
-            >提交</el-button
-          >
+        <div class="problem-content" v-html="problem.description"></div>
+        <div class="problem-examples">
+          <div v-for="(example, index) in problem.examples" :key="index" class="example">
+            <div class="example-header">示例 {{ index + 1 }}:</div>
+            <div class="example-content">
+              <div><strong>输入:</strong> {{ example.input }}</div>
+              <div><strong>输出:</strong> {{ example.output }}</div>
+              <div v-if="example.explanation"><strong>解释:</strong> {{ example.explanation }}</div>
+            </div>
+          </div>
+        </div>
+        <div v-if="problem.constraints" class="problem-constraints">
+          <div class="constraints-header">提示:</div>
+          <ul>
+            <li v-for="(constraint, index) in problem.constraints" :key="index">{{ constraint }}</li>
+          </ul>
         </div>
       </div>
-      <div ref="monacoEditorContainer" class="monaco-editor-container"></div>
-      <div v-if="showResult" class="result-container">
-        <div class="result-header">
-          执行结果:
-          <span
-            :class="{
-              success: testResult.status === 'success',
-              error: testResult.status === 'error',
-            }"
-          >
-            {{ testResult.status === "success" ? "通过" : "失败" }}
-          </span>
+
+      <div class="editor-container">
+        <div class="editor-header">
+          <div class="language-selector">
+            <el-select v-model="selectedLanguage" placeholder="选择编程语言" size="small">
+              <el-option
+                v-for="lang in languages"
+                :key="lang.id"
+                :label="lang.name"
+                :value="lang.id"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="editor-actions">
+            <el-button type="primary" @click="runCode" size="small">运行代码</el-button>
+            <el-button type="success" @click="submitCode" size="small">提交</el-button>
+          </div>
         </div>
-        <div v-if="testResult.output" class="result-output">
-          <div>输出:</div>
-          <pre>{{ testResult.output }}</pre>
-        </div>
-        <div v-if="testResult.expected" class="result-expected">
-          <div>预期:</div>
-          <pre>{{ testResult.expected }}</pre>
-        </div>
-        <div v-if="testResult.error" class="result-error">
-          <div>错误:</div>
-          <pre>{{ testResult.error }}</pre>
-        </div>
-        <div v-if="testResult.runtime" class="result-stats">
-          <div>运行时间: {{ testResult.runtime }}ms</div>
-          <div>内存消耗: {{ testResult.memory }}MB</div>
+        <div ref="monacoEditorContainer" class="monaco-editor-container"></div>
+        <div v-if="showResult" class="result-container">
+          <div class="result-header">
+            执行结果: 
+            <span :class="{ 'success': testResult.status === 'success', 'error': testResult.status === 'error' }">
+              {{ testResult.status === 'success' ? '通过' : '失败' }}
+            </span>
+          </div>
+          <div v-if="testResult.output" class="result-output">
+            <div>输出:</div>
+            <pre>{{ testResult.output }}</pre>
+          </div>
+          <div v-if="testResult.expected" class="result-expected">
+            <div>预期:</div>
+            <pre>{{ testResult.expected }}</pre>
+          </div>
+          <div v-if="testResult.error" class="result-error">
+            <div>错误:</div>
+            <pre>{{ testResult.error }}</pre>
+          </div>
+          <div v-if="testResult.runtime" class="result-stats">
+            <div>运行时间: {{ testResult.runtime }}ms</div>
+            <div>内存消耗: {{ testResult.memory }}MB</div>
+          </div>
         </div>
       </div>
     </div>
@@ -94,16 +119,10 @@
 </template>
 
 <script setup>
-import {
-  ref,
-  onMounted,
-  onBeforeUnmount,
-  reactive,
-  computed,
-  watch,
-} from "vue";
-import * as monaco from "monaco-editor";
-import "@vscode/codicons/dist/codicon.css";
+import { ref, onMounted, onBeforeUnmount, reactive, computed, watch } from 'vue';
+import * as monaco from 'monaco-editor';
+import '@vscode/codicons/dist/codicon.css';
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
 
 // 编辑器实例
 let editor = null;
@@ -111,15 +130,20 @@ let editor = null;
 // DOM引用
 const monacoEditorContainer = ref(null);
 
+// 侧边栏状态
+const sidebarCollapsed = ref(false);
+const searchQuery = ref('');
+const difficultyFilter = ref('');
+
 // 当前选中的语言
-const selectedLanguage = ref("javascript");
+const selectedLanguage = ref('javascript');
 
 // 编程语言列表
 const languages = [
-  { id: "javascript", name: "JavaScript" },
-  { id: "python", name: "Python" },
-  { id: "java", name: "Java" },
-  { id: "cpp", name: "C++" },
+  { id: 'javascript', name: 'JavaScript' },
+  { id: 'python', name: 'Python' },
+  { id: 'java', name: 'Java' },
+  { id: 'cpp', name: 'C++' }
 ];
 
 // 默认代码模板
@@ -148,10 +172,151 @@ public:
         // 请在这里编写你的代码
         return {};
     }
-};`,
+};`
 };
 
-// 示例题目数据
+// 模拟题库数据
+const problemList = reactive([
+  {
+    id: 1,
+    title: "两数之和",
+    difficulty: "简单",
+    description: `<p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出 <strong>和为目标值</strong> <code>target</code> 的那 <strong>两个</strong> 整数，并返回它们的数组下标。</p>
+<p>你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。</p>
+<p>你可以按任意顺序返回答案。</p>`,
+    examples: [
+      {
+        input: "nums = [2,7,11,15], target = 9",
+        output: "[0,1]",
+        explanation: "因为 nums[0] + nums[1] == 9 ，返回 [0, 1]"
+      },
+      {
+        input: "nums = [3,2,4], target = 6",
+        output: "[1,2]"
+      },
+      {
+        input: "nums = [3,3], target = 6",
+        output: "[0,1]"
+      }
+    ],
+    constraints: [
+      "2 <= nums.length <= 10^4",
+      "-10^9 <= nums[i] <= 10^9",
+      "-10^9 <= target <= 10^9",
+      "只会存在一个有效答案"
+    ]
+  },
+  {
+    id: 2,
+    title: "无重复字符的最长子串",
+    difficulty: "中等",
+    description: `<p>给定一个字符串 <code>s</code> ，请你找出其中不含有重复字符的 <strong>最长子串</strong> 的长度。</p>`,
+    examples: [
+      {
+        input: "s = \"abcabcbb\"",
+        output: "3",
+        explanation: "因为无重复字符的最长子串是 \"abc\"，所以其长度为 3。"
+      },
+      {
+        input: "s = \"bbbbb\"",
+        output: "1",
+        explanation: "因为无重复字符的最长子串是 \"b\"，所以其长度为 1。"
+      },
+      {
+        input: "s = \"pwwkew\"",
+        output: "3",
+        explanation: "因为无重复字符的最长子串是 \"wke\"，所以其长度为 3。请注意，你的答案必须是子串的长度，\"pwke\" 是一个子序列，不是子串。"
+      }
+    ],
+    constraints: [
+      "0 <= s.length <= 5 * 10^4",
+      "s 由英文字母、数字、符号和空格组成"
+    ]
+  },
+  {
+    id: 3,
+    title: "寻找两个正序数组的中位数",
+    difficulty: "困难",
+    description: `<p>给定两个大小分别为 <code>m</code> 和 <code>n</code> 的正序（从小到大）数组 <code>nums1</code> 和 <code>nums2</code>。请你找出并返回这两个正序数组的 <strong>中位数</strong> 。</p>
+<p>算法的时间复杂度应该为 <code>O(log (m+n))</code> 。</p>`,
+    examples: [
+      {
+        input: "nums1 = [1,3], nums2 = [2]",
+        output: "2.00000",
+        explanation: "合并数组 = [1,2,3] ，中位数 2"
+      },
+      {
+        input: "nums1 = [1,2], nums2 = [3,4]",
+        output: "2.50000",
+        explanation: "合并数组 = [1,2,3,4] ，中位数 (2 + 3) / 2 = 2.5"
+      }
+    ],
+    constraints: [
+      "nums1.length == m",
+      "nums2.length == n",
+      "0 <= m <= 1000",
+      "0 <= n <= 1000",
+      "1 <= m + n <= 2000",
+      "-10^6 <= nums1[i], nums2[i] <= 10^6"
+    ]
+  },
+  {
+    id: 4,
+    title: "回文数",
+    difficulty: "简单",
+    description: `<p>给你一个整数 <code>x</code> ，如果 <code>x</code> 是一个回文整数，返回 <code>true</code> ；否则，返回 <code>false</code> 。</p>
+<p>回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。</p>
+<ul>
+<li>例如，<code>121</code> 是回文，而 <code>123</code> 不是。</li>
+</ul>`,
+    examples: [
+      {
+        input: "x = 121",
+        output: "true"
+      },
+      {
+        input: "x = -121",
+        output: "false",
+        explanation: "从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。"
+      },
+      {
+        input: "x = 10",
+        output: "false",
+        explanation: "从右向左读, 为 01 。因此它不是一个回文数。"
+      }
+    ],
+    constraints: [
+      "-2^31 <= x <= 2^31 - 1"
+    ]
+  },
+  {
+    id: 5,
+    title: "合并两个有序链表",
+    difficulty: "简单",
+    description: `<p>将两个升序链表合并为一个新的 <strong>升序</strong> 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。</p>`,
+    examples: [
+      {
+        input: "l1 = [1,2,4], l2 = [1,3,4]",
+        output: "[1,1,2,3,4,4]"
+      },
+      {
+        input: "l1 = [], l2 = []",
+        output: "[]"
+      },
+      {
+        input: "l1 = [], l2 = [0]",
+        output: "[0]"
+      }
+    ],
+    constraints: [
+      "两个链表的节点数目范围是 [0, 50]",
+      "-100 <= Node.val <= 100",
+      "l1 和 l2 均按 非递减顺序 排列"
+    ]
+  }
+]);
+
+// 当前选中的题目
 const problem = reactive({
   id: 1,
   title: "两数之和",
@@ -163,49 +328,87 @@ const problem = reactive({
     {
       input: "nums = [2,7,11,15], target = 9",
       output: "[0,1]",
-      explanation: "因为 nums[0] + nums[1] == 9 ，返回 [0, 1]",
+      explanation: "因为 nums[0] + nums[1] == 9 ，返回 [0, 1]"
     },
     {
       input: "nums = [3,2,4], target = 6",
-      output: "[1,2]",
+      output: "[1,2]"
     },
     {
       input: "nums = [3,3], target = 6",
-      output: "[0,1]",
-    },
+      output: "[0,1]"
+    }
   ],
   constraints: [
     "2 <= nums.length <= 10^4",
     "-10^9 <= nums[i] <= 10^9",
     "-10^9 <= target <= 10^9",
-    "只会存在一个有效答案",
-  ],
+    "只会存在一个有效答案"
+  ]
 });
 
 // 执行结果
 const showResult = ref(false);
 const testResult = reactive({
-  status: "",
-  output: "",
-  expected: "",
-  error: "",
+  status: '',
+  output: '',
+  expected: '',
+  error: '',
   runtime: 0,
-  memory: 0,
+  memory: 0
+});
+
+// 过滤题目列表
+const filteredProblems = computed(() => {
+  return problemList.filter(prob => {
+    // 标题搜索
+    const matchesTitle = prob.title.toLowerCase().includes(searchQuery.value.toLowerCase());
+    
+    // 难度过滤
+    const matchesDifficulty = difficultyFilter.value ? prob.difficulty === difficultyFilter.value : true;
+    
+    return matchesTitle && matchesDifficulty;
+  });
 });
 
 // 根据难度返回对应的CSS类
 const difficultyClass = computed(() => {
-  switch (problem.difficulty.toLowerCase()) {
-    case "简单":
-      return "easy";
-    case "中等":
-      return "medium";
-    case "困难":
-      return "hard";
-    default:
-      return "";
-  }
+  return getDifficultyClass(problem.difficulty);
 });
+
+// 难度对应的类名
+const getDifficultyClass = (difficulty) => {
+  switch (difficulty.toLowerCase()) {
+    case '简单':
+      return 'easy';
+    case '中等':
+      return 'medium';
+    case '困难':
+      return 'hard';
+    default:
+      return '';
+  }
+};
+
+// 切换侧边栏
+const toggleSidebar = () => {
+  sidebarCollapsed.value = !sidebarCollapsed.value;
+};
+
+// 选择题目
+const selectProblem = (problemId) => {
+  const selectedProblem = problemList.find(p => p.id === problemId);
+  if (selectedProblem) {
+    // 更新当前题目
+    Object.assign(problem, selectedProblem);
+    // 重置执行结果
+    showResult.value = false;
+    // 根据题目更新代码模板（实际中可能需要从服务器获取题目对应的模板）
+    if (editor) {
+      editor.setValue(codeTemplates[selectedLanguage.value]);
+    }
+  }
+};
 
 // 初始化Monaco编辑器
 const initEditor = () => {
@@ -213,10 +416,10 @@ const initEditor = () => {
     editor = monaco.editor.create(monacoEditorContainer.value, {
       value: codeTemplates[selectedLanguage.value],
       language: selectedLanguage.value,
-      theme: "vs-dark",
+      theme: 'vs-dark',
       automaticLayout: true,
       minimap: { enabled: true },
-      lineNumbers: "on",
+      lineNumbers: 'on',
       roundedSelection: false,
       scrollBeyondLastLine: false,
       readOnly: false,
@@ -245,20 +448,20 @@ watch(selectedLanguage, (newLang) => {
 const runCode = () => {
   const code = editor.getValue();
   showResult.value = true;
-
+  
   // 模拟代码运行结果
   // 实际项目中，这里应该是发送请求到后端API执行代码
   setTimeout(() => {
-    testResult.status = Math.random() > 0.3 ? "success" : "error";
-    testResult.output = "[0, 1]";
-    testResult.expected = "[0, 1]";
+    testResult.status = Math.random() > 0.3 ? 'success' : 'error';
+    testResult.output = '[0, 1]';
+    testResult.expected = '[0, 1]';
     testResult.runtime = Math.floor(Math.random() * 100);
     testResult.memory = (Math.random() * 40 + 30).toFixed(1);
-
-    if (testResult.status === "error") {
-      testResult.error = "执行超时或输出结果不符合预期";
+    
+    if (testResult.status === 'error') {
+      testResult.error = '执行超时或输出结果不符合预期';
     } else {
-      testResult.error = "";
+      testResult.error = '';
     }
   }, 1000);
 };
@@ -267,16 +470,16 @@ const runCode = () => {
 const submitCode = () => {
   const code = editor.getValue();
   showResult.value = true;
-
+  
   // 模拟提交结果
   // 实际项目中，这里应该是发送请求到后端API提交代码
   setTimeout(() => {
-    testResult.status = "success";
-    testResult.output = "[0, 1]";
-    testResult.expected = "[0, 1]";
+    testResult.status = 'success';
+    testResult.output = '[0, 1]';
+    testResult.expected = '[0, 1]';
     testResult.runtime = Math.floor(Math.random() * 100);
     testResult.memory = (Math.random() * 40 + 30).toFixed(1);
-    testResult.error = "";
+    testResult.error = '';
   }, 1000);
 };
 
@@ -290,13 +493,137 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.code-editor-page {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 100px);
+  background-color: #f5f5f5;
+}
+
+/* 题目列表侧边栏 */
+.problem-sidebar {
+  position: absolute;
+  width: 300px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+}
+
+.problem-sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar-header {
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-header h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.filter-options {
+  margin-top: 10px;
+}
+
+.problem-list {
+  height: calc(100% - 140px);
+  overflow-y: auto;
+}
+
+.problem-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e0e0e0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.problem-item:hover {
+  background-color: #f5f5f5;
+}
+
+.problem-item.active {
+  background-color: #e6f7ff;
+  border-right: 3px solid #1890ff;
+}
+
+.problem-item-id {
+  width: 30px;
+  font-weight: bold;
+  color: #666;
+}
+
+.problem-item-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.problem-item-difficulty {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 10px;
+  color: white;
+}
+
+.problem-item-difficulty.easy {
+  background-color: #00af9b;
+}
+
+.problem-item-difficulty.medium {
+  background-color: #ffb800;
+}
+
+.problem-item-difficulty.hard {
+  background-color: #ff2d55;
+}
+
+/* 侧边栏切换按钮 */
+.sidebar-toggle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  background-color: #fff;
+  width: 24px;
+  height: 60px;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 99;
+  transition: left 0.3s ease;
+}
+
+.sidebar-toggle.sidebar-open {
+  left: 300px;
+}
+
+/* 主内容区 */
 .code-editor-container {
   display: flex;
-  height: calc(100vh - 100px);
-  overflow: hidden;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  background-color: #f5f5f5;
+  flex: 1;
+  width: 100%;
+  transition: margin-left 0.3s ease;
+  margin-left: 0;
+}
+
+.code-editor-container.with-sidebar {
+  margin-left: 300px;
+  width: calc(100% - 300px);
 }
 
 .problem-description {
@@ -305,6 +632,12 @@ onBeforeUnmount(() => {
   padding: 20px;
   border-right: 1px solid #e0e0e0;
   background-color: #ffffff;
+}
+
+@media (max-width: 1200px) {
+  .problem-description {
+    flex: 0 0 50%;
+  }
 }
 
 .problem-header {
@@ -423,15 +756,11 @@ onBeforeUnmount(() => {
   color: #ff4d4f;
 }
 
-.result-output,
-.result-expected,
-.result-error {
+.result-output, .result-expected, .result-error {
   margin-bottom: 10px;
 }
 
-.result-output pre,
-.result-expected pre,
-.result-error pre {
+.result-output pre, .result-expected pre, .result-error pre {
   background-color: #333;
   padding: 5px;
   border-radius: 3px;
