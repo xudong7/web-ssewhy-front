@@ -498,7 +498,7 @@ onBeforeUnmount(() => {
   position: relative;
   width: 100%;
   height: calc(100vh - 100px);
-  background-color: #f5f5f5;
+  background-color: var(--bg-secondary);
 }
 
 /* 题目列表侧边栏 */
@@ -506,8 +506,8 @@ onBeforeUnmount(() => {
   position: absolute;
   width: 300px;
   height: 100%;
-  background-color: #fff;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-primary);
+  box-shadow: var(--shadow-md);
   z-index: 100;
   transition: transform 0.3s ease;
   overflow: hidden;
@@ -519,13 +519,13 @@ onBeforeUnmount(() => {
 
 .sidebar-header {
   padding: 15px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .sidebar-header h3 {
   margin: 0 0 15px 0;
   font-size: 1.2rem;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .filter-options {
@@ -539,7 +539,7 @@ onBeforeUnmount(() => {
 
 .problem-item {
   padding: 12px 15px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -547,18 +547,18 @@ onBeforeUnmount(() => {
 }
 
 .problem-item:hover {
-  background-color: #f5f5f5;
+  background-color: var(--bg-hover);
 }
 
 .problem-item.active {
-  background-color: #e6f7ff;
-  border-right: 3px solid #1890ff;
+  background-color: var(--primary-light);
+  border-right: 3px solid var(--primary-color);
 }
 
 .problem-item-id {
   width: 30px;
   font-weight: bold;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .problem-item-title {
@@ -566,11 +566,12 @@ onBeforeUnmount(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--text-primary);
 }
 
 .problem-item-difficulty {
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: bold;
   margin-left: 10px;
@@ -578,15 +579,15 @@ onBeforeUnmount(() => {
 }
 
 .problem-item-difficulty.easy {
-  background-color: #00af9b;
+  background-color: var(--success-color);
 }
 
 .problem-item-difficulty.medium {
-  background-color: #ffb800;
+  background-color: var(--warning-color);
 }
 
 .problem-item-difficulty.hard {
-  background-color: #ff2d55;
+  background-color: var(--error-color);
 }
 
 /* 侧边栏切换按钮 */
@@ -595,17 +596,18 @@ onBeforeUnmount(() => {
   top: 50%;
   left: 0;
   transform: translateY(-50%);
-  background-color: #fff;
+  background-color: var(--bg-primary);
   width: 24px;
   height: 60px;
-  border-radius: 0 4px 4px 0;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  box-shadow: var(--shadow-md);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   z-index: 99;
   transition: left 0.3s ease;
+  color: var(--text-primary);
 }
 
 .sidebar-toggle.sidebar-open {
@@ -630,8 +632,9 @@ onBeforeUnmount(() => {
   flex: 0 0 40%;
   overflow-y: auto;
   padding: 20px;
-  border-right: 1px solid #e0e0e0;
-  background-color: #ffffff;
+  border-right: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 @media (max-width: 1200px) {
@@ -646,39 +649,55 @@ onBeforeUnmount(() => {
   gap: 10px;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .problem-title {
   margin: 0;
   font-size: 1.6rem;
+  color: var(--text-primary);
 }
 
 .problem-difficulty {
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: 0.8rem;
   font-weight: bold;
 }
 
 .problem-difficulty.easy {
-  background-color: #00af9b;
+  background-color: var(--success-color);
   color: white;
 }
 
 .problem-difficulty.medium {
-  background-color: #ffb800;
+  background-color: var(--warning-color);
   color: white;
 }
 
 .problem-difficulty.hard {
-  background-color: #ff2d55;
+  background-color: var(--error-color);
   color: white;
 }
 
 .problem-content {
   margin-bottom: 20px;
   line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.problem-content :deep(p), 
+.problem-content :deep(li),
+.problem-content :deep(ul) {
+  color: var(--text-primary);
+}
+
+.problem-content :deep(code) {
+  background-color: var(--bg-tertiary);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  color: var(--primary-color);
 }
 
 .problem-examples {
@@ -687,37 +706,44 @@ onBeforeUnmount(() => {
 
 .example {
   margin-bottom: 15px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
   padding: 12px;
 }
 
 .example-header {
   font-weight: bold;
   margin-bottom: 8px;
+  color: var(--text-primary);
 }
 
 .example-content {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   line-height: 1.5;
+  color: var(--text-primary);
 }
 
 .problem-constraints {
-  background-color: #f0f7ff;
-  border-radius: 4px;
+  background-color: var(--primary-bg);
+  border-radius: var(--radius-sm);
   padding: 12px;
 }
 
 .constraints-header {
   font-weight: bold;
   margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.problem-constraints ul li {
+  color: var(--text-primary);
 }
 
 .editor-container {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: #1e1e1e;
+  background-color: var(--bg-tertiary);
 }
 
 .editor-header {
@@ -725,8 +751,8 @@ onBeforeUnmount(() => {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background-color: #333333;
-  color: white;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .monaco-editor-container {
@@ -735,12 +761,12 @@ onBeforeUnmount(() => {
 }
 
 .result-container {
-  background-color: #282828;
-  color: white;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
   padding: 10px 15px;
   height: 150px;
   overflow-y: auto;
-  border-top: 1px solid #444;
+  border-top: 1px solid var(--border-dark);
 }
 
 .result-header {
@@ -749,11 +775,11 @@ onBeforeUnmount(() => {
 }
 
 .success {
-  color: #52c41a;
+  color: var(--success-color);
 }
 
 .error {
-  color: #ff4d4f;
+  color: var(--error-color);
 }
 
 .result-output, .result-expected, .result-error {
@@ -761,18 +787,19 @@ onBeforeUnmount(() => {
 }
 
 .result-output pre, .result-expected pre, .result-error pre {
-  background-color: #333;
+  background-color: var(--bg-secondary);
   padding: 5px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   margin: 5px 0;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   white-space: pre-wrap;
+  color: var(--text-primary);
 }
 
 .result-stats {
   display: flex;
   gap: 20px;
   font-size: 0.9rem;
-  color: #999;
+  color: var(--text-tertiary);
 }
 </style>
