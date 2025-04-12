@@ -113,11 +113,11 @@
             </el-select>
           </div>
           <div class="editor-actions">
-            <el-button type="primary" @click="runCode" size="small"
-              >运行代码</el-button
+            <el-button type="primary" @click="runCode" size="medium">
+              运行代码</el-button
             >
-            <el-button type="success" @click="submitCode" size="small"
-              >提交</el-button
+            <el-button type="success" @click="submitCode" size="medium">
+              提交</el-button
             >
           </div>
         </div>
@@ -152,21 +152,76 @@
               {{ testResult.status === "success" ? "通过" : "失败" }}
             </span>
           </div>
-          <div v-if="testResult.output" class="result-output">
-            <div>输出:</div>
-            <pre>{{ testResult.output }}</pre>
+
+          <!-- 每个测试用例单独一个块 -->
+          <div v-if="testCaseResults.length > 0" class="test-cases-container">
+            <div
+              v-for="(caseResult, index) in testCaseResults"
+              :key="index"
+              class="test-case-block"
+              :class="{
+                'test-case-success': caseResult.isSuccess,
+                'test-case-error': !caseResult.isSuccess,
+              }"
+            >
+              <div class="test-case-header">
+                <div class="test-case-title">
+                  测试用例 {{ caseResult.index + 1 }}:
+                  <span
+                    :class="{
+                      success: caseResult.isSuccess,
+                      error: !caseResult.isSuccess,
+                    }"
+                  >
+                    {{ caseResult.isSuccess ? "通过" : "失败" }}
+                  </span>
+                </div>
+              </div>
+              <div class="test-case-body">
+                <div class="test-case-input">
+                  <div>输入:</div>
+                  <pre>{{ caseResult.input || "无输入" }}</pre>
+                </div>
+                <div class="test-case-output">
+                  <div>实际输出:</div>
+                  <pre>{{ caseResult.actual || "无输出" }}</pre>
+                </div>
+                <div class="test-case-expected">
+                  <div>预期输出:</div>
+                  <pre>{{ caseResult.expected || "无预期输出" }}</pre>
+                </div>
+                <div
+                  v-if="!caseResult.isSuccess && caseResult.error"
+                  class="test-case-error-message"
+                >
+                  <div>错误信息:</div>
+                  <pre>{{ caseResult.error }}</pre>
+                </div>
+              </div>
+            </div>
           </div>
-          <div v-if="testResult.expected" class="result-expected">
-            <div>预期:</div>
-            <pre>{{ testResult.expected }}</pre>
-          </div>
-          <div v-if="testResult.error" class="result-error">
-            <div>错误:</div>
-            <pre>{{ testResult.error }}</pre>
-          </div>
-          <div v-if="testResult.runtime" class="result-stats">
-            <div>运行时间: {{ testResult.runtime }}ms</div>
-            <div>内存消耗: {{ testResult.memory }}MB</div>
+
+          <!-- 总结果 -->
+          <div class="result-summary">
+            <div class="summary-title">总结果:</div>
+            <div class="summary-content">
+              <div
+                class="summary-status"
+                :class="{
+                  success: testResult.status === 'success',
+                  error: testResult.status === 'error',
+                }"
+              >
+                {{ testCaseResults.filter((r) => r.isSuccess).length }}/{{
+                  testCaseResults.length
+                }}
+                个测试用例通过
+              </div>
+              <div v-if="testResult.runtime" class="summary-stats">
+                <div>总运行时间: {{ testResult.runtime }}ms</div>
+                <div>最大内存消耗: {{ testResult.memory }}MB</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -282,6 +337,9 @@ const testResult = reactive({
   memory: 0,
 });
 
+// 每个测试用例的结果
+const testCaseResults = reactive([]);
+
 // 过滤题目列表
 const filteredProblems = computed(() => {
   return problemList.filter((prob) => {
@@ -336,6 +394,7 @@ const selectProblem = (problemId) => {
     Object.assign(problem, selectedProblem);
     // 重置执行结果
     showResult.value = false;
+    testCaseResults.splice(0, testCaseResults.length);
     // 根据题目更新代码模板（实际中可能需要从服务器获取题目对应的模板）
     if (editor) {
       editor.setValue(codeTemplates[selectedLanguage.value]);
@@ -396,73 +455,114 @@ const runCode = async () => {
     runtime: 0,
     memory: 0,
   });
+  // 清空之前的测试用例结果
+  testCaseResults.splice(0, testCaseResults.length);
 
   try {
-    // 获取预期输出
-    const expectedOutput = problem.examples[0].output.trim();
+    // 运行所有测试用例，而不仅仅是第一个
+    const promises = problem.examples.map(async (example, index) => {
+      const inputRaw = example.input;
+      const input = inputRaw.split("=")[1].trim();
+      const expectedOutput = example.output.trim();
 
-    // 提交代码运行请求
-    const submitData = {
-      source_code: code,
-      language_id: languageId,
-      stdin: problem.examples[0].input.split("=")[1].trim(), // 使用第一个示例的输入
-      expected_output: expectedOutput, // 设置预期输出
-    };
+      // 提交代码
+      const submitData = {
+        source_code: code,
+        language_id: languageId,
+        stdin: input,
+        expected_output: expectedOutput,
+      };
 
-    // 发送提交请求
-    const { data: submitResponse } = await submitCodeRun(submitData);
-    const token = submitResponse.token;
+      // 发送请求
+      const { data: submitResponse } = await submitCodeRun(submitData);
+      const token = submitResponse.token;
 
-    if (!token) {
-      throw new Error("提交代码失败，未获取到任务ID");
-    }
-
-    // 等待并获取结果
-    let retries = 0;
-    let resultData = null;
-
-    while (retries < 10) {
-      // 等待1秒后查询结果
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // 获取运行结果
-      const { data } = await getCodeRunResult(token);
-      resultData = data;
-
-      // 如果状态不是处理中，则结束等待
-      if (data.status && data.status.id !== 1 && data.status.id !== 2) {
-        break;
+      if (!token) {
+        throw new Error(`测试用例 ${index + 1} 提交失败`);
       }
 
-      retries++;
-    }
+      // 等待并获取结果
+      let retries = 0;
+      let resultData = null;
 
-    if (!resultData) {
-      throw new Error("获取运行结果超时");
-    }
+      while (retries < 10) {
+        // 等待1秒后查询结果
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const { data } = await getCodeRunResult(token);
+        resultData = data;
 
-    // 获取实际输出
-    const actualOutput = resultData.stdout || "";
+        // 如果状态不是处理中，则结束等待
+        if (data.status && data.status.id !== 1 && data.status.id !== 2) {
+          break;
+        }
 
-    // 使用compareOutputs比较输出
-    const outputMatches = compareOutputs(actualOutput, expectedOutput);
+        retries++;
+      }
 
-    // 处理结果
-    testResult.status =
-      resultData.status.id === 3 && outputMatches ? "success" : "error";
-    testResult.output = actualOutput;
-    testResult.expected = expectedOutput;
-    testResult.runtime = resultData.time * 1000; // 转换为毫秒
-    testResult.memory = resultData.memory / 1024; // 转换为MB
-    testResult.error =
-      resultData.stderr ||
-      resultData.compile_output ||
-      resultData.message ||
-      "";
+      if (!resultData) {
+        throw new Error(`测试用例 ${index + 1} 运行超时`);
+      }
 
-    // 如果编译和运行都成功，但输出不匹配
-    if (resultData.status.id === 3 && !outputMatches) {
-      testResult.error += "\n输出结果与预期不匹配";
+      // 获取实际输出
+      const actualOutput = resultData.stdout || "";
+
+      // 使用compareOutputs比较输出
+      const outputMatches = compareOutputs(actualOutput, expectedOutput);
+
+      // 错误信息
+      const errorMsg =
+        resultData.status.id !== 3
+          ? resultData.stderr ||
+            resultData.compile_output ||
+            resultData.message ||
+            ""
+          : !outputMatches
+          ? "输出结果与预期不匹配"
+          : "";
+
+      return {
+        index,
+        input: inputRaw, // 保存原始输入
+        result: resultData,
+        expected: expectedOutput,
+        actual: actualOutput,
+        outputMatches: outputMatches,
+        isSuccess: resultData.status.id === 3 && outputMatches,
+        error: errorMsg,
+        runtime: parseFloat(resultData.time || 0) * 1000, // 毫秒
+        memory: parseFloat(resultData.memory || 0) / 1024, // MB
+      };
+    });
+
+    // 等待所有测试用例完成
+    const results = await Promise.all(promises);
+
+    // 检查是否全部通过
+    const allPassed = results.every((r) => r.isSuccess);
+
+    // 更新总结果
+    testResult.status = allPassed ? "success" : "error";
+
+    // 计算总时间和最大内存
+    const totalRuntime = results.reduce((acc, r) => acc + r.runtime, 0);
+    const maxMemory = Math.max(...results.map((r) => r.memory));
+
+    testResult.runtime = totalRuntime;
+    testResult.memory = maxMemory;
+
+    // 将结果添加到测试用例结果数组
+    results.forEach((r) => {
+      testCaseResults.push(r);
+    });
+
+    if (allPassed) {
+      ElMessage.success("所有测试用例通过！");
+    } else {
+      ElMessage.warning(
+        `${results.filter((r) => r.isSuccess).length}/${
+          results.length
+        } 个测试用例通过`
+      );
     }
   } catch (error) {
     console.error("代码运行错误:", error);
@@ -493,11 +593,14 @@ const submitCode = async () => {
     runtime: 0,
     memory: 0,
   });
+  // 清空之前的测试用例结果
+  testCaseResults.splice(0, testCaseResults.length);
 
   try {
     // 提交全部测试用例
     const promises = problem.examples.map(async (example, index) => {
-      const input = example.input.split("=")[1].trim();
+      const inputRaw = example.input;
+      const input = inputRaw.split("=")[1].trim();
       const expectedOutput = example.output.trim();
 
       // 提交代码
@@ -536,17 +639,34 @@ const submitCode = async () => {
         throw new Error(`测试用例 ${index + 1} 运行超时`);
       }
 
-      // 比较输出与预期输出
+      // 获取实际输出
       const actualOutput = resultData.stdout || "";
+
+      // 使用compareOutputs比较输出
       const outputMatches = compareOutputs(actualOutput, expectedOutput);
+
+      // 错误信息
+      const errorMsg =
+        resultData.status.id !== 3
+          ? resultData.stderr ||
+            resultData.compile_output ||
+            resultData.message ||
+            ""
+          : !outputMatches
+          ? "输出结果与预期不匹配"
+          : "";
 
       return {
         index,
+        input: inputRaw, // 保存原始输入
         result: resultData,
         expected: expectedOutput,
         actual: actualOutput,
         outputMatches: outputMatches,
-        isSuccess: resultData.status.id === 3 && outputMatches, // 只有状态正确且输出匹配才算通过
+        isSuccess: resultData.status.id === 3 && outputMatches,
+        error: errorMsg,
+        runtime: parseFloat(resultData.time || 0) * 1000, // 毫秒
+        memory: parseFloat(resultData.memory || 0) / 1024, // MB
       };
     });
 
@@ -556,50 +676,20 @@ const submitCode = async () => {
     // 检查是否全部通过
     const allPassed = results.every((r) => r.isSuccess);
 
-    // 更新结果
+    // 更新总结果
     testResult.status = allPassed ? "success" : "error";
 
-    // 详细结果
-    const totalRuntime = results.reduce(
-      (acc, r) => acc + parseFloat(r.result.time || 0),
-      0
-    );
-    const maxMemory = Math.max(...results.map((r) => r.result.memory || 0));
+    // 计算总时间和最大内存
+    const totalRuntime = results.reduce((acc, r) => acc + r.runtime, 0);
+    const maxMemory = Math.max(...results.map((r) => r.memory));
 
-    testResult.output = results
-      .map(
-        (r) =>
-          `测试用例 ${r.index + 1}: ${r.isSuccess ? "通过" : "失败"}\n${
-            r.actual
-          }`
-      )
-      .join("\n\n");
+    testResult.runtime = totalRuntime;
+    testResult.memory = maxMemory;
 
-    testResult.expected = results
-      .map((r) => `测试用例 ${r.index + 1}: ${r.expected}`)
-      .join("\n\n");
-
-    testResult.runtime = totalRuntime * 1000; // 转换为毫秒
-    testResult.memory = maxMemory / 1024; // 转换为MB
-
-    const errors = results
-      .filter((r) => !r.isSuccess)
-      .map((r) => {
-        if (r.result.status.id !== 3) {
-          // 运行出错或编译错误
-          return `测试用例 ${r.index + 1} 失败:\n${
-            r.result.stderr || r.result.compile_output || r.result.message || ""
-          }`;
-        } else if (!r.outputMatches) {
-          // 运行成功但输出不匹配
-          return `测试用例 ${r.index + 1} 失败: 输出结果与预期不匹配\n预期: ${
-            r.expected
-          }\n实际: ${r.actual}`;
-        }
-        return `测试用例 ${r.index + 1} 失败: 未知错误`;
-      });
-
-    testResult.error = errors.join("\n\n");
+    // 将结果添加到测试用例结果数组
+    results.forEach((r) => {
+      testCaseResults.push(r);
+    });
 
     if (allPassed) {
       ElMessage.success("所有测试用例通过！");
@@ -1010,28 +1100,79 @@ onBeforeUnmount(() => {
   color: var(--error-color);
 }
 
-.result-output,
-.result-expected,
-.result-error {
+.test-cases-container {
+  margin-bottom: 20px;
+}
+
+.test-case-block {
+  margin-bottom: 15px;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+
+.test-case-success {
+  border-left: 4px solid var(--success-color);
+}
+
+.test-case-error {
+  border-left: 4px solid var(--error-color);
+}
+
+.test-case-header {
   margin-bottom: 10px;
 }
 
-.result-output pre,
-.result-expected pre,
-.result-error pre {
+.test-case-title {
+  font-weight: bold;
+}
+
+.test-case-title .success {
+  color: var(--success-color);
+}
+
+.test-case-title .error {
+  color: var(--error-color);
+}
+
+.test-case-body {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  line-height: 1.5;
+}
+
+.test-case-body pre {
   background-color: var(--bg-secondary);
   padding: 5px;
   border-radius: var(--radius-sm);
   margin: 5px 0;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   white-space: pre-wrap;
   color: var(--text-primary);
 }
 
-.result-stats {
-  display: flex;
-  gap: 20px;
+.result-summary {
+  margin-top: 20px;
+}
+
+.summary-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.summary-content {
   font-size: 0.9rem;
+}
+
+.summary-status.success {
+  color: var(--success-color);
+}
+
+.summary-status.error {
+  color: var(--error-color);
+}
+
+.summary-stats {
+  margin-top: 10px;
   color: var(--text-tertiary);
 }
 </style>
+`
