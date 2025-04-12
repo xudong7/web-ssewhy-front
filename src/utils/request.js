@@ -3,7 +3,7 @@ import axios from "axios";
 import { useUserStore } from "@/store/modules/user";
 import { ElMessage } from "element-plus";
 
-const url = "http://localhost:8080/api"; // 本地环境
+const url = "http://8.134.51.50:8080/api"; // 本地环境
 // 线上环境
 // const url = "http://8.134.51.50:8080/api";
 const jumpUrl = "http://localhost:5173/login"; // 本地环境
