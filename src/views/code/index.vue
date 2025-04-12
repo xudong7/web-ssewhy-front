@@ -130,7 +130,7 @@
         <!-- 结果区域切换按钮 -->
         <div class="result-toggle" @click="toggleResult">
           <el-icon size="16">
-            <ArrowUp v-if="!resultCollapsed" />
+            <ArrowUp v-if="resultCollapsed" />
             <ArrowDown v-else />
           </el-icon>
           <!-- <span>{{ resultCollapsed ? "显示结果" : "隐藏结果" }}</span> -->
