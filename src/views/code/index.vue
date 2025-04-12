@@ -181,6 +181,7 @@ import {
   getLanguageId,
   compareOutputs,
 } from "@/api/code";
+import { getAllProblems } from "@/api/problem";
 import {
   ref,
   onMounted,
@@ -258,175 +259,16 @@ public:
 };
 
 // 模拟题库数据
-const problemList = reactive([
-  {
-    id: 1,
-    title: "两数之和",
-    difficulty: "简单",
-    description: `<p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出 <strong>和为目标值</strong> <code>target</code> 的那 <strong>两个</strong> 整数，并返回它们的数组下标。</p>
-<p>你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。</p>
-<p>你可以按任意顺序返回答案。</p>`,
-    examples: [
-      {
-        input: "nums = [2,7,11,15], target = 9",
-        output: "[0,1]",
-        explanation: "因为 nums[0] + nums[1] == 9 ，返回 [0, 1]",
-      },
-      {
-        input: "nums = [3,2,4], target = 6",
-        output: "[1,2]",
-      },
-      {
-        input: "nums = [3,3], target = 6",
-        output: "[0,1]",
-      },
-    ],
-    constraints: [
-      "2 <= nums.length <= 10^4",
-      "-10^9 <= nums[i] <= 10^9",
-      "-10^9 <= target <= 10^9",
-      "只会存在一个有效答案",
-    ],
-  },
-  {
-    id: 2,
-    title: "无重复字符的最长子串",
-    difficulty: "中等",
-    description: `<p>给定一个字符串 <code>s</code> ，请你找出其中不含有重复字符的 <strong>最长子串</strong> 的长度。</p>`,
-    examples: [
-      {
-        input: 's = "abcabcbb"',
-        output: "3",
-        explanation: '因为无重复字符的最长子串是 "abc"，所以其长度为 3。',
-      },
-      {
-        input: 's = "bbbbb"',
-        output: "1",
-        explanation: '因为无重复字符的最长子串是 "b"，所以其长度为 1。',
-      },
-      {
-        input: 's = "pwwkew"',
-        output: "3",
-        explanation:
-          '因为无重复字符的最长子串是 "wke"，所以其长度为 3。请注意，你的答案必须是子串的长度，"pwke" 是一个子序列，不是子串。',
-      },
-    ],
-    constraints: [
-      "0 <= s.length <= 5 * 10^4",
-      "s 由英文字母、数字、符号和空格组成",
-    ],
-  },
-  {
-    id: 3,
-    title: "寻找两个正序数组的中位数",
-    difficulty: "困难",
-    description: `<p>给定两个大小分别为 <code>m</code> 和 <code>n</code> 的正序（从小到大）数组 <code>nums1</code> 和 <code>nums2</code>。请你找出并返回这两个正序数组的 <strong>中位数</strong> 。</p>
-<p>算法的时间复杂度应该为 <code>O(log (m+n))</code> 。</p>`,
-    examples: [
-      {
-        input: "nums1 = [1,3], nums2 = [2]",
-        output: "2.00000",
-        explanation: "合并数组 = [1,2,3] ，中位数 2",
-      },
-      {
-        input: "nums1 = [1,2], nums2 = [3,4]",
-        output: "2.50000",
-        explanation: "合并数组 = [1,2,3,4] ，中位数 (2 + 3) / 2 = 2.5",
-      },
-    ],
-    constraints: [
-      "nums1.length == m",
-      "nums2.length == n",
-      "0 <= m <= 1000",
-      "0 <= n <= 1000",
-      "1 <= m + n <= 2000",
-      "-10^6 <= nums1[i], nums2[i] <= 10^6",
-    ],
-  },
-  {
-    id: 4,
-    title: "回文数",
-    difficulty: "简单",
-    description: `<p>给你一个整数 <code>x</code> ，如果 <code>x</code> 是一个回文整数，返回 <code>true</code> ；否则，返回 <code>false</code> 。</p>
-<p>回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。</p>
-<ul>
-<li>例如，<code>121</code> 是回文，而 <code>123</code> 不是。</li>
-</ul>`,
-    examples: [
-      {
-        input: "x = 121",
-        output: "true",
-      },
-      {
-        input: "x = -121",
-        output: "false",
-        explanation:
-          "从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。",
-      },
-      {
-        input: "x = 10",
-        output: "false",
-        explanation: "从右向左读, 为 01 。因此它不是一个回文数。",
-      },
-    ],
-    constraints: ["-2^31 <= x <= 2^31 - 1"],
-  },
-  {
-    id: 5,
-    title: "合并两个有序链表",
-    difficulty: "简单",
-    description: `<p>将两个升序链表合并为一个新的 <strong>升序</strong> 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。</p>`,
-    examples: [
-      {
-        input: "l1 = [1,2,4], l2 = [1,3,4]",
-        output: "[1,1,2,3,4,4]",
-      },
-      {
-        input: "l1 = [], l2 = []",
-        output: "[]",
-      },
-      {
-        input: "l1 = [], l2 = [0]",
-        output: "[0]",
-      },
-    ],
-    constraints: [
-      "两个链表的节点数目范围是 [0, 50]",
-      "-100 <= Node.val <= 100",
-      "l1 和 l2 均按 非递减顺序 排列",
-    ],
-  },
-]);
+const problemList = reactive([]);
 
 // 当前选中的题目
 const problem = reactive({
   id: 1,
-  title: "两数之和",
-  difficulty: "简单",
-  description: `<p>给定一个整数数组 <code>nums</code> 和一个整数目标值 <code>target</code>，请你在该数组中找出 <strong>和为目标值</strong> <code>target</code> 的那 <strong>两个</strong> 整数，并返回它们的数组下标。</p>
-<p>你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。</p>
-<p>你可以按任意顺序返回答案。</p>`,
-  examples: [
-    {
-      input: "nums = [2,7,11,15], target = 9",
-      output: "[0,1]",
-      explanation: "因为 nums[0] + nums[1] == 9 ，返回 [0, 1]",
-    },
-    {
-      input: "nums = [3,2,4], target = 6",
-      output: "[1,2]",
-    },
-    {
-      input: "nums = [3,3], target = 6",
-      output: "[0,1]",
-    },
-  ],
-  constraints: [
-    "2 <= nums.length <= 10^4",
-    "-10^9 <= nums[i] <= 10^9",
-    "-10^9 <= target <= 10^9",
-    "只会存在一个有效答案",
-  ],
+  title: "",
+  difficulty: "",
+  description: "",
+  examples: [],
+  constraints: [],
 });
 
 // 执行结果
@@ -778,8 +620,69 @@ const submitCode = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   initEditor();
+  try {
+    // 获取题目列表
+    const response = await getAllProblems();
+    if (response.data && response.data.code === 1 && response.data.data) {
+      // 将API返回的数据数组添加到问题列表
+      const problems = response.data.data;
+
+      // 处理每个问题的数据格式
+      problems.forEach((p) => {
+        // 处理难度显示
+        switch (p.difficulty) {
+          case 1:
+            p.difficulty = "简单";
+            break;
+          case 2:
+            p.difficulty = "中等";
+            break;
+          case 3:
+            p.difficulty = "困难";
+            break;
+          default:
+            p.difficulty = "简单";
+        }
+
+        // 将sample数组转换为examples数组格式
+        if (p.sample && Array.isArray(p.sample) && p.sample.length > 0) {
+          p.examples = p.sample.map((s) => ({
+            input: s.input || "",
+            output: s.output || "",
+            explanation: s.explanation || "",
+          }));
+        } else {
+          p.examples = [];
+        }
+
+        // 将constraint数组转换为constraints数组格式
+        if (
+          p.constraint &&
+          Array.isArray(p.constraint) &&
+          p.constraint.length > 0
+        ) {
+          p.constraints = p.constraint.map((c) => c.constraintText);
+        } else {
+          p.constraints = [];
+        }
+      });
+
+      // 添加处理后的题目到题目列表
+      problemList.push(...problems);
+
+      // 默认选择第一道题
+      if (problems.length > 0) {
+        Object.assign(problem, problems[0]);
+      }
+    } else {
+      throw new Error(response.data.msg || "获取题目列表失败");
+    }
+  } catch (error) {
+    console.error("获取题目列表失败:", error);
+    ElMessage.error(error.message || "获取题目列表失败，请稍后重试");
+  }
 });
 
 onBeforeUnmount(() => {
