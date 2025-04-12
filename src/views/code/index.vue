@@ -176,6 +176,12 @@
 
 <script setup>
 import {
+  submitCodeRun,
+  getCodeRunResult,
+  getLanguageId,
+  compareOutputs,
+} from "@/api/code";
+import {
   ref,
   onMounted,
   onBeforeUnmount,
@@ -191,6 +197,7 @@ import {
   ArrowUp,
   ArrowDown,
 } from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
 
 // 编辑器实例
 let editor = null;
@@ -208,6 +215,10 @@ const resultCollapsed = ref(true);
 
 // 当前选中的语言
 const selectedLanguage = ref("javascript");
+
+// 运行代码状态
+const isRunning = ref(false);
+const isSubmitting = ref(false);
 
 // 编程语言列表
 const languages = [
@@ -525,43 +536,246 @@ watch(selectedLanguage, (newLang) => {
 });
 
 // 运行代码
-const runCode = () => {
+const runCode = async () => {
+  if (isRunning.value) return;
+
   const code = editor.getValue();
+  const languageId = getLanguageId(selectedLanguage.value);
   resultCollapsed.value = false;
   showResult.value = true;
+  isRunning.value = true;
 
-  // 模拟代码运行结果
-  // 实际项目中，这里应该是发送请求到后端API执行代码
-  setTimeout(() => {
-    testResult.status = Math.random() > 0.3 ? "success" : "error";
-    testResult.output = "[0, 1]";
-    testResult.expected = "[0, 1]";
-    testResult.runtime = Math.floor(Math.random() * 100);
-    testResult.memory = (Math.random() * 40 + 30).toFixed(1);
+  // 重置测试结果
+  Object.assign(testResult, {
+    status: "pending",
+    output: "运行中...",
+    expected: "",
+    error: "",
+    runtime: 0,
+    memory: 0,
+  });
 
-    if (testResult.status === "error") {
-      testResult.error = "执行超时或输出结果不符合预期";
-    } else {
-      testResult.error = "";
+  try {
+    // 获取预期输出
+    const expectedOutput = problem.examples[0].output.trim();
+
+    // 提交代码运行请求
+    const submitData = {
+      source_code: code,
+      language_id: languageId,
+      stdin: problem.examples[0].input.split("=")[1].trim(), // 使用第一个示例的输入
+      expected_output: expectedOutput, // 设置预期输出
+    };
+
+    // 发送提交请求
+    const { data: submitResponse } = await submitCodeRun(submitData);
+    const token = submitResponse.token;
+
+    if (!token) {
+      throw new Error("提交代码失败，未获取到任务ID");
     }
-  }, 1000);
+
+    // 等待并获取结果
+    let retries = 0;
+    let resultData = null;
+
+    while (retries < 10) {
+      // 等待1秒后查询结果
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // 获取运行结果
+      const { data } = await getCodeRunResult(token);
+      resultData = data;
+
+      // 如果状态不是处理中，则结束等待
+      if (data.status && data.status.id !== 1 && data.status.id !== 2) {
+        break;
+      }
+
+      retries++;
+    }
+
+    if (!resultData) {
+      throw new Error("获取运行结果超时");
+    }
+
+    // 获取实际输出
+    const actualOutput = resultData.stdout || "";
+
+    // 使用compareOutputs比较输出
+    const outputMatches = compareOutputs(actualOutput, expectedOutput);
+
+    // 处理结果
+    testResult.status =
+      resultData.status.id === 3 && outputMatches ? "success" : "error";
+    testResult.output = actualOutput;
+    testResult.expected = expectedOutput;
+    testResult.runtime = resultData.time * 1000; // 转换为毫秒
+    testResult.memory = resultData.memory / 1024; // 转换为MB
+    testResult.error =
+      resultData.stderr ||
+      resultData.compile_output ||
+      resultData.message ||
+      "";
+
+    // 如果编译和运行都成功，但输出不匹配
+    if (resultData.status.id === 3 && !outputMatches) {
+      testResult.error += "\n输出结果与预期不匹配";
+    }
+  } catch (error) {
+    console.error("代码运行错误:", error);
+    ElMessage.error(error.message || "运行代码失败，请稍后重试");
+    testResult.status = "error";
+    testResult.error = error.message || "未知错误";
+  } finally {
+    isRunning.value = false;
+  }
 };
 
 // 提交代码
-const submitCode = () => {
-  const code = editor.getValue();
-  showResult.value = true;
+const submitCode = async () => {
+  if (isSubmitting.value) return;
 
-  // 模拟提交结果
-  // 实际项目中，这里应该是发送请求到后端API提交代码
-  setTimeout(() => {
-    testResult.status = "success";
-    testResult.output = "[0, 1]";
-    testResult.expected = "[0, 1]";
-    testResult.runtime = Math.floor(Math.random() * 100);
-    testResult.memory = (Math.random() * 40 + 30).toFixed(1);
-    testResult.error = "";
-  }, 1000);
+  const code = editor.getValue();
+  const languageId = getLanguageId(selectedLanguage.value);
+  resultCollapsed.value = false;
+  showResult.value = true;
+  isSubmitting.value = true;
+
+  // 重置测试结果
+  Object.assign(testResult, {
+    status: "pending",
+    output: "提交中...",
+    expected: "",
+    error: "",
+    runtime: 0,
+    memory: 0,
+  });
+
+  try {
+    // 提交全部测试用例
+    const promises = problem.examples.map(async (example, index) => {
+      const input = example.input.split("=")[1].trim();
+      const expectedOutput = example.output.trim();
+
+      // 提交代码
+      const submitData = {
+        source_code: code,
+        language_id: languageId,
+        stdin: input,
+        expected_output: expectedOutput,
+      };
+
+      // 发送请求
+      const { data: submitResponse } = await submitCodeRun(submitData);
+      const token = submitResponse.token;
+
+      if (!token) {
+        throw new Error(`测试用例 ${index + 1} 提交失败`);
+      }
+
+      // 等待并获取结果
+      let retries = 0;
+      let resultData = null;
+
+      while (retries < 10) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const { data } = await getCodeRunResult(token);
+        resultData = data;
+
+        if (data.status && data.status.id !== 1 && data.status.id !== 2) {
+          break;
+        }
+
+        retries++;
+      }
+
+      if (!resultData) {
+        throw new Error(`测试用例 ${index + 1} 运行超时`);
+      }
+
+      // 比较输出与预期输出
+      const actualOutput = resultData.stdout || "";
+      const outputMatches = compareOutputs(actualOutput, expectedOutput);
+
+      return {
+        index,
+        result: resultData,
+        expected: expectedOutput,
+        actual: actualOutput,
+        outputMatches: outputMatches,
+        isSuccess: resultData.status.id === 3 && outputMatches, // 只有状态正确且输出匹配才算通过
+      };
+    });
+
+    // 等待所有测试用例完成
+    const results = await Promise.all(promises);
+
+    // 检查是否全部通过
+    const allPassed = results.every((r) => r.isSuccess);
+
+    // 更新结果
+    testResult.status = allPassed ? "success" : "error";
+
+    // 详细结果
+    const totalRuntime = results.reduce(
+      (acc, r) => acc + parseFloat(r.result.time || 0),
+      0
+    );
+    const maxMemory = Math.max(...results.map((r) => r.result.memory || 0));
+
+    testResult.output = results
+      .map(
+        (r) =>
+          `测试用例 ${r.index + 1}: ${r.isSuccess ? "通过" : "失败"}\n${
+            r.actual
+          }`
+      )
+      .join("\n\n");
+
+    testResult.expected = results
+      .map((r) => `测试用例 ${r.index + 1}: ${r.expected}`)
+      .join("\n\n");
+
+    testResult.runtime = totalRuntime * 1000; // 转换为毫秒
+    testResult.memory = maxMemory / 1024; // 转换为MB
+
+    const errors = results
+      .filter((r) => !r.isSuccess)
+      .map((r) => {
+        if (r.result.status.id !== 3) {
+          // 运行出错或编译错误
+          return `测试用例 ${r.index + 1} 失败:\n${
+            r.result.stderr || r.result.compile_output || r.result.message || ""
+          }`;
+        } else if (!r.outputMatches) {
+          // 运行成功但输出不匹配
+          return `测试用例 ${r.index + 1} 失败: 输出结果与预期不匹配\n预期: ${
+            r.expected
+          }\n实际: ${r.actual}`;
+        }
+        return `测试用例 ${r.index + 1} 失败: 未知错误`;
+      });
+
+    testResult.error = errors.join("\n\n");
+
+    if (allPassed) {
+      ElMessage.success("所有测试用例通过！");
+    } else {
+      ElMessage.warning(
+        `${results.filter((r) => r.isSuccess).length}/${
+          results.length
+        } 个测试用例通过`
+      );
+    }
+  } catch (error) {
+    console.error("代码提交错误:", error);
+    ElMessage.error(error.message || "提交代码失败，请稍后重试");
+    testResult.status = "error";
+    testResult.error = error.message || "未知错误";
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 onMounted(() => {
