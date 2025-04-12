@@ -19,7 +19,7 @@ export default {
 .footer {
   text-align: center;
   padding: 10px 0;
-  margin-top: 20px;
+  margin-top: 10px;
   background-color: var(--bg-primary);
   color: #8590a6;
   font-size: 14px;
@@ -31,7 +31,7 @@ export default {
 }
 
 .footer p:hover {
-  color: #000;
+  color: var(--text-primary);
 }
 
 @media screen and (max-width: 768px) {

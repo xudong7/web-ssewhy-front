@@ -855,7 +855,7 @@ onBeforeUnmount(() => {
   justify-content: center;
   gap: 8px;
   padding: 8px;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   cursor: pointer;
   color: var(--text-primary);
   border-top: 1px solid var(--border-dark);
@@ -868,7 +868,7 @@ onBeforeUnmount(() => {
 }
 
 .result-container {
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-disabled);
   color: var(--text-primary);
   padding: 10px 15px;
   height: 100%;
