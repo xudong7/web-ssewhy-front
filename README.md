@@ -22,6 +22,8 @@ SSE-WHY 是一个现代化的技术社区平台，致力于为开发者提供优
 - ⭐ 文章收藏与点赞
 - 🎨 个性化主页定制
 - 📱 响应式布局设计
+- 💻 在线代码平台
+
 
 ## 🛠️ 技术栈
 
@@ -73,7 +75,14 @@ cd web-ssewhy-back
 - 创建 MySQL 数据库
 - 修改 `application.properties` 中的数据库配置
 
-3. 启动项目
+3. 配置docker
+```bash
+cd docker
+docker-compose up -d db redis
+docker-compose up -d
+```
+
+4. 启动项目
 ```bash
 ./mvnw spring-boot:run
 ```
@@ -152,3 +161,5 @@ front
 - [Element Plus](https://element-plus.org/)
 - [Vite](https://vitejs.dev/)
 - [Marked](https://marked.js.org/)
+- [monaco-editor](https://github.com/microsoft/monaco-editor)
+- [judge0](https://github.com/judge0/judge0)
