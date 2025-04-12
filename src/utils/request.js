@@ -2,17 +2,9 @@
 import axios from 'axios';
 import { useUserStore } from '@/store/modules/user';
 import { ElMessage } from 'element-plus';
-import { useRouter } from 'vue-router';
+import eventBus from './eventBus';
 
-const router = useRouter();
-
-// const url = "http://8.134.51.50:8080/api"; // 本地环境
 const url = import.meta.env.VITE_APP_URL;
-// 线上环境
-// const url = "http://8.134.51.50:8080/api";
-// const jumpUrl = 'http://localhost:5173/login'; // 本地环境
-// 线上环境
-// const jumpUrl = "http://8.134.51.50:5173/login";
 
 const request = axios.create({
 	baseURL: url,
@@ -59,7 +51,7 @@ request.interceptors.response.use(
 					ElMessage.error('未授权，请登录');
 					setTimeout(() => {
 						// window.location.href = jumpUrl;
-						router.push('/login');
+            eventBus.emit('API:UN_AUTH');
 					}, 1000);
 					break;
 				case 403:
