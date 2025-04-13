@@ -1,5 +1,6 @@
 <script setup>
 import { marked } from 'marked';
+import { onMounted, ref } from 'vue';
 
 const props = defineProps({
 	rawContent: {
@@ -10,9 +11,7 @@ const props = defineProps({
 
 const activeHeading = ref('');
 
-// 用不了
 // const scrollToHeading = (id) => {
-//   console.log(id)
 // 	const element = document.getElementById(id);
 // 	if (element) {
 // 		element.scrollIntoView({ behavior: 'smooth' });
@@ -20,35 +19,27 @@ const activeHeading = ref('');
 // 	}
 // };
 
+const toc = ref([]);
+
 const generateToc = (content) => {
 	if (!content) return '';
 	// 先将markdown转换为HTML
 	const htmlContent = marked(content);
 	const headings = htmlContent.match(/<h([1-6])(.*?)>(.*?)<\/h\1>/g) || [];
-	let toc = '';
 
 	headings.forEach((heading) => {
 		const level = heading.match(/<h([1-6])/)[1];
 		const text = heading.replace(/<[^>]+>/g, '');
 		const id = text.toLowerCase().replace(/\s+/g, '-');
-		const indent = (level - 1) * 20;
 
-		toc += `<div class="toc-item ${
-			activeHeading.value === id ? 'active' : ''
-		}" style="padding-left: ${indent}px">
-          <a href="#${id}" @click="scrollToHeading('${id}')">
-            <span class="toc-dot"></span>
-            ${text}
-          </a>
-        </div>`;
+		console.log(id, text, level);
+		toc.value.push({ id, level });
 	});
-
-	return toc;
 };
 
-const toc = computed(()=>{
-    return generateToc(props.rawContent)
-})
+onMounted(() => {
+	generateToc(props.rawContent);
+});
 </script>
 
 <template>
@@ -57,10 +48,18 @@ const toc = computed(()=>{
 			<i class="el-icon-menu"></i>
 			目录
 		</div>
-		<div
-			class="toc-content"
-			v-html="toc"
-		></div>
+		<div class="toc-content">
+			<div
+				v-for="item in toc"
+				:class="`toc-item ${activeHeading === item.id ? 'active' : ''}`"
+				:style="{ paddingLeft: `${(item.level - 1) * 20}px` }"
+			>
+				<a :href="`#${item.id}`">
+					<span class="toc-dot"></span>
+					{{ item.id }}
+				</a>
+			</div>
+		</div>
 	</div>
 </template>
 
