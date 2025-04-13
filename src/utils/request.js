@@ -4,7 +4,7 @@ import { useUserStore } from '@/store/modules/user';
 import { ElMessage } from 'element-plus';
 import eventBus from './eventBus';
 
-const url = import.meta.env.VITE_APP_URL;
+const url = import.meta.env.VITE_APP_URL || 'http://localhost:8080/api';
 
 const request = axios.create({
 	baseURL: url,
