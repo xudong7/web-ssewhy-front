@@ -51,7 +51,6 @@ const processContent = (content) => {
 };
 
 const markdownContent = computed(() => {
-	console.log(props.rawContent);
 	return processContent(props.rawContent);
 });
 </script>

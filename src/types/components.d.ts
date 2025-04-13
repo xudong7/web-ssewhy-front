@@ -38,6 +38,7 @@ declare module 'vue' {
     MarkdownContainer: typeof import('./../components/MarkdownContainer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TocMenu: typeof import('./../components/TocMenu.vue')['default']
     UserArticles: typeof import('./../components/UserArticles.vue')['default']
     UserCollect: typeof import('./../components/UserCollect.vue')['default']
     UserFans: typeof import('./../components/UserFans.vue')['default']
