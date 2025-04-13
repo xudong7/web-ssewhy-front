@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, nextTick } from 'vue';
 import { marked } from 'marked';
 import hljs from 'highlight.js';
 
@@ -33,7 +33,7 @@ const processContent = (content) => {
 					console.error(err);
 				}
 			}
-			return code;
+			return hljs.highlightAuto(code).value;
 		},
 		breaks: true,
 		gfm: true,
@@ -44,6 +44,9 @@ const processContent = (content) => {
 	// 为标题添加id
 	htmlContent = addHeadingIds(htmlContent);
 	// 将图片标签替换为带有div包裹的形式,并添加点击事件
+	nextTick(()=>{
+		hljs.highlightAll();
+	})
 	return htmlContent.replace(
 		/<img(.*?)src="(.*?)"(.*?)>/g,
 		'<div class="image-wrapper"><img$1src="$2"$3 onclick="window.previewImage(\'$2\')"></div>'
