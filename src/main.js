@@ -6,8 +6,8 @@ import router from "./router";
 // import ElementPlus from "element-plus";
 
 // 引入样式文件
-// import "element-plus/dist/index.css";
-// import "element-plus/theme-chalk/dark/css-vars.css";
+import "element-plus/dist/index.css";
+import "element-plus/theme-chalk/dark/css-vars.css";
 import "./styles/variables.css";
 import "./styles/element-plus.css";
 import "highlight.js/styles/vs2015.css";
