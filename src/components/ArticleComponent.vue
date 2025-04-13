@@ -97,13 +97,16 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
+  author:{
+    type:Object,
+    required:true
+  }
 });
 
 const router = useRouter();
 
 const showViewer = ref(false);
 const previewUrl = ref('');
-const author = ref({});
 const userStore = useUserStore();
 
 const goToAuthor = (authorId) => {
