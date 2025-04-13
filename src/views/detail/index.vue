@@ -41,7 +41,7 @@ const isLoading = ref(false); // 用于控制加载状态
 
 const articleId = route.params.articleId; // 获取路由参数中的文章ID
 const article = ref({}); // 文章数据
-const author = ref({})
+const author = ref({});
 
 const getArticle = async () => {
 	isLoading.value = true; // 开始加载状态
@@ -51,11 +51,11 @@ const getArticle = async () => {
 		article.value = res.data.data;
 		article.value.isLiked =
 			article.value.likesCart &&
-			article.value.likesCart.includes(`,${this.userStore.userId},`);
-		const res2 = await getUserInfoById(this.userStore.userId);
+			article.value.likesCart.includes(`,${userStore.userId},`);
+		const res2 = await getUserInfoById(userStore.userId);
 		const user = res2.data.data;
 		article.value.isMarked =
-			user.markCart && user.markCart.includes(`,${this.article.id},`);
+			user.markCart && user.markCart.includes(`,${article.value.id},`);
 	} catch (error) {
 		console.error('获取文章失败:', error);
 	} finally {
@@ -64,13 +64,12 @@ const getArticle = async () => {
 };
 
 const getAuthorInfo = async () => {
-	if(!article.value.userId) {
-		return
+	if (!article.value.userId) {
+		return;
 	}
-	const res = await getUserInfoById(article.value.userId)
-	author.value = res.data.data
-	console.log(author.value)
-}
+	const res = await getUserInfoById(article.value.userId);
+	author.value = res.data.data;
+};
 
 const listenLike = async () => {
 	const userId = userStore.userId;
@@ -97,9 +96,9 @@ const listenMark = async () => {
 };
 
 onMounted(async () => {
-	console.log('Article ID:', articleId);
+	console.log(userStore);
 	await getArticle(); // 组件挂载时获取文章
-	await getAuthorInfo()
+	await getAuthorInfo();
 });
 </script>
 
