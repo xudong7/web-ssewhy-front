@@ -24,6 +24,12 @@
             <el-button type="primary" size="medium" @click="handleEditProfile"
               >编辑个人资料</el-button
             >
+            <el-button
+              type="warning"
+              size="medium"
+              @click="handleChangePassword"
+              >修改密码</el-button
+            >
           </div>
         </div>
       </div>
@@ -52,6 +58,18 @@
         <!-- <el-form-item label="用户名">
           <el-input v-model="editForm.username"></el-input>
         </el-form-item> -->
+        <el-form-item label="电子邮箱">
+          <el-input
+            v-model="editForm.email"
+            placeholder="请输入电子邮箱"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="手机号码">
+          <el-input
+            v-model="editForm.mobile"
+            placeholder="请输入手机号码"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="头像">
           <el-upload
             class="avatar-uploader"
@@ -94,6 +112,49 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 修改密码对话框 -->
+    <el-dialog title="修改密码" v-model="passwordDialogVisible" width="500px">
+      <el-form
+        :model="passwordForm"
+        label-width="80px"
+        :rules="passwordRules"
+        ref="passwordFormRef"
+      >
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input
+            v-model="passwordForm.oldPassword"
+            type="password"
+            placeholder="请输入旧密码"
+            show-password
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input
+            v-model="passwordForm.newPassword"
+            type="password"
+            placeholder="请输入新密码"
+            show-password
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-input
+            v-model="passwordForm.confirmPassword"
+            type="password"
+            placeholder="请再次输入新密码"
+            show-password
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="passwordDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSavePassword"
+            >确认修改</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -101,7 +162,7 @@
 import { useUserStore } from "@/store/modules/user";
 import { Plus } from "@element-plus/icons-vue";
 import { uploadImage } from "@/api/article";
-import { updateUserInfo } from "@/api/user";
+import { updateUserInfo, updateUserPassword } from "@/api/user";
 import UserArticles from "@/components/UserArticles.vue";
 import UserCollect from "@/components/UserCollect.vue";
 import UserFollow from "@/components/UserFollow.vue";
@@ -130,10 +191,41 @@ export default {
       ],
       userInfo: {},
       dialogVisible: false,
+      passwordDialogVisible: false,
       editForm: {
         username: "",
         avatar: "",
         cover: "",
+        email: "",
+        password: "",
+        mobile: "",
+      },
+      passwordForm: {
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      },
+      passwordRules: {
+        oldPassword: [
+          { required: true, message: "请输入旧密码", trigger: "blur" },
+        ],
+        newPassword: [
+          { required: true, message: "请输入新密码", trigger: "blur" },
+          { min: 6, message: "密码长度不能少于6位", trigger: "blur" },
+        ],
+        confirmPassword: [
+          { required: true, message: "请确认新密码", trigger: "blur" },
+          {
+            validator: (rule, value, callback) => {
+              if (value !== this.passwordForm.newPassword) {
+                callback(new Error("两次输入的密码不一致"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur",
+          },
+        ],
       },
       userStore: useUserStore(),
     };
@@ -167,8 +259,19 @@ export default {
         username: this.userInfo.username,
         avatar: this.userInfo.avatar || "",
         cover: this.userInfo.cover || "",
+        email: this.userInfo.email || "",
+        password: "",
+        mobile: this.userInfo.mobile || "",
       };
       this.dialogVisible = true;
+    },
+    handleChangePassword() {
+      this.passwordForm = {
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      };
+      this.passwordDialogVisible = true;
     },
     async handleAvatarChange(file) {
       try {
@@ -209,6 +312,9 @@ export default {
           username: this.editForm.username,
           avatar: this.editForm.avatar,
           cover: this.editForm.cover,
+          email: this.editForm.email,
+          password: this.editForm.password,
+          mobile: this.editForm.mobile,
         };
 
         const res = await updateUserInfo(updateData);
@@ -220,6 +326,8 @@ export default {
           this.userInfo.username = updateData.username;
           this.userInfo.avatar = updateData.avatar;
           this.userInfo.cover = updateData.cover;
+          this.userInfo.email = updateData.email;
+          this.userInfo.mobile = updateData.mobile;
 
           ElMessage.success("个人资料更新成功");
           this.dialogVisible = false;
@@ -229,6 +337,28 @@ export default {
       } catch (error) {
         console.error("更新个人资料失败:", error);
         ElMessage.error("更新失败，请稍后重试");
+      }
+    },
+    async handleSavePassword() {
+      try {
+        this.$refs.passwordFormRef.validate(async (valid) => {
+          if (valid) {
+            const id = this.userStore.userId;
+            const oldPassword = this.passwordForm.oldPassword;
+            const newPassword = this.passwordForm.newPassword;
+
+            const res = await updateUserPassword(id, oldPassword, newPassword);
+            if (res.data.code === 1) {
+              ElMessage.success("密码修改成功");
+              this.passwordDialogVisible = false;
+            } else {
+              ElMessage.error(res.data.msg || "密码修改失败");
+            }
+          }
+        });
+      } catch (error) {
+        console.error("密码修改失败:", error);
+        ElMessage.error("密码修改失败，请稍后重试");
       }
     },
   },

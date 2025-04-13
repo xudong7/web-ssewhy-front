@@ -72,3 +72,16 @@ export function handleCollection(userId, articleId) {
 export function handleFollow(userId, fanId) {
   return request.post(`/user/fan?userId=${userId}&fanId=${fanId}`);
 }
+
+/**
+ * 修改用户密码
+ * @param id 用户ID
+ * @param oldPassword 旧密码
+ * @param newPassword 新密码
+ * @returns {*}
+ */
+export function updateUserPassword(id, oldPassword, newPassword) {
+  return request.put(
+    `/user/password?id=${id}&oldPassword=${oldPassword}&newPassword=${newPassword}`
+  );
+}
