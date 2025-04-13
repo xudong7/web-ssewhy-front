@@ -35,6 +35,7 @@ declare module 'vue' {
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     FooterComponent: typeof import('./../components/FooterComponent.vue')['default']
+    MarkdownContainer: typeof import('./../components/MarkdownContainer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     UserArticles: typeof import('./../components/UserArticles.vue')['default']
