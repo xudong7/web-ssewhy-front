@@ -41,6 +41,9 @@ export const useUserStore = defineStore(
       userInfo.value.username = data.username;
       userInfo.value.avatar = data.avatar;
       userInfo.value.cover = data.cover;
+      userInfo.value.email = data.email;
+      userInfo.value.mobile = data.mobile;
+      userInfo.value.phone = data.mobile;  // 同步更新phone字段
     }
 
     return {

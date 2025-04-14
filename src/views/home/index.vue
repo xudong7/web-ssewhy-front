@@ -315,6 +315,7 @@ export default {
           email: this.editForm.email,
           password: this.editForm.password,
           mobile: this.editForm.mobile,
+          phone: this.editForm.mobile, // 同时更新phone字段，与mobile保持一致
         };
 
         const res = await updateUserInfo(updateData);
@@ -328,6 +329,7 @@ export default {
           this.userInfo.cover = updateData.cover;
           this.userInfo.email = updateData.email;
           this.userInfo.mobile = updateData.mobile;
+          this.userInfo.phone = updateData.mobile;
 
           ElMessage.success("个人资料更新成功");
           this.dialogVisible = false;
