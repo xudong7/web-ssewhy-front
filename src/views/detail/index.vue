@@ -49,11 +49,13 @@ const getArticle = async () => {
     const res = await getArticleById(articleId);
     // 筛选status为1的文章
     article.value = res.data.data;
+
+    // 使用likesCart作为List<Integer>类型，直接检查是否包含用户ID
     article.value.isLiked =
       article.value.likesCart &&
-      article.value.likesCart.includes(`,${userStore.userId},`);
+      article.value.likesCart.includes(parseInt(userStore.userId));
 
-    // 使用文章的marksCart属性判断收藏状态，检查当前用户ID是否在文章的marksCart中
+    // 使用marksCart作为List<Integer>类型，直接检查是否包含用户ID
     article.value.isMarked =
       article.value.marksCart &&
       article.value.marksCart.includes(parseInt(userStore.userId));
