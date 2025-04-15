@@ -42,7 +42,7 @@
           <div class="item-meta">
             <span>大小: {{ formatFileSize(item.size) }}</span>
             <span>下载次数: {{ item.downloads || 0 }}</span>
-            <span>上传时间: {{ formatDate(item.createdTime) }}</span>
+            <span>上传时间: {{ formatDate(item.createTime) }}</span>
           </div>
         </div>
         <div class="item-action">
