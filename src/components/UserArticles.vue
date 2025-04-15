@@ -130,7 +130,7 @@ export default {
 
         this.articles = res.data.data.filter(
           // userId 是字符串类型,需要转换为数字类型
-          (article) => article.userId === parseInt(userId),
+          (article) => article.userId === parseInt(userId)
         );
       } catch (error) {
         console.error("获取用户文章失败:", error);

@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { getArticleList } from "@/api/article";
+import { getArticleById, getArticleList } from "@/api/article";
 import { getUserInfoById } from "@/api/user";
 import { useUserStore } from "@/store/modules/user";
 import {
@@ -118,12 +118,26 @@ export default {
         } else if (currentRoute.name === "User") {
           userId = currentRoute.params.userId;
         }
-        const res1 = await getArticleList();
-        const res2 = await getUserInfoById(userId);
-        const allArticles = res1.data.data;
-        const markCart = res2.data.data?.markCart || [];
+
+        // 获取用户信息，获取用户的marksCart属性
+        const userRes = await getUserInfoById(userId);
+        const userData = userRes.data.data;
+
+        // 使用用户的marksCart，它已经是一个List<Integer>类型
+        const markedArticleIds = userData.marksCart || [];
+
+        if (markedArticleIds.length === 0) {
+          this.articles = [];
+          return;
+        }
+
+        // 获取所有文章
+        const articlesRes = await getArticleList();
+        const allArticles = articlesRes.data.data || [];
+
+        // 筛选出用户收藏的文章
         this.articles = allArticles.filter((article) =>
-          markCart.includes(article.id),
+          markedArticleIds.includes(article.id)
         );
       } catch (error) {
         console.error("获取用户收藏文章失败:", error);
