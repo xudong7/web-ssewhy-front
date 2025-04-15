@@ -48,6 +48,7 @@ declare module 'vue' {
     UserCollect: typeof import('./../components/UserCollect.vue')['default']
     UserFans: typeof import('./../components/UserFans.vue')['default']
     UserFollow: typeof import('./../components/UserFollow.vue')['default']
+    UserFollows: typeof import('./../components/UserFollows.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

@@ -83,42 +83,21 @@ export default {
         const res = await getUserInfoById(this.targetUserId);
         if (res.data.code === 1) {
           const userInfo = res.data.data;
-          // 从用户的followCart中获取关注的用户ID列表
-          const followIds = userInfo.followCart
-            ? userInfo.followCart.split(",").filter((id) => id)
-            : [];
+          // 正确使用用户的followsCart，它已经是List<Integer>类型
+          const followIds = userInfo.followsCart || [];
+
+          if (followIds.length === 0) {
+            this.followList = [];
+            return;
+          }
 
           // 获取每个关注用户的详细信息
           const promises = followIds.map((id) => getUserInfoById(id));
           const results = await Promise.all(promises);
 
-          // 如果是当前用户的页面，所有用户都是已关注状态
-          // 如果是其他用户的页面，需要检查当前用户是否关注了这些用户
-          if (this.isCurrentUser) {
-            this.followList = results
-              .filter((res) => res.data.code === 1)
-              .map((res) => ({
-                ...res.data.data,
-                isFollowed: true,
-              }));
-          } else {
-            // 获取当前用户的关注列表
-            const currentUserRes = await getUserInfoById(this.userStore.userId);
-            const currentUserFollowIds = currentUserRes.data.data.followCart
-              ? currentUserRes.data.data.followCart
-                  .split(",")
-                  .filter((id) => id)
-              : [];
-
-            this.followList = results
-              .filter((res) => res.data.code === 1)
-              .map((res) => ({
-                ...res.data.data,
-                isFollowed: currentUserFollowIds.includes(
-                  res.data.data.id.toString(),
-                ),
-              }));
-          }
+          this.followList = results
+            .filter((res) => res.data.code === 1)
+            .map((res) => res.data.data);
         }
       } catch (error) {
         console.error("获取关注列表失败:", error);

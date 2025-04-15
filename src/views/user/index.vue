@@ -66,7 +66,7 @@ import { Plus, Check } from "@element-plus/icons-vue";
 import { getUserInfoById, handleFollow } from "@/api/user";
 import UserArticles from "@/components/UserArticles.vue";
 import UserCollect from "@/components/UserCollect.vue";
-import UserFollow from "@/components/UserFollow.vue";
+import UserFollows from "@/components/UserFollows.vue";
 import UserFans from "@/components/UserFans.vue";
 import { useUserStore } from "@/store/modules/user";
 
@@ -77,7 +77,7 @@ export default {
     Check,
     UserArticles,
     UserCollect,
-    UserFollow,
+    UserFollows,
     UserFans,
   },
   data() {
@@ -109,7 +109,7 @@ export default {
         answers: "UserAnswers",
         articles: "UserArticles",
         collect: "UserCollect",
-        follow: "UserFollow",
+        follow: "UserFollows",
         fans: "UserFans",
         pins: "UserPins",
       };
@@ -118,18 +118,39 @@ export default {
   },
   methods: {
     async getUserInfo() {
-      const userId = this.$route.params.userId;
-      const res = await getUserInfoById(userId);
-      this.userInfo = res.data.data;
-      this.userInfo.isFollowed =
-        this.userInfo.fansCart &&
-        this.userInfo.fansCart.includes(`,${this.userStore.userId},`);
-      this.userInfo.followNum = this.userInfo.followCart
-        .split(",")
-        .filter(Boolean).length;
-      this.userInfo.fansNum = this.userInfo.fansCart
-        .split(",")
-        .filter(Boolean).length;
+      if (!this.$route.params.userId) {
+        this.$router.push("/hall");
+        return;
+      }
+
+      try {
+        const res = await getUserInfoById(this.$route.params.userId);
+        if (res.data.code === 1) {
+          this.userInfo = res.data.data;
+          // 检查用户是否被当前登录用户关注
+          const currentUserRes = await getUserInfoById(this.userStore.userId);
+          if (currentUserRes.data.code === 1) {
+            const currentUserInfo = currentUserRes.data.data;
+            // 使用followsCart作为List<Integer>类型，检查是否包含目标用户ID
+            this.userInfo.isFollowed =
+              currentUserInfo.followsCart &&
+              currentUserInfo.followsCart.includes(parseInt(this.userInfo.id));
+
+            // 计算关注数和粉丝数，直接使用Array的length属性
+            this.userInfo.followNum = this.userInfo.followsCart
+              ? this.userInfo.followsCart.length
+              : 0;
+            this.userInfo.fansNum = this.userInfo.fansCart
+              ? this.userInfo.fansCart.length
+              : 0;
+          }
+        } else {
+          ElMessage.error(res.data.msg || "获取用户信息失败");
+        }
+      } catch (error) {
+        console.error("获取用户信息失败:", error);
+        ElMessage.error("获取用户信息失败");
+      }
     },
     async handleFollow() {
       try {
@@ -137,7 +158,7 @@ export default {
         if (res.data.code === 1) {
           this.userInfo.isFollowed = !this.userInfo.isFollowed;
           ElMessage.success(
-            this.userInfo.isFollowed ? "关注成功" : "已取消关注",
+            this.userInfo.isFollowed ? "关注成功" : "已取消关注"
           );
         } else {
           ElMessage.error(res.data.msg || "操作失败");

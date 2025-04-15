@@ -77,10 +77,13 @@ export default {
         const res = await getUserInfoById(this.targetUserId);
         if (res.data.code === 1) {
           const userInfo = res.data.data;
-          // 从用户的fansCart中获取粉丝ID列表
-          const fansIds = userInfo.fansCart
-            ? userInfo.fansCart.split(",").filter((id) => id)
-            : [];
+          // 使用用户的fansCart属性，它已经是List<Integer>类型
+          const fansIds = userInfo.fansCart || [];
+
+          if (fansIds.length === 0) {
+            this.fansList = [];
+            return;
+          }
 
           // 获取每个粉丝的详细信息
           const promises = fansIds.map((id) => getUserInfoById(id));
@@ -88,15 +91,13 @@ export default {
 
           // 获取当前登录用户的关注列表，用于判断是否已关注这些粉丝
           const currentUserRes = await getUserInfoById(this.userStore.userId);
-          const followIds = currentUserRes.data.data.followCart
-            ? currentUserRes.data.data.followCart.split(",").filter((id) => id)
-            : [];
+          const followIds = currentUserRes.data.data.followsCart || [];
 
           this.fansList = results
             .filter((res) => res.data.code === 1)
             .map((res) => ({
               ...res.data.data,
-              isFollowed: followIds.includes(res.data.data.id.toString()),
+              isFollowed: followIds.includes(res.data.data.id),
             }));
         }
       } catch (error) {

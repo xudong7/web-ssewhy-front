@@ -165,8 +165,9 @@ import { uploadImage } from "@/api/article";
 import { updateUserInfo, updateUserPassword } from "@/api/user";
 import UserArticles from "@/components/UserArticles.vue";
 import UserCollect from "@/components/UserCollect.vue";
-import UserFollow from "@/components/UserFollow.vue";
+import UserFollows from "@/components/UserFollows.vue";
 import UserFans from "@/components/UserFans.vue";
+import { getArticleList } from "@/api/article";
 
 export default {
   name: "Home",
@@ -174,7 +175,7 @@ export default {
     Plus,
     UserArticles,
     UserCollect,
-    UserFollow,
+    UserFollows,
     UserFans,
   },
   data() {
@@ -237,7 +238,7 @@ export default {
         answers: "UserAnswers",
         articles: "UserArticles",
         collect: "UserCollect",
-        follow: "UserFollow",
+        follow: "UserFollows",
         fans: "UserFans",
         pins: "UserPins",
       };
@@ -247,12 +248,25 @@ export default {
   methods: {
     async getUserInfo() {
       this.userInfo = this.userStore.userInfo;
-      this.userInfo.followNum = this.userInfo.followCart
-        .split(",")
-        .filter(Boolean).length;
+      // 计算关注数和粉丝数，使用List<Integer>类型的属性
+      this.userInfo.followNum = this.userInfo.followsCart
+        ? this.userInfo.followsCart.length
+        : 0;
       this.userInfo.fansNum = this.userInfo.fansCart
-        .split(",")
-        .filter(Boolean).length;
+        ? this.userInfo.fansCart.length
+        : 0;
+
+      // 获取用户动态和文章总数
+      try {
+        const res = await getArticleList();
+        if (res.data.code === 1) {
+          this.userInfo.articleNum = res.data.data.filter(
+            (article) => article.userId === parseInt(this.userStore.userId)
+          ).length;
+        }
+      } catch (error) {
+        console.error("获取文章列表失败:", error);
+      }
     },
     handleEditProfile() {
       this.editForm = {
