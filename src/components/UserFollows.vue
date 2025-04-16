@@ -91,13 +91,34 @@ export default {
             return;
           }
 
+          // 获取当前登录用户的信息，用于检查关注状态
+          let currentUserFollows = [];
+          if (!this.isCurrentUser) {
+            const currentUserRes = await getUserInfoById(this.userStore.userId);
+            if (currentUserRes.data.code === 1) {
+              currentUserFollows = currentUserRes.data.data.followsCart || [];
+            }
+          }
+
           // 获取每个关注用户的详细信息
           const promises = followIds.map((id) => getUserInfoById(id));
           const results = await Promise.all(promises);
 
           this.followList = results
             .filter((res) => res.data.code === 1)
-            .map((res) => res.data.data);
+            .map((res) => {
+              const userData = res.data.data;
+              // 如果是当前用户的关注列表，则肯定都是已关注的
+              // 如果是查看其他用户的关注列表，则需要检查当前用户是否也关注了这些人
+              const isFollowed = this.isCurrentUser
+                ? true
+                : currentUserFollows.includes(userData.id);
+
+              return {
+                ...userData,
+                isFollowed,
+              };
+            });
         }
       } catch (error) {
         console.error("获取关注列表失败:", error);

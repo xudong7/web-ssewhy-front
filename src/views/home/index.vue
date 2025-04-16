@@ -161,13 +161,16 @@
 <script>
 import { useUserStore } from "@/store/modules/user";
 import { Plus } from "@element-plus/icons-vue";
-import { uploadImage } from "@/api/article";
-import { updateUserInfo, updateUserPassword } from "@/api/user";
+import { uploadImage, getArticleList } from "@/api/article";
+import {
+  updateUserInfo,
+  updateUserPassword,
+  getUserInfoById,
+} from "@/api/user";
 import UserArticles from "@/components/UserArticles.vue";
 import UserCollect from "@/components/UserCollect.vue";
 import UserFollows from "@/components/UserFollows.vue";
 import UserFans from "@/components/UserFans.vue";
-import { getArticleList } from "@/api/article";
 
 export default {
   name: "Home",
@@ -247,25 +250,28 @@ export default {
   },
   methods: {
     async getUserInfo() {
-      this.userInfo = this.userStore.userInfo;
-      // 计算关注数和粉丝数，使用List<Integer>类型的属性
-      this.userInfo.followNum = this.userInfo.followsCart
-        ? this.userInfo.followsCart.length
-        : 0;
-      this.userInfo.fansNum = this.userInfo.fansCart
-        ? this.userInfo.fansCart.length
-        : 0;
-
-      // 获取用户动态和文章总数
       try {
-        const res = await getArticleList();
+        const res = await getUserInfoById(this.userStore.userId);
         if (res.data.code === 1) {
-          this.userInfo.articleNum = res.data.data.filter(
-            (article) => article.userId === parseInt(this.userStore.userId)
-          ).length;
+          this.userInfo = res.data.data;
+
+          // 使用获取到的用户数据中的 fans 和 follows 属性
+          this.userInfo.followNum = this.userInfo.follows || 0;
+          this.userInfo.fansNum = this.userInfo.fans || 0;
+
+          // 获取用户文章总数
+          const articlesRes = await getArticleList();
+          if (articlesRes.data.code === 1) {
+            this.userInfo.articleNum = articlesRes.data.data.filter(
+              (article) => article.userId === parseInt(this.userStore.userId)
+            ).length;
+          }
+        } else {
+          ElMessage.error(res.data.msg || "获取用户信息失败");
         }
       } catch (error) {
-        console.error("获取文章列表失败:", error);
+        console.error("获取用户信息失败:", error);
+        ElMessage.error("获取用户信息失败");
       }
     },
     handleEditProfile() {
@@ -468,12 +474,6 @@ export default {
   font-size: 15px;
   margin-bottom: 16px;
   line-height: 1.6;
-}
-
-.user-stats {
-  color: var(--text-secondary);
-  font-size: 15px;
-  margin-bottom: 16px;
 }
 
 .user-stats span {

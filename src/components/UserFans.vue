@@ -85,20 +85,26 @@ export default {
             return;
           }
 
+          // 获取当前登录用户的关注列表，用于判断是否已关注这些粉丝
+          const currentUserRes = await getUserInfoById(this.userStore.userId);
+          const currentUserFollows = currentUserRes.data.data.followsCart || [];
+
           // 获取每个粉丝的详细信息
           const promises = fansIds.map((id) => getUserInfoById(id));
           const results = await Promise.all(promises);
 
-          // 获取当前登录用户的关注列表，用于判断是否已关注这些粉丝
-          const currentUserRes = await getUserInfoById(this.userStore.userId);
-          const followIds = currentUserRes.data.data.followsCart || [];
-
           this.fansList = results
             .filter((res) => res.data.code === 1)
-            .map((res) => ({
-              ...res.data.data,
-              isFollowed: followIds.includes(res.data.data.id),
-            }));
+            .map((res) => {
+              const userData = res.data.data;
+              // 判断当前登录用户是否已关注了这个粉丝
+              const isFollowed = currentUserFollows.includes(userData.id);
+
+              return {
+                ...userData,
+                isFollowed,
+              };
+            });
         }
       } catch (error) {
         console.error("获取粉丝列表失败:", error);

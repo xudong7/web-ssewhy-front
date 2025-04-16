@@ -136,13 +136,9 @@ export default {
               currentUserInfo.followsCart &&
               currentUserInfo.followsCart.includes(parseInt(this.userInfo.id));
 
-            // 计算关注数和粉丝数，直接使用Array的length属性
-            this.userInfo.followNum = this.userInfo.followsCart
-              ? this.userInfo.followsCart.length
-              : 0;
-            this.userInfo.fansNum = this.userInfo.fansCart
-              ? this.userInfo.fansCart.length
-              : 0;
+            // 计算关注数和粉丝数，使用新的属性
+            this.userInfo.followNum = this.userInfo.follows || 0;
+            this.userInfo.fansNum = this.userInfo.fans || 0;
           }
         } else {
           ElMessage.error(res.data.msg || "获取用户信息失败");
