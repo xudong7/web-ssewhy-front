@@ -6,6 +6,12 @@
 
       <!-- 主内容区 -->
       <div class="main-content">
+        <div class="search-header">
+          <h2 class="search-title">
+            搜索结果: <span class="keyword">{{ keyword }}</span>
+          </h2>
+          <p class="search-info">找到 {{ articles.length }} 个相关结果</p>
+        </div>
         <div class="article-list">
           <div
             class="article-item"
@@ -21,10 +27,8 @@
                 />
               </div>
               <div class="article-main">
-                <h2 class="article-title">{{ article.title }}</h2>
-                <p class="article-description">
-                  {{ formatContent(article.content) }}
-                </p>
+                <h2 class="article-title" v-html="article.title"></h2>
+                <p class="article-description" v-html="article.content"></p>
               </div>
             </div>
             <div class="article-footer">
@@ -45,6 +49,22 @@
                 {{ article.comments || 0 }} 评论
               </span>
             </div>
+          </div>
+
+          <!-- 无搜索结果时显示 -->
+          <div v-if="articles.length === 0 && !loading" class="no-result">
+            <el-empty description="暂无搜索结果" :image-size="200">
+              <template #description>
+                <p>没有找到与"{{ keyword }}"相关的内容</p>
+                <p>请尝试其他关键词</p>
+              </template>
+            </el-empty>
+          </div>
+
+          <!-- 加载中 -->
+          <div v-if="loading" class="loading-container">
+            <el-skeleton :rows="3" animated />
+            <el-skeleton :rows="3" animated />
           </div>
         </div>
       </div>
@@ -159,6 +179,25 @@ export default {
   margin: 0 20px; /* 增加两侧间距 */
 }
 
+.search-header {
+  margin-bottom: 20px;
+}
+
+.search-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.keyword {
+  color: var(--primary-color);
+}
+
+.search-info {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
 .article-list {
   display: flex;
   flex-direction: column;
@@ -246,6 +285,15 @@ export default {
 
 .action-item:hover {
   color: var(--primary-color);
+}
+
+.no-result {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.loading-container {
+  margin-top: 20px;
 }
 
 /* 右侧区域 */
@@ -363,6 +411,15 @@ export default {
 
 .result-link {
   color: var(--primary-color);
+}
+
+/* 高亮关键词样式 */
+:deep(.highlight) {
+  color: var(--primary-color);
+  font-weight: bold;
+  background-color: var(--primary-bg);
+  padding: 0 2px;
+  border-radius: 2px;
 }
 
 @media screen and (max-width: 768px) {

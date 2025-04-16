@@ -34,18 +34,28 @@
       </div>
       <div class="header-search">
         <div class="search-bar">
-          <el-input
+          <el-autocomplete
             v-model="searchText"
             placeholder="搜索..."
             class="search-input"
+            :trigger-on-focus="true"
+            :fetch-suggestions="querySuggestions"
             @focus="handleFocus"
             @blur="handleBlur"
+            @select="handleSuggestionSelect"
             @keyup.enter="handleSearch"
+            :popper-class="isDarkTheme ? 'suggestion-dark' : 'suggestion-light'"
           >
             <template #prefix>
               <el-icon class="search-icon"><Search /></el-icon>
             </template>
-          </el-input>
+            <template #default="{ item }">
+              <div class="suggestion-item">
+                <el-icon class="suggestion-icon"><Search /></el-icon>
+                <span>{{ item.value }}</span>
+              </div>
+            </template>
+          </el-autocomplete>
         </div>
         <div>
           <el-button
@@ -109,6 +119,7 @@ import {
   Upload,
 } from "@element-plus/icons-vue";
 import FooterComponent from "@/components/FooterComponent.vue";
+import { getSearchSuggestions } from "@/api/article";
 
 export default {
   name: "HeaderLayout",
@@ -145,6 +156,31 @@ export default {
         this.$router.push(`/search?keyword=${this.searchText}`);
       } else {
         this.$router.push("/hall");
+      }
+    },
+    handleSuggestionSelect(item) {
+      this.searchText = item.value;
+      this.handleSearch();
+    },
+    async querySuggestions(query, callback) {
+      if (!query || query.length < 2) {
+        callback([]);
+        return;
+      }
+
+      try {
+        const res = await getSearchSuggestions(query);
+        if (res.data.code === 1 && res.data.data) {
+          const suggestions = res.data.data.map((keyword) => {
+            return { value: keyword };
+          });
+          callback(suggestions);
+        } else {
+          callback([]);
+        }
+      } catch (error) {
+        console.error("获取搜索建议失败:", error);
+        callback([]);
       }
     },
     goHome() {
@@ -184,7 +220,7 @@ export default {
       // 设置 HTML data-theme 属性
       document.documentElement.setAttribute(
         "data-theme",
-        this.isDarkTheme ? "dark" : "light",
+        this.isDarkTheme ? "dark" : "light"
       );
       // 设置 Element Plus 暗黑模式
       if (this.isDarkTheme) {
@@ -332,6 +368,30 @@ export default {
 .search-button:hover {
   background-color: var(--primary-hover);
   color: var(--text-inverse);
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.suggestion-icon {
+  margin-right: 8px;
+  font-size: 16px;
+  color: var(--text-tertiary);
+}
+
+.suggestion-dark {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.suggestion-light {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .user-actions {

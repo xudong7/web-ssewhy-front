@@ -35,6 +35,15 @@ export function searchArticle(keyword) {
 }
 
 /**
+ * 获取搜索建议
+ * @param keyword
+ * @returns {*}
+ */
+export function getSearchSuggestions(keyword) {
+  return request.get(`/search/suggestions?keyword=${keyword}`);
+}
+
+/**
  * 发布文章
  * @param data
  * @returns {*}
