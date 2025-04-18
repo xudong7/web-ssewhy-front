@@ -75,7 +75,7 @@
           ><el-icon class="icon"><Upload /></el-icon>
           <div class="hide-mobile">上传</div>
         </span>
-        <span class="hide-mobile"
+        <span class="hide-mobile" @click="goChat"
           ><el-icon class="icon"><ChatDotRound /></el-icon>
           <div class="hide-mobile">交流</div>
         </span>
@@ -103,7 +103,7 @@
   <el-main class="main-content">
     <router-view></router-view>
   </el-main>
-  <FooterComponent />
+  <!-- <FooterComponent /> -->
 </template>
 
 <script>
@@ -188,6 +188,9 @@ export default {
     },
     goHall() {
       this.$router.push("/hall");
+    },
+    goChat() {
+      this.$router.push("/chat");
     },
     goDownload() {
       this.$router.push("/download");

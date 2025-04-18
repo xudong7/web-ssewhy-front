@@ -20,19 +20,33 @@
             <span> {{ userInfo.followNum }} 关注</span>
             <span> {{ userInfo.fansNum }} 粉丝</span>
           </div>
-          <el-button
-            type="primary"
-            @click="handleFollow()"
-            size="small"
-            class="follow-btn"
-            :class="{ 'is-followed': userInfo.isFollowed }"
-            :plain="!userInfo.isFollowed"
-          >
-            <el-icon
-              ><component :is="userInfo.isFollowed ? 'Check' : 'Plus'"
-            /></el-icon>
-            {{ userInfo.isFollowed ? "取消关注" : "关注" }}
-          </el-button>
+          <div class="user-actions">
+            <el-button
+              type="primary"
+              @click="handleFollow()"
+              size="small"
+              class="follow-btn"
+              :class="{ 'is-followed': userInfo.isFollowed }"
+              :plain="!userInfo.isFollowed"
+            >
+              <el-icon
+                ><component :is="userInfo.isFollowed ? 'Check' : 'Plus'"
+              /></el-icon>
+              {{ userInfo.isFollowed ? "取消关注" : "关注" }}
+            </el-button>
+
+            <el-button
+              type="primary"
+              @click="startChat"
+              size="small"
+              class="chat-btn"
+              plain
+              v-if="userStore.userId && userStore.userId !== userInfo.id"
+            >
+              <el-icon><ChatDotRound /></el-icon>
+              发起聊天
+            </el-button>
+          </div>
           <!-- <div class="edit-profile">
             <el-button type="primary" size="medium" @click="handleEditProfile"
               >编辑个人资料</el-button
@@ -62,7 +76,7 @@
 </template>
 
 <script>
-import { Plus, Check } from "@element-plus/icons-vue";
+import { Plus, Check, ChatDotRound } from "@element-plus/icons-vue";
 import { getUserInfoById, handleFollow } from "@/api/user";
 import UserArticles from "@/components/UserArticles.vue";
 import UserCollect from "@/components/UserCollect.vue";
@@ -75,6 +89,7 @@ export default {
   components: {
     Plus,
     Check,
+    ChatDotRound,
     UserArticles,
     UserCollect,
     UserFollows,
@@ -163,6 +178,17 @@ export default {
         console.error("关注操作失败:", error);
         ElMessage.error("操作失败");
       }
+    },
+    startChat() {
+      // 跳转到聊天页面并传递目标用户信息
+      this.$router.push({
+        path: "/chat",
+        query: {
+          targetId: this.userInfo.id,
+          targetName: this.userInfo.username,
+          targetAvatar: this.userInfo.avatar,
+        },
+      });
     },
   },
   mounted() {
@@ -266,6 +292,11 @@ export default {
   color: #175199;
 }
 
+.user-actions {
+  display: flex;
+  gap: 10px;
+}
+
 .edit-profile {
   margin-top: 16px;
 }
@@ -299,6 +330,17 @@ export default {
 .follow-btn :deep(.el-icon) {
   font-size: 12px;
   transition: transform 0.2s ease;
+}
+
+.chat-btn {
+  padding: 0 12px;
+  height: 28px;
+  font-size: 13px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
 }
 
 .main-content {
